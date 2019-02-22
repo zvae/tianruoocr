@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x02000033 RID: 51
+
 	public partial class ReplaceForm : global::System.Windows.Forms.Form
 	{
-		// Token: 0x060002B5 RID: 693 RVA: 0x00002F7D File Offset: 0x0000117D
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && this.components != null)
@@ -13,7 +13,6 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x060002B6 RID: 694 RVA: 0x0001FD48 File Offset: 0x0001DF48
 		private void InitializeComponent()
 		{
 			this.findtextbox = new global::System.Windows.Forms.TextBox();
@@ -101,31 +100,22 @@
 			base.PerformLayout();
 		}
 
-		// Token: 0x0400022C RID: 556
 		private global::System.ComponentModel.IContainer components;
 
-		// Token: 0x0400022D RID: 557
 		private global::System.Windows.Forms.TextBox findtextbox;
 
-		// Token: 0x0400022E RID: 558
 		private global::System.Windows.Forms.Label label1;
 
-		// Token: 0x0400022F RID: 559
 		private global::System.Windows.Forms.TextBox replacetextBox;
 
-		// Token: 0x04000230 RID: 560
 		private global::System.Windows.Forms.Label label2;
 
-		// Token: 0x04000231 RID: 561
 		private global::System.Windows.Forms.Button findbutton;
 
-		// Token: 0x04000232 RID: 562
 		private global::System.Windows.Forms.Button replacebutton;
 
-		// Token: 0x04000233 RID: 563
 		private global::System.Windows.Forms.Button replaceallbutton;
 
-		// Token: 0x04000234 RID: 564
 		private global::System.Windows.Forms.Button canclebutton;
 	}
 }

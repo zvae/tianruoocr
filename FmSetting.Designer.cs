@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x02000016 RID: 22
+
 	public partial class FmSetting : global::System.Windows.Forms.Form
 	{
-		// Token: 0x060001C5 RID: 453 RVA: 0x00002CF5 File Offset: 0x00000EF5
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && this.components != null)
@@ -13,7 +13,6 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x060001C6 RID: 454 RVA: 0x00017CB0 File Offset: 0x00015EB0
 		private void InitializeComponent()
 		{
 			this.Page_代理 = new global::System.Windows.Forms.TabPage();
@@ -362,28 +361,28 @@
 			this.groupBox3.TabIndex = 0;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "全局快捷键";
-			this.pictureBox_识别界面.Image = global::天若OCR文字识别.Properties.Resources.快捷键_1;
+			this.pictureBox_识别界面.Image = global::TrOCR.Properties.Resources.快捷键_1;
 			this.pictureBox_识别界面.Location = new global::System.Drawing.Point(351, 122);
 			this.pictureBox_识别界面.Name = "pictureBox_识别界面";
 			this.pictureBox_识别界面.Size = new global::System.Drawing.Size(21, 21);
 			this.pictureBox_识别界面.SizeMode = global::System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pictureBox_识别界面.TabIndex = 11;
 			this.pictureBox_识别界面.TabStop = false;
-			this.pictureBox_记录界面.Image = global::天若OCR文字识别.Properties.Resources.快捷键_1;
+			this.pictureBox_记录界面.Image = global::TrOCR.Properties.Resources.快捷键_1;
 			this.pictureBox_记录界面.Location = new global::System.Drawing.Point(351, 89);
 			this.pictureBox_记录界面.Name = "pictureBox_记录界面";
 			this.pictureBox_记录界面.Size = new global::System.Drawing.Size(21, 21);
 			this.pictureBox_记录界面.SizeMode = global::System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pictureBox_记录界面.TabIndex = 10;
 			this.pictureBox_记录界面.TabStop = false;
-			this.pictureBox_翻译文本.Image = global::天若OCR文字识别.Properties.Resources.快捷键_1;
+			this.pictureBox_翻译文本.Image = global::TrOCR.Properties.Resources.快捷键_1;
 			this.pictureBox_翻译文本.Location = new global::System.Drawing.Point(351, 52);
 			this.pictureBox_翻译文本.Name = "pictureBox_翻译文本";
 			this.pictureBox_翻译文本.Size = new global::System.Drawing.Size(21, 21);
 			this.pictureBox_翻译文本.SizeMode = global::System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pictureBox_翻译文本.TabIndex = 9;
 			this.pictureBox_翻译文本.TabStop = false;
-			this.pictureBox_文字识别.Image = global::天若OCR文字识别.Properties.Resources.快捷键_1;
+			this.pictureBox_文字识别.Image = global::TrOCR.Properties.Resources.快捷键_1;
 			this.pictureBox_文字识别.Location = new global::System.Drawing.Point(351, 19);
 			this.pictureBox_文字识别.Name = "pictureBox_文字识别";
 			this.pictureBox_文字识别.Size = new global::System.Drawing.Size(21, 21);
@@ -506,7 +505,7 @@
 			this.btn_音效路径.UseVisualStyleBackColor = false;
 			this.btn_音效路径.Click += new global::System.EventHandler(this.btn_音效路径_Click);
 			this.btn_音效.BackColor = global::System.Drawing.Color.White;
-			this.btn_音效.Image = global::天若OCR文字识别.Properties.Resources.语音按钮;
+			this.btn_音效.Image = global::TrOCR.Properties.Resources.语音按钮;
 			this.btn_音效.Location = new global::System.Drawing.Point(344, 17);
 			this.btn_音效.Name = "btn_音效";
 			this.btn_音效.Size = new global::System.Drawing.Size(26, 23);
@@ -564,7 +563,7 @@
 			this.cbBox_保存.Text = "自动保存";
 			this.cbBox_保存.UseVisualStyleBackColor = false;
 			this.cbBox_保存.CheckedChanged += new global::System.EventHandler(this.cbBox_保存_CheckedChanged);
-			this.pic_help.Image = global::天若OCR文字识别.Properties.Resources.帮助;
+			this.pic_help.Image = global::TrOCR.Properties.Resources.帮助;
 			this.pic_help.Location = new global::System.Drawing.Point(7, 296);
 			this.pic_help.Name = "pic_help";
 			this.pic_help.Size = new global::System.Drawing.Size(27, 23);
@@ -772,7 +771,7 @@
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "软件信息";
 			this.pictureBox6.BackColor = global::System.Drawing.Color.White;
-			this.pictureBox6.Image = global::天若OCR文字识别.Properties.Resources.头像;
+			this.pictureBox6.Image = global::TrOCR.Properties.Resources.头像;
 			this.pictureBox6.Location = new global::System.Drawing.Point(12, 15);
 			this.pictureBox6.Name = "pictureBox6";
 			this.pictureBox6.Size = new global::System.Drawing.Size(84, 82);
@@ -819,7 +818,7 @@
 			this.Page_赞助.Size = new global::System.Drawing.Size(390, 329);
 			this.Page_赞助.TabIndex = 7;
 			this.Page_赞助.Text = "赞助";
-			this.pictureBox7.Image = global::天若OCR文字识别.Properties.Resources.二维码;
+			this.pictureBox7.Image = global::TrOCR.Properties.Resources.二维码;
 			this.pictureBox7.Location = new global::System.Drawing.Point(-3, -4);
 			this.pictureBox7.Name = "pictureBox7";
 			this.pictureBox7.Size = new global::System.Drawing.Size(392, 208);
@@ -917,280 +916,188 @@
 			base.ResumeLayout(false);
 		}
 
-		// Token: 0x04000123 RID: 291
 		private global::System.ComponentModel.IContainer components;
 
-		// Token: 0x04000124 RID: 292
 		private global::System.Windows.Forms.TabPage Page_代理;
 
-		// Token: 0x04000125 RID: 293
 		private global::System.Windows.Forms.TabPage Page_密钥;
 
-		// Token: 0x04000126 RID: 294
 		private global::System.Windows.Forms.TabPage Page_快捷键;
 
-		// Token: 0x04000127 RID: 295
 		private global::System.Windows.Forms.TabPage page_常规;
 
-		// Token: 0x04000128 RID: 296
 		private global::System.Windows.Forms.PictureBox pic_help;
 
-		// Token: 0x04000129 RID: 297
 		private global::System.Windows.Forms.Button 常规Button;
 
-		// Token: 0x0400012A RID: 298
 		private global::System.Windows.Forms.GroupBox groupBox2;
 
-		// Token: 0x0400012B RID: 299
 		private global::System.Windows.Forms.NumericUpDown numbox_记录;
 
-		// Token: 0x0400012C RID: 300
 		private global::System.Windows.Forms.Label label3;
 
-		// Token: 0x0400012D RID: 301
 		private global::System.Windows.Forms.ComboBox cobBox_动画;
 
-		// Token: 0x0400012E RID: 302
 		private global::System.Windows.Forms.Label label2;
 
-		// Token: 0x0400012F RID: 303
 		private global::System.Windows.Forms.GroupBox groupBox1;
 
-		// Token: 0x04000130 RID: 304
 		private global::System.Windows.Forms.CheckBox cbBox_开机;
 
-		// Token: 0x04000131 RID: 305
 		private global::System.Windows.Forms.TabControl tab_标签;
 
-		// Token: 0x04000132 RID: 306
 		private global::System.Windows.Forms.TabPage Page_更新;
 
-		// Token: 0x04000133 RID: 307
 		private global::System.Windows.Forms.GroupBox groupBox3;
 
-		// Token: 0x04000134 RID: 308
 		private global::System.Windows.Forms.PictureBox pictureBox_翻译文本;
 
-		// Token: 0x04000135 RID: 309
 		private global::System.Windows.Forms.PictureBox pictureBox_文字识别;
 
-		// Token: 0x04000136 RID: 310
 		private global::System.Windows.Forms.TextBox txtBox_识别界面;
 
-		// Token: 0x04000137 RID: 311
 		private global::System.Windows.Forms.TextBox txtBox_记录界面;
 
-		// Token: 0x04000138 RID: 312
 		private global::System.Windows.Forms.TextBox txtBox_翻译文本;
 
-		// Token: 0x04000139 RID: 313
 		private global::System.Windows.Forms.TextBox txtBox_文字识别;
 
-		// Token: 0x0400013A RID: 314
 		private global::System.Windows.Forms.Label label7;
 
-		// Token: 0x0400013B RID: 315
 		private global::System.Windows.Forms.Label label6;
 
-		// Token: 0x0400013C RID: 316
 		private global::System.Windows.Forms.Label label5;
 
-		// Token: 0x0400013D RID: 317
 		private global::System.Windows.Forms.Label label4;
 
-		// Token: 0x0400013E RID: 318
 		private global::System.Windows.Forms.PictureBox pictureBox_识别界面;
 
-		// Token: 0x0400013F RID: 319
 		private global::System.Windows.Forms.PictureBox pictureBox_记录界面;
 
-		// Token: 0x04000140 RID: 320
 		private global::System.Windows.Forms.Label label8;
 
-		// Token: 0x04000141 RID: 321
 		private global::System.Windows.Forms.CheckBox cbBox_翻译;
 
-		// Token: 0x04000142 RID: 322
 		private global::System.Windows.Forms.TabControl tabControl2;
 
-		// Token: 0x04000143 RID: 323
 		private global::System.Windows.Forms.TabPage inPage_百度接口;
 
-		// Token: 0x04000144 RID: 324
 		private global::System.Windows.Forms.TextBox text_baidupassword;
 
-		// Token: 0x04000145 RID: 325
 		private global::System.Windows.Forms.TextBox text_baiduaccount;
 
-		// Token: 0x04000146 RID: 326
 		private global::System.Windows.Forms.Label label10;
 
-		// Token: 0x04000147 RID: 327
 		private global::System.Windows.Forms.Label label9;
 
-		// Token: 0x04000148 RID: 328
 		private global::System.Windows.Forms.Button 快捷键Button;
 
-		// Token: 0x04000149 RID: 329
 		private global::System.Windows.Forms.Button 密钥Button_apply;
 
-		// Token: 0x0400014A RID: 330
 		private global::System.Windows.Forms.Button 密钥Button;
 
-		// Token: 0x0400014B RID: 331
 		private global::System.Windows.Forms.TabPage Page_关于;
 
-		// Token: 0x0400014C RID: 332
 		private global::System.Windows.Forms.GroupBox groupBox4;
 
-		// Token: 0x0400014D RID: 333
 		private global::System.Windows.Forms.ComboBox combox_代理;
 
-		// Token: 0x0400014E RID: 334
 		private global::System.Windows.Forms.Label label11;
 
-		// Token: 0x0400014F RID: 335
 		private global::System.Windows.Forms.Button 代理Button;
 
-		// Token: 0x04000150 RID: 336
 		private global::System.Windows.Forms.CheckBox chbox_代理服务器;
 
-		// Token: 0x04000151 RID: 337
 		private global::System.Windows.Forms.TextBox text_密码;
 
-		// Token: 0x04000152 RID: 338
 		private global::System.Windows.Forms.TextBox text_端口;
 
-		// Token: 0x04000153 RID: 339
 		private global::System.Windows.Forms.Label label15;
 
-		// Token: 0x04000154 RID: 340
 		private global::System.Windows.Forms.TextBox text_账号;
 
-		// Token: 0x04000155 RID: 341
 		private global::System.Windows.Forms.TextBox text_服务器;
 
-		// Token: 0x04000156 RID: 342
 		private global::System.Windows.Forms.Label label14;
 
-		// Token: 0x04000157 RID: 343
 		private global::System.Windows.Forms.Label label13;
 
-		// Token: 0x04000158 RID: 344
 		private global::System.Windows.Forms.Label label12;
 
-		// Token: 0x04000159 RID: 345
 		private global::System.Windows.Forms.Button 更新Button_check;
 
-		// Token: 0x0400015A RID: 346
 		private global::System.Windows.Forms.Button 更新Button;
 
-		// Token: 0x0400015B RID: 347
 		private global::System.Windows.Forms.GroupBox groupBox5;
 
-		// Token: 0x0400015C RID: 348
 		private global::System.Windows.Forms.Label label16;
 
-		// Token: 0x0400015D RID: 349
 		private global::System.Windows.Forms.NumericUpDown numbox_间隔时间;
 
-		// Token: 0x0400015E RID: 350
 		private global::System.Windows.Forms.CheckBox checkBox_更新间隔;
 
-		// Token: 0x0400015F RID: 351
 		private global::System.Windows.Forms.CheckBox check_检查更新;
 
-		// Token: 0x04000160 RID: 352
 		private global::System.Windows.Forms.CheckBox cbBox_弹窗;
 
-		// Token: 0x04000161 RID: 353
 		private global::System.Windows.Forms.GroupBox groupBox6;
 
-		// Token: 0x04000162 RID: 354
 		private global::System.Windows.Forms.TextBox textBox_path;
 
-		// Token: 0x04000163 RID: 355
 		private global::System.Windows.Forms.Label label1;
 
-		// Token: 0x04000164 RID: 356
 		private global::System.Windows.Forms.CheckBox cbBox_保存;
 
-		// Token: 0x04000165 RID: 357
 		private global::System.Windows.Forms.GroupBox groupBox7;
 
-		// Token: 0x04000166 RID: 358
 		private global::System.Windows.Forms.PictureBox pictureBox6;
 
-		// Token: 0x04000167 RID: 359
 		private global::System.Windows.Forms.GroupBox groupBox8;
 
-		// Token: 0x04000168 RID: 360
 		private global::System.Windows.Forms.Label label_更新日期;
 
-		// Token: 0x04000169 RID: 361
 		private global::System.Windows.Forms.Label label_版本号;
 
-		// Token: 0x0400016A RID: 362
 		private global::System.Windows.Forms.Label label19;
 
-		// Token: 0x0400016B RID: 363
 		private global::System.Windows.Forms.Label label17;
 
-		// Token: 0x0400016C RID: 364
 		private global::System.Windows.Forms.GroupBox groupBox9;
 
-		// Token: 0x0400016D RID: 365
 		private global::System.Windows.Forms.TextBox txt_更新说明;
 
-		// Token: 0x0400016E RID: 366
 		private global::System.Windows.Forms.TabPage Page_赞助;
 
-		// Token: 0x0400016F RID: 367
 		private global::System.Windows.Forms.PictureBox pictureBox7;
 
-		// Token: 0x04000170 RID: 368
 		private global::System.Windows.Forms.TabPage Page_反馈;
 
-		// Token: 0x04000171 RID: 369
 		private global::System.Windows.Forms.Label label21;
 
-		// Token: 0x04000172 RID: 370
 		private global::System.Windows.Forms.Button 反馈Button;
 
-		// Token: 0x04000173 RID: 371
 		private global::System.Windows.Forms.TextBox txt_问题反馈;
 
-		// Token: 0x04000174 RID: 372
 		private global::System.Windows.Forms.Button btn_浏览;
 
-		// Token: 0x04000175 RID: 373
 		private global::System.Windows.Forms.Button 百度_btn;
 
-		// Token: 0x04000176 RID: 374
 		private global::System.Windows.Forms.GroupBox groupBox10;
 
-		// Token: 0x04000177 RID: 375
 		private global::System.Windows.Forms.Button btn_音效;
 
-		// Token: 0x04000178 RID: 376
 		private global::System.Windows.Forms.TextBox text_音效path;
 
-		// Token: 0x04000179 RID: 377
 		private global::System.Windows.Forms.Label label18;
 
-		// Token: 0x0400017A RID: 378
 		private global::System.Windows.Forms.CheckBox chbox_save;
 
-		// Token: 0x0400017B RID: 379
 		private global::System.Windows.Forms.CheckBox chbox_copy;
 
-		// Token: 0x0400017C RID: 380
 		private global::System.Windows.Forms.Label label20;
 
-		// Token: 0x0400017D RID: 381
 		private global::System.Windows.Forms.Button btn_音效路径;
 
-		// Token: 0x0400017E RID: 382
 		private global::System.Windows.Forms.CheckBox chbox_取色;
 	}
 }

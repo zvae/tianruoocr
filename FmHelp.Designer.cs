@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x02000005 RID: 5
+
 	public partial class FmHelp : global::System.Windows.Forms.Form
 	{
-		// Token: 0x06000054 RID: 84 RVA: 0x00006A34 File Offset: 0x00004C34
+
 		protected override void Dispose(bool disposing)
 		{
 			bool flag = disposing && this.components != null;
@@ -20,7 +20,6 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x06000055 RID: 85 RVA: 0x00006A80 File Offset: 0x00004C80
 		private void InitializeComponent()
 		{
 			this.listBox1 = new global::System.Windows.Forms.ListBox();
@@ -108,28 +107,20 @@
 			base.ResumeLayout(false);
 		}
 
-		// Token: 0x0400003D RID: 61
 		private global::System.ComponentModel.IContainer components;
 
-		// Token: 0x0400003E RID: 62
 		private global::System.Windows.Forms.ListBox listBox1;
 
-		// Token: 0x0400003F RID: 63
 		private global::System.Windows.Forms.Panel panel_快捷键;
 
-		// Token: 0x04000040 RID: 64
 		private global::System.Windows.Forms.Panel panel_常见问题;
 
-		// Token: 0x04000041 RID: 65
 		private global::System.Windows.Forms.WebBrowser webBrowser1;
 
-		// Token: 0x04000042 RID: 66
 		private global::System.Windows.Forms.Panel panel_识别说明;
 
-		// Token: 0x04000043 RID: 67
 		private global::System.Windows.Forms.WebBrowser webBrowser2;
 
-		// Token: 0x04000044 RID: 68
 		private global::System.Windows.Forms.WebBrowser webBrowser3;
 	}
 }

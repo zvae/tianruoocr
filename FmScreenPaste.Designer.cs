@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x02000014 RID: 20
+
 	public partial class FmScreenPaste : global::System.Windows.Forms.Form
 	{
-		// Token: 0x06000192 RID: 402 RVA: 0x00015DE0 File Offset: 0x00013FE0
+
 		protected override void Dispose(bool disposing)
 		{
 			bool flag = disposing && this.components != null;
@@ -14,7 +14,6 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x06000193 RID: 403 RVA: 0x00015E18 File Offset: 0x00014018
 		private void InitializeComponent()
 		{
 			this.RightMenu = new global::System.Windows.Forms.ContextMenuStrip();
@@ -67,28 +66,20 @@
 			base.ResumeLayout(false);
 		}
 
-		// Token: 0x04000117 RID: 279
 		private global::System.ComponentModel.IContainer components;
 
-		// Token: 0x04000118 RID: 280
 		private global::System.Windows.Forms.ContextMenuStrip RightMenu;
 
-		// Token: 0x04000119 RID: 281
 		private global::System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
 
-		// Token: 0x0400011A RID: 282
 		private global::System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
 
-		// Token: 0x0400011B RID: 283
 		private global::System.Windows.Forms.ToolStripMenuItem 关闭ToolStripMenuItem;
 
-		// Token: 0x0400011C RID: 284
 		private global::System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 
-		// Token: 0x0400011D RID: 285
 		private global::System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 
-		// Token: 0x0400011E RID: 286
 		private global::System.Windows.Forms.ToolStripMenuItem 置顶ToolStripMenuItem;
 	}
 }

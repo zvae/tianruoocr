@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x02000004 RID: 4
-	public partial class Fmflags : global::System.Windows.Forms.Form
+
+	public partial class FmFlags : global::System.Windows.Forms.Form
 	{
-		// Token: 0x0600004B RID: 75 RVA: 0x000065E0 File Offset: 0x000047E0
+
 		protected override void Dispose(bool disposing)
 		{
 			bool flag = disposing && this.components != null;
@@ -22,7 +22,6 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x0600004C RID: 76 RVA: 0x00006634 File Offset: 0x00004834
 		private void InitializeComponent()
 		{
 			base.SuspendLayout();
@@ -40,7 +39,6 @@
 			base.ResumeLayout(false);
 		}
 
-		// Token: 0x0400003C RID: 60
 		private global::System.ComponentModel.IContainer components;
 	}
 }

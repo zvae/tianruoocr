@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x0200003B RID: 59
-	public partial class aliFMtable : global::System.Windows.Forms.Form
+
+	public partial class AliFMtable : global::System.Windows.Forms.Form
 	{
-		// Token: 0x06000308 RID: 776 RVA: 0x0000301E File Offset: 0x0000121E
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && this.components != null)
@@ -13,7 +13,6 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x06000309 RID: 777 RVA: 0x00020578 File Offset: 0x0001E778
 		private void InitializeComponent()
 		{
 			this.components = new global::System.ComponentModel.Container();
@@ -51,16 +50,12 @@
 			base.PerformLayout();
 		}
 
-		// Token: 0x0400024C RID: 588
 		private global::System.ComponentModel.IContainer components;
 
-		// Token: 0x0400024D RID: 589
 		private global::System.Windows.Forms.WebBrowser webBrowser1;
 
-		// Token: 0x0400024E RID: 590
 		private global::System.Windows.Forms.TextBox textBox1;
 
-		// Token: 0x0400024F RID: 591
 		private global::System.Windows.Forms.Timer timer1;
 	}
 }

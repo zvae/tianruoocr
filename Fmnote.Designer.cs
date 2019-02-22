@@ -1,9 +1,9 @@
-﻿namespace 天若OCR文字识别
+﻿namespace TrOCR
 {
-	// Token: 0x02000013 RID: 19
+
 	public partial class Fmnote : global::System.Windows.Forms.Form
 	{
-		// Token: 0x06000178 RID: 376 RVA: 0x000155E4 File Offset: 0x000137E4
+
 		protected override void Dispose(bool disposing)
 		{
 			bool flag = disposing && this.components != null;
@@ -21,17 +21,16 @@
 			base.Dispose(disposing);
 		}
 
-		// Token: 0x06000179 RID: 377 RVA: 0x00015634 File Offset: 0x00013834
 		private void InitializeComponent()
 		{
 			base.Location = new global::System.Drawing.Point(global::System.Windows.Forms.Screen.AllScreens[0].WorkingArea.Width - base.Width, global::System.Windows.Forms.Screen.AllScreens[0].WorkingArea.Height - base.Height);
 			base.Hide();
-			this.Font = new global::System.Drawing.Font(this.Font.Name, 9f / global::天若OCR文字识别.StaticValue.Dpifactor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
+			this.Font = new global::System.Drawing.Font(this.Font.Name, 9f / global::TrOCR.StaticValue.Dpifactor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
 			this.copyItem = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.components = new global::System.ComponentModel.Container();
 			this.dataGridView1 = new global::System.Windows.Forms.DataGridView();
 			this.contextMenuStrip1 = new global::System.Windows.Forms.ContextMenuStrip(this.components);
-			this.contextMenuStrip1.Renderer = new global::天若OCR文字识别.HelpRepaint.MenuItemRendererT();
+			this.contextMenuStrip1.Renderer = new global::TrOCR.HelpRepaint.MenuItemRendererT();
 			((global::System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
 			base.SuspendLayout();
 			this.dataGridView1.BackgroundColor = global::System.Drawing.Color.White;
@@ -66,16 +65,12 @@
 			base.ResumeLayout(false);
 		}
 
-		// Token: 0x04000108 RID: 264
 		private global::System.ComponentModel.IContainer components;
 
-		// Token: 0x04000109 RID: 265
 		private global::System.Windows.Forms.ToolStripMenuItem copyItem;
 
-		// Token: 0x0400010A RID: 266
 		private global::System.Windows.Forms.DataGridView dataGridView1;
 
-		// Token: 0x0400010B RID: 267
 		private global::System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 	}
 }
