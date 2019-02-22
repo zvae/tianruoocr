@@ -172,11 +172,11 @@ namespace TrOCR
                 if (fullUpdate)
                 {
                     MessageBox.Show($"发现新版本：{newVersion}，请到百度网盘下载！", "提醒");
-                    Process.Start("https://pan.baidu.com/s/1P2xb9kBwX1gj8j2_APivZw");
+                    Process.Start(json["pan_url"].Value<string>());
                 }
                 else
                 {
-                    Process.Start("Data\\update.exe", " " + json["main_url"].Value<string>() + " " +
+                    Process.Start("Data\\update.exe", " " + json["main_url"].Value<string>() + " " + json["pan_url"].Value<string>() + " " +
                                                       Path.Combine(Application.ExecutablePath, "天若OCR文字识别.exe"));
                     Environment.Exit(0);
                 }
