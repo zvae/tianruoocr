@@ -91,11 +91,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="AliFMtable.cs">
+    <Compile Include="AliTable.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AliFMtable.Designer.cs">
-      <DependentUpon>AliFMtable.cs</DependentUpon>
+    <Compile Include="AliTable.designer.cs">
+      <DependentUpon>AliTable.cs</DependentUpon>
     </Compile>
     <Compile Include="FmFlags.cs">
       <SubType>Form</SubType>
@@ -198,6 +198,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

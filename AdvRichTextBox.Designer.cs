@@ -41,6 +41,7 @@ namespace TrOCR
 
         public void InitializeComponent()
         {
+            CheckForIllegalCrossThreadCalls = false;
             ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof(AdvRichTextBox));
             this.font_宋体 = new ToolStripMenuItem();
             this.font_楷体 = new ToolStripMenuItem();
@@ -342,9 +343,7 @@ namespace TrOCR
             this.readIniFile();
             this.richTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
         }
-
-        // (get) Token: 0x06000004 RID: 4 RVA: 0x0000206F File Offset: 0x0000026F
-        // (set) Token: 0x06000005 RID: 5 RVA: 0x00004400 File Offset: 0x00002600
+        
         public override string Text
         {
             get
@@ -540,8 +539,7 @@ namespace TrOCR
             fmflags.DrawStr("已复制");
         }
 
-        // (get) Token: 0x06000014 RID: 20 RVA: 0x0000218D File Offset: 0x0000038D
-        // (set) Token: 0x06000015 RID: 21 RVA: 0x0000219A File Offset: 0x0000039A
+
         public ContextMenuStrip ContextMenuStrip1
         {
             get
@@ -554,7 +552,6 @@ namespace TrOCR
             }
         }
 
-        // (set) Token: 0x06000016 RID: 22 RVA: 0x00004818 File Offset: 0x00002A18
         public string Text_flag
         {
             set
@@ -740,7 +737,6 @@ namespace TrOCR
             Process.Start(e.LinkText);
         }
 
-        // (get) Token: 0x06000025 RID: 37 RVA: 0x00002212 File Offset: 0x00000412
         public string SelectText
         {
             get
@@ -784,7 +780,6 @@ namespace TrOCR
             }
         }
 
-        // (set) Token: 0x06000027 RID: 39 RVA: 0x0000221F File Offset: 0x0000041F
         public string Find
         {
             set
@@ -902,7 +897,6 @@ namespace TrOCR
             this.c.execute(this.richTextBox1.Text);
         }
 
-        // (set) Token: 0x06000031 RID: 49 RVA: 0x000022BD File Offset: 0x000004BD
         public new string Hide
         {
             set
@@ -1198,7 +1192,6 @@ namespace TrOCR
             }
         }
 
-        // (set) Token: 0x0600003B RID: 59 RVA: 0x00002309 File Offset: 0x00000509
         public string Rtf
         {
             set
@@ -1207,8 +1200,7 @@ namespace TrOCR
             }
         }
 
-        // (get) Token: 0x0600003C RID: 60 RVA: 0x00002317 File Offset: 0x00000517
-        // (set) Token: 0x0600003D RID: 61 RVA: 0x00002309 File Offset: 0x00000509
+
         public string rtf
         {
             get
@@ -1221,7 +1213,6 @@ namespace TrOCR
             }
         }
 
-        // (set) Token: 0x0600003E RID: 62 RVA: 0x00005CDC File Offset: 0x00003EDC
         public string set_language
         {
             set
@@ -1396,7 +1387,6 @@ namespace TrOCR
                 }
             }
 
-            // (get) Token: 0x06000043 RID: 67 RVA: 0x00002362 File Offset: 0x00000562
             public string Record
             {
                 get

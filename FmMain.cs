@@ -5348,7 +5348,7 @@ namespace TrOCR
 
 		public void Main_OCR_Thread_table()
 		{
-			ailibaba = new AliFMtable();
+			ailibaba = new AliTable();
 			var timeSpan = new TimeSpan(DateTime.Now.Ticks);
 			var timeSpan2 = timeSpan.Subtract(ts).Duration();
 			var str = string.Concat(new[]
@@ -5838,7 +5838,7 @@ namespace TrOCR
 
 		public string tencent_cookie;
 
-		private AliFMtable ailibaba;
+		private AliTable ailibaba;
 
 		// (Invoke) Token: 0x06000138 RID: 312
 		public delegate void translate();

@@ -22,8 +22,7 @@ namespace TrOCR
 				ItemColor = clr;
 			}
 
-			// (get) Token: 0x060001C9 RID: 457 RVA: 0x0001B564 File Offset: 0x00019764
-			// (set) Token: 0x060001CA RID: 458 RVA: 0x00002D3D File Offset: 0x00000F3D
+
 			public Color ItemColor
 			{
 				get
@@ -36,8 +35,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001CB RID: 459 RVA: 0x0001B57C File Offset: 0x0001977C
-			// (set) Token: 0x060001CC RID: 460 RVA: 0x00002D47 File Offset: 0x00000F47
+
 			public string Name
 			{
 				get
@@ -58,7 +56,6 @@ namespace TrOCR
 		public class HWColorPicker : FloatLayerBase
 		{
 
-			// (get) Token: 0x060001CD RID: 461 RVA: 0x0001B594 File Offset: 0x00019794
 			public Color SelectedColor
 			{
 				get
@@ -67,8 +64,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001CE RID: 462 RVA: 0x0001B5AC File Offset: 0x000197AC
-			// (set) Token: 0x060001CF RID: 463 RVA: 0x00002D51 File Offset: 0x00000F51
+
 			[DefaultValue(true)]
 			[Description("是否显示颜色提示")]
 			public bool ShowTip
@@ -83,8 +79,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001D0 RID: 464 RVA: 0x0001B5C4 File Offset: 0x000197C4
-			// (set) Token: 0x060001D1 RID: 465 RVA: 0x0001B5DC File Offset: 0x000197DC
+
 			[DefaultValue(typeof(Color), "255, 238, 194")]
 			[Description("高亮背景色")]
 			public Color HoverBKColor
@@ -127,7 +122,6 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001D2 RID: 466 RVA: 0x0001B670 File Offset: 0x00019870
 			public List<ColorItemx> ColorTable
 			{
 				get
@@ -427,8 +421,7 @@ namespace TrOCR
 				ResumeLayout(false);
 			}
 
-			// (get) Token: 0x060001E0 RID: 480 RVA: 0x00002D5B File Offset: 0x00000F5B
-			// (set) Token: 0x060001E1 RID: 481 RVA: 0x00002D63 File Offset: 0x00000F63
+
 			public Color SelectedColored { get; private set; }
 
 			[CompilerGenerated]
@@ -808,8 +801,7 @@ namespace TrOCR
 				return result;
 			}
 
-			// (get) Token: 0x060001EF RID: 495 RVA: 0x0001CAB8 File Offset: 0x0001ACB8
-			// (set) Token: 0x060001F0 RID: 496 RVA: 0x0000237B File Offset: 0x0000057B
+
 			public Point GetPoint
 			{
 				get
@@ -838,8 +830,7 @@ namespace TrOCR
 		public class FloatLayerBase : Form
 		{
 
-			// (get) Token: 0x060001F4 RID: 500 RVA: 0x0001CAD0 File Offset: 0x0001ACD0
-			// (set) Token: 0x060001F5 RID: 501 RVA: 0x0001CAE8 File Offset: 0x0001ACE8
+
 			[DefaultValue(BorderStyle.Fixed3D)]
 			[Description("获取或设置边框类型。")]
 			public BorderStyle BorderType
@@ -868,8 +859,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001F6 RID: 502 RVA: 0x0001CB34 File Offset: 0x0001AD34
-			// (set) Token: 0x060001F7 RID: 503 RVA: 0x0001CB4C File Offset: 0x0001AD4C
+
 			[DefaultValue(Border3DStyle.RaisedInner)]
 			[Description("获取或设置三维边框样式。")]
 			public Border3DStyle Border3DStyle
@@ -898,8 +888,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001F8 RID: 504 RVA: 0x0001CB98 File Offset: 0x0001AD98
-			// (set) Token: 0x060001F9 RID: 505 RVA: 0x0001CBB0 File Offset: 0x0001ADB0
+
 			[DefaultValue(ButtonBorderStyle.Solid)]
 			[Description("获取或设置线型边框样式。")]
 			public ButtonBorderStyle BorderSingleStyle
@@ -928,8 +917,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001FA RID: 506 RVA: 0x0001CBFC File Offset: 0x0001ADFC
-			// (set) Token: 0x060001FB RID: 507 RVA: 0x0001CC14 File Offset: 0x0001AE14
+
 			[DefaultValue(typeof(Color), "DarkGray")]
 			[Description("获取或设置边框颜色（仅当边框类型为线型时有效）。")]
 			public Color BorderColor
@@ -958,7 +946,6 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x060001FC RID: 508 RVA: 0x0001CC64 File Offset: 0x0001AE64
 			protected sealed override CreateParams CreateParams
 			{
 				get
@@ -1364,8 +1351,7 @@ namespace TrOCR
 				throw new NotImplementedException();
 			}
 
-			// (get) Token: 0x06000218 RID: 536 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x06000219 RID: 537 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Obsolete("禁用该属性！", true)]
 			[Browsable(false)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
@@ -1380,8 +1366,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600021A RID: 538 RVA: 0x0001D380 File Offset: 0x0001B580
-			// (set) Token: 0x0600021B RID: 539 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Browsable(false)]
 			[Obsolete("设置边框请使用Border相关属性！", true)]
@@ -1396,8 +1381,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600021C RID: 540 RVA: 0x0001D394 File Offset: 0x0001B594
-			// (set) Token: 0x0600021D RID: 541 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Browsable(false)]
 			[Obsolete("禁用该属性！", true)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
@@ -1412,8 +1396,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600021E RID: 542 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x0600021F RID: 543 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Obsolete("禁用该属性！", true)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Browsable(false)]
@@ -1428,8 +1411,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000220 RID: 544 RVA: 0x0001D3AC File Offset: 0x0001B5AC
-			// (set) Token: 0x06000221 RID: 545 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Browsable(false)]
 			[Obsolete("禁用该属性！", true)]
@@ -1444,8 +1426,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000222 RID: 546 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x06000223 RID: 547 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Obsolete("禁用该属性！", true)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Browsable(false)]
@@ -1460,8 +1441,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000224 RID: 548 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x06000225 RID: 549 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Obsolete("禁用该属性！", true)]
 			[Browsable(false)]
@@ -1476,8 +1456,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000226 RID: 550 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x06000227 RID: 551 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Browsable(false)]
 			[Obsolete("禁用该属性！", true)]
@@ -1492,8 +1471,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000228 RID: 552 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x06000229 RID: 553 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Browsable(false)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Obsolete("禁用该属性！", true)]
@@ -1508,8 +1486,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600022A RID: 554 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x0600022B RID: 555 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Browsable(false)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Obsolete("禁用该属性！", true)]
@@ -1524,8 +1501,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600022C RID: 556 RVA: 0x0001D3C0 File Offset: 0x0001B5C0
-			// (set) Token: 0x0600022D RID: 557 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Browsable(false)]
 			[Obsolete("禁用该属性！", true)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
@@ -1540,8 +1516,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600022E RID: 558 RVA: 0x0001D36C File Offset: 0x0001B56C
-			// (set) Token: 0x0600022F RID: 559 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Browsable(false)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			[Obsolete("禁用该属性！", true)]
@@ -1556,8 +1531,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000230 RID: 560 RVA: 0x0001D3D4 File Offset: 0x0001B5D4
-			// (set) Token: 0x06000231 RID: 561 RVA: 0x0000237B File Offset: 0x0000057B
+
 			[Browsable(false)]
 			[Obsolete("禁用该属性！", true)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
@@ -1689,7 +1663,6 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x0600023D RID: 573 RVA: 0x0001D52C File Offset: 0x0001B72C
 			public Color SelectedColor
 			{
 				get
@@ -1744,8 +1717,7 @@ namespace TrOCR
 				}
 			}
 
-			// (get) Token: 0x06000240 RID: 576 RVA: 0x0001D63C File Offset: 0x0001B83C
-			// (set) Token: 0x06000241 RID: 577 RVA: 0x0001D6C4 File Offset: 0x0001B8C4
+
 			public new TextAlign SelectionAlignment
 			{
 				get
@@ -1819,7 +1791,6 @@ namespace TrOCR
 				SendMessage(new HandleRef(this, Handle), 1095, 0, ref paraformat);
 			}
 
-			// (set) Token: 0x06000246 RID: 582 RVA: 0x00002E76 File Offset: 0x00001076
 			public string SetLine
 			{
 				set

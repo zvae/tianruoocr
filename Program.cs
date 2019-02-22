@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +13,7 @@ using Microsoft.Win32;
 namespace TrOCR
 {
 
-	internal static class Program
+    internal static class Program
 	{
 
 		//private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

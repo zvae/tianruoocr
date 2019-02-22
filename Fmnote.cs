@@ -106,8 +106,7 @@ namespace TrOCR
 			throw new NotImplementedException();
 		}
 
-		// (get) Token: 0x06000172 RID: 370 RVA: 0x00015198 File Offset: 0x00013398
-		// (set) Token: 0x06000173 RID: 371 RVA: 0x000151AC File Offset: 0x000133AC
+
 		public string Text_note
 		{
 			get
@@ -171,8 +170,7 @@ namespace TrOCR
 			}
 		}
 
-		// (get) Token: 0x06000176 RID: 374 RVA: 0x00015198 File Offset: 0x00013398
-		// (set) Token: 0x06000177 RID: 375 RVA: 0x000153B4 File Offset: 0x000135B4
+
 		public string Text_note_change
 		{
 			get

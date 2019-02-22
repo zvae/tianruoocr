@@ -901,7 +901,6 @@ namespace TrOCR
 		{
 		}
 
-		// (set) Token: 0x060001C4 RID: 452 RVA: 0x00002CE7 File Offset: 0x00000EE7
 		public string Start_set
 		{
 			set

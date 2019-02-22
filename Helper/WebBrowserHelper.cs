@@ -89,59 +89,46 @@ namespace TrOCR
 			[DispId(106)]
 			void Stop();
 
-			// (get) Token: 0x060002C9 RID: 713
 			[DispId(200)]
 			object Application { [return: MarshalAs(UnmanagedType.IDispatch)] get; }
 
-			// (get) Token: 0x060002CA RID: 714
 			[DispId(201)]
 			object Parent { [return: MarshalAs(UnmanagedType.IDispatch)] get; }
 
-			// (get) Token: 0x060002CB RID: 715
 			[DispId(202)]
 			object Container { [return: MarshalAs(UnmanagedType.IDispatch)] get; }
 
-			// (get) Token: 0x060002CC RID: 716
 			[DispId(203)]
 			object Document { [return: MarshalAs(UnmanagedType.IDispatch)] get; }
 
-			// (get) Token: 0x060002CD RID: 717
 			[DispId(204)]
 			bool TopLevelContainer { get; }
 
-			// (get) Token: 0x060002CE RID: 718
 			[DispId(205)]
 			string Type { get; }
 
-			// (get) Token: 0x060002CF RID: 719
-			// (set) Token: 0x060002D0 RID: 720
+
 			[DispId(206)]
 			int Left { get; set; }
 
-			// (get) Token: 0x060002D1 RID: 721
-			// (set) Token: 0x060002D2 RID: 722
+
 			[DispId(207)]
 			int Top { get; set; }
 
-			// (get) Token: 0x060002D3 RID: 723
-			// (set) Token: 0x060002D4 RID: 724
+
 			[DispId(208)]
 			int Width { get; set; }
 
-			// (get) Token: 0x060002D5 RID: 725
-			// (set) Token: 0x060002D6 RID: 726
+
 			[DispId(209)]
 			int Height { get; set; }
 
-			// (get) Token: 0x060002D7 RID: 727
 			[DispId(210)]
 			string LocationName { get; }
 
-			// (get) Token: 0x060002D8 RID: 728
 			[DispId(211)]
 			string LocationURL { get; }
 
-			// (get) Token: 0x060002D9 RID: 729
 			[DispId(212)]
 			bool Busy { get; }
 
@@ -157,49 +144,39 @@ namespace TrOCR
 			[DispId(303)]
 			object GetProperty([In] string property);
 
-			// (get) Token: 0x060002DE RID: 734
 			[DispId(0)]
 			string Name { get; }
 
-			// (get) Token: 0x060002DF RID: 735
 			[DispId(-515)]
 			int HWND { get; }
 
-			// (get) Token: 0x060002E0 RID: 736
 			[DispId(400)]
 			string FullName { get; }
 
-			// (get) Token: 0x060002E1 RID: 737
 			[DispId(401)]
 			string Path { get; }
 
-			// (get) Token: 0x060002E2 RID: 738
-			// (set) Token: 0x060002E3 RID: 739
+
 			[DispId(402)]
 			bool Visible { get; set; }
 
-			// (get) Token: 0x060002E4 RID: 740
-			// (set) Token: 0x060002E5 RID: 741
+
 			[DispId(403)]
 			bool StatusBar { get; set; }
 
-			// (get) Token: 0x060002E6 RID: 742
-			// (set) Token: 0x060002E7 RID: 743
+
 			[DispId(404)]
 			string StatusText { get; set; }
 
-			// (get) Token: 0x060002E8 RID: 744
-			// (set) Token: 0x060002E9 RID: 745
+
 			[DispId(405)]
 			int ToolBar { get; set; }
 
-			// (get) Token: 0x060002EA RID: 746
-			// (set) Token: 0x060002EB RID: 747
+
 			[DispId(406)]
 			bool MenuBar { get; set; }
 
-			// (get) Token: 0x060002EC RID: 748
-			// (set) Token: 0x060002ED RID: 749
+
 			[DispId(407)]
 			bool FullScreen { get; set; }
 
@@ -215,42 +192,34 @@ namespace TrOCR
 			[DispId(503)]
 			void ShowBrowserBar([In] ref object pvaClsid, [In] ref object pvarShow, [In] ref object pvarSize);
 
-			// (get) Token: 0x060002F2 RID: 754
 			[DispId(-525)]
 			WebBrowserReadyState ReadyState { get; }
 
-			// (get) Token: 0x060002F3 RID: 755
-			// (set) Token: 0x060002F4 RID: 756
+
 			[DispId(550)]
 			bool Offline { get; set; }
 
-			// (get) Token: 0x060002F5 RID: 757
-			// (set) Token: 0x060002F6 RID: 758
+
 			[DispId(551)]
 			bool Silent { get; set; }
 
-			// (get) Token: 0x060002F7 RID: 759
-			// (set) Token: 0x060002F8 RID: 760
+
 			[DispId(552)]
 			bool RegisterAsBrowser { get; set; }
 
-			// (get) Token: 0x060002F9 RID: 761
-			// (set) Token: 0x060002FA RID: 762
+
 			[DispId(553)]
 			bool RegisterAsDropTarget { get; set; }
 
-			// (get) Token: 0x060002FB RID: 763
-			// (set) Token: 0x060002FC RID: 764
+
 			[DispId(554)]
 			bool TheaterMode { get; set; }
 
-			// (get) Token: 0x060002FD RID: 765
-			// (set) Token: 0x060002FE RID: 766
+
 			[DispId(555)]
 			bool AddressBar { get; set; }
 
-			// (get) Token: 0x060002FF RID: 767
-			// (set) Token: 0x06000300 RID: 768
+
 			[DispId(556)]
 			bool Resizable { get; set; }
 		}

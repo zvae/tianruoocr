@@ -14,7 +14,6 @@ namespace TrOCR
 			InitializeComponent();
 		}
 
-		// (get) Token: 0x06000058 RID: 88 RVA: 0x00006FA8 File Offset: 0x000051A8
 		protected override CreateParams CreateParams
 		{
 			get
@@ -203,8 +202,7 @@ namespace TrOCR
 			timer.Start();
 		}
 
-		// (get) Token: 0x0600005D RID: 93 RVA: 0x00007480 File Offset: 0x00005680
-		// (set) Token: 0x0600005E RID: 94 RVA: 0x0000238F File Offset: 0x0000058F
+
 		public string fml_close
 		{
 			get

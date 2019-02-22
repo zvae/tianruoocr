@@ -163,7 +163,6 @@ namespace TrOCR
 			base.WndProc(ref m);
 		}
 
-		// (get) Token: 0x0600018A RID: 394 RVA: 0x00015C3C File Offset: 0x00013E3C
 		protected override CreateParams CreateParams
 		{
 			get

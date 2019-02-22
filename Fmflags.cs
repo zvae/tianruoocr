@@ -16,7 +16,6 @@ namespace TrOCR
 			InitializeComponent();
 		}
 
-		// (get) Token: 0x06000045 RID: 69 RVA: 0x00005EC8 File Offset: 0x000040C8
 		protected override CreateParams CreateParams
 		{
 			get
