@@ -15,8 +15,8 @@ using TrOCR.Properties;
 namespace TrOCR
 {
 
-	public partial class FmSetting : Form
-	{
+	public sealed partial class FmSetting
+    {
 
 		public FmSetting()
 		{
@@ -130,38 +130,10 @@ namespace TrOCR
 			{
 				txtBox_识别界面.Text = "请按下快捷键";
 			}
-			if (txtBox_文字识别.Text == "请按下快捷键")
-			{
-				pictureBox_文字识别.Image = Resources.快捷键_0;
-			}
-			else
-			{
-				pictureBox_文字识别.Image = Resources.快捷键_1;
-			}
-			if (txtBox_翻译文本.Text == "请按下快捷键")
-			{
-				pictureBox_翻译文本.Image = Resources.快捷键_0;
-			}
-			else
-			{
-				pictureBox_翻译文本.Image = Resources.快捷键_1;
-			}
-			if (txtBox_记录界面.Text == "请按下快捷键")
-			{
-				pictureBox_记录界面.Image = Resources.快捷键_0;
-			}
-			else
-			{
-				pictureBox_记录界面.Image = Resources.快捷键_1;
-			}
-			if (txtBox_识别界面.Text == "请按下快捷键")
-			{
-				pictureBox_识别界面.Image = Resources.快捷键_0;
-			}
-			else
-			{
-				pictureBox_识别界面.Image = Resources.快捷键_1;
-			}
+			pictureBox_文字识别.Image = txtBox_文字识别.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
+			pictureBox_翻译文本.Image = txtBox_翻译文本.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
+			pictureBox_记录界面.Image = txtBox_记录界面.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
+			pictureBox_识别界面.Image = txtBox_识别界面.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
 			var value12 = IniHelp.GetValue("密钥_百度", "secret_id");
 			text_baiduaccount.Text = value12;
 			if (value12 == "发生错误")
@@ -364,7 +336,7 @@ namespace TrOCR
 			var array6 = new int[4];
 			array6[0] = 1;
 			numericUpDown6.Value = new decimal(array6);
-			tab_标签.Height = (int)(350.0 * (double)Program.factor);
+			tab_标签.Height = (int)(350.0 * Program.factor);
 			Height = tab_标签.Height + 50;
 			readIniFile();
 			chbox_代理服务器.CheckedChanged += chbox_代理服务器_CheckedChanged;
@@ -384,7 +356,7 @@ namespace TrOCR
 
 		public static string Get_html(string url)
 		{
-			var result = "";
+			string result;
 			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
 			httpWebRequest.Method = "POST";
 			httpWebRequest.ContentType = "application/x-www-form-urlencoded";
@@ -412,42 +384,42 @@ namespace TrOCR
 		{
 			if (tab_标签.SelectedTab == page_常规)
 			{
-				tab_标签.Height = (int)(350.0 * (double)Program.factor);
+				tab_标签.Height = (int)(350.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_快捷键)
 			{
-				tab_标签.Height = (int)(225.0 * (double)Program.factor);
+				tab_标签.Height = (int)(225.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_密钥)
 			{
-				tab_标签.Height = (int)(190.0 * (double)Program.factor);
+				tab_标签.Height = (int)(190.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_代理)
 			{
-				tab_标签.Height = (int)(245.0 * (double)Program.factor);
+				tab_标签.Height = (int)(245.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_更新)
 			{
-				tab_标签.Height = (int)(135.0 * (double)Program.factor);
+				tab_标签.Height = (int)(135.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_关于)
 			{
-				tab_标签.Height = (int)(340.0 * (double)Program.factor);
+				tab_标签.Height = (int)(340.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_赞助)
 			{
-				tab_标签.Height = (int)(225.0 * (double)Program.factor);
+				tab_标签.Height = (int)(225.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_反馈)
 			{
-				tab_标签.Height = (int)(200.0 * (double)Program.factor);
+				tab_标签.Height = (int)(200.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 		}
@@ -559,8 +531,7 @@ namespace TrOCR
 				if (textBox.Name.Contains("识别界面"))
 				{
 					IniHelp.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
-					return;
-				}
+                }
 			}
 			else if (e.KeyValue != 16 && e.KeyValue != 17 && e.KeyValue != 18)
 			{
@@ -746,12 +717,12 @@ namespace TrOCR
 
 		private void 更新Button_check_Click(object sender, EventArgs e)
 		{
-			new Thread(new ThreadStart(Program.check_update_cc)).Start();
+			new Thread(Program.CheckUpdate).Start();
 		}
 
 		private void 反馈Button_Click(object sender, EventArgs e)
 		{
-			new Thread(new ThreadStart(反馈send)).Start();
+			new Thread(反馈send).Start();
 		}
 
 		public string Post_Html(string url, string post_str)

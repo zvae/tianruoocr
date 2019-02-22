@@ -7,7 +7,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TrOCR</RootNamespace>
-    <AssemblyName>TrOCR</AssemblyName>
+    <AssemblyName>天若OCR文字识别</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -142,6 +142,7 @@
     <Compile Include="Helper\HelpRepaint.cs" />
     <Compile Include="Helper\HelpWin32.cs" />
     <Compile Include="Helper\IniHelp.cs" />
+    <Compile Include="Helper\WebHelper.cs" />
     <Compile Include="Messageload.cs">
       <SubType>Form</SubType>
     </Compile>

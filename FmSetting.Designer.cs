@@ -1,7 +1,7 @@
 ﻿namespace TrOCR
 {
 
-	public partial class FmSetting : global::System.Windows.Forms.Form
+	public sealed partial class FmSetting : global::System.Windows.Forms.Form
 	{
 
 		protected override void Dispose(bool disposing)

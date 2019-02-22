@@ -154,7 +154,7 @@ namespace TrOCR
 					if (IniHelp.GetValue("工具栏", "分栏") == "True")
 					{
 						minico.Visible = true;
-						thread = new Thread(new ThreadStart(ShowLoading));
+						thread = new Thread(ShowLoading);
 						thread.Start();
 						ts = new TimeSpan(DateTime.Now.Ticks);
 						var image = image_screen;
@@ -169,14 +169,14 @@ namespace TrOCR
 					else
 					{
 						minico.Visible = true;
-						thread = new Thread(new ThreadStart(ShowLoading));
+						thread = new Thread(ShowLoading);
 						thread.Start();
 						ts = new TimeSpan(DateTime.Now.Ticks);
 						var messageload = new Messageload();
 						messageload.ShowDialog();
 						if (messageload.DialogResult == DialogResult.OK)
 						{
-							esc_thread = new Thread(new ThreadStart(Main_OCR_Thread));
+							esc_thread = new Thread(Main_OCR_Thread);
 							esc_thread.Start();
 						}
 					}
@@ -496,8 +496,8 @@ namespace TrOCR
 
 		private Bitmap GetPlus(Bitmap bm, double times)
 		{
-			var width = (int)((double)bm.Width / times);
-			var height = (int)((double)bm.Height / times);
+			var width = (int)(bm.Width / times);
+			var height = (int)(bm.Height / times);
 			var bitmap = new Bitmap(width, height);
 			if (times >= 1.0 && times <= 1.1)
 			{
@@ -1027,8 +1027,8 @@ namespace TrOCR
 				if (IniHelp.GetValue("更新", "更新间隔") == "True")
 				{
 					Program.checkTimer.Enabled = true;
-					Program.checkTimer.Interval = 3600000.0 * (double)Convert.ToInt32(IniHelp.GetValue("更新", "间隔时间"));
-					Program.checkTimer.Elapsed += Program.checkTimer_Elapsed;
+					Program.checkTimer.Interval = 3600000.0 * Convert.ToInt32(IniHelp.GetValue("更新", "间隔时间"));
+					Program.checkTimer.Elapsed += Program.CheckTimer_Elapsed;
 					Program.checkTimer.Start();
 				}
 			}
@@ -1036,7 +1036,7 @@ namespace TrOCR
 
 		public void tray_limit_Click(object sender, EventArgs e)
 		{
-			new Thread(new ThreadStart(about)).Start();
+			new Thread(about).Start();
 		}
 
 		public static bool IsNum(string str)
@@ -1107,7 +1107,7 @@ namespace TrOCR
 			MinimumSize = new Size((int)font_base.Width * 23 * 2, (int)font_base.Height * 24);
 			Size = new Size((int)font_base.Width * 23 * 2, (int)font_base.Height * 24);
 			CheckForIllegalCrossThreadCalls = false;
-			new Thread(new ThreadStart(trans_Calculate)).Start();
+			new Thread(trans_Calculate).Start();
 		}
 
 		private void Form_Resize(object sender, EventArgs e)
@@ -1289,14 +1289,14 @@ namespace TrOCR
 
 		public void TTS()
 		{
-			new Thread(new ThreadStart(TTS_thread)).Start();
+			new Thread(TTS_thread).Start();
 		}
 
 		public void about()
 		{
 			WindowState = FormWindowState.Minimized;
 			CheckForIllegalCrossThreadCalls = false;
-			new Thread(new ThreadStart(ThreadFun)).Start();
+			new Thread(ThreadFun).Start();
 		}
 
 		private void ThreadFun()
@@ -1549,43 +1549,7 @@ namespace TrOCR
 
 		public void tray_update_Click(object sender, EventArgs e)
 		{
-			if (Program.version_url == "0")
-			{
-				Program.Get_update_x("http://cc.ys168.com/f_ht/ajcx/ml.aspx?cz=ml_dq&_dlmc=tianruoyouxin&_dlmm=");
-				if (Program.version_url == "0")
-				{
-					MessageBox.Show("更新程序失效，请到百度网盘下载！", "提醒");
-					Process.Start("https://pan.baidu.com/s/1P2xb9kBwX1gj8j2_APivZw");
-					return;
-				}
-			}
-			if (Program.version_url != "0")
-			{
-				if (new Version(Program.version_url) > new Version(StaticValue.current_v))
-				{
-					Process.Start(Path.GetDirectoryName(Application.ExecutablePath) + "\\Data\\update.exe", " " + Program.download_url + " " + Path.GetFileName(Application.ExecutablePath));
-					minico.Dispose();
-					Environment.Exit(0);
-					return;
-				}
-				Process.Start(Path.GetDirectoryName(Application.ExecutablePath) + "\\Data\\update.exe", " 最新版本");
-			}
-		}
-
-		public string Get_Betweenstr(string forward, string after, string input)
-		{
-			return new Regex(string.Concat("(?<=(", forward, "))[.\\s\\S]*?(?=(", after, "))"), RegexOptions.Multiline | RegexOptions.Singleline).Match(input).Value;
-		}
-
-		public void check_update()
-		{
-			Program.Get_version("http://cc.ys168.com/f_ht/ajcx/ml.aspx?cz=ml_dq&_dlmc=tianruoyouxin&_dlmm=");
-			var tipTitle = "提醒";
-			var tipText = "发现新版本请点击托盘更新！";
-			if (new Version(Program.version_url) > new Version(StaticValue.current_v))
-			{
-				minico.ShowBalloonTip(300, tipTitle, tipText, ToolTipIcon.Info);
-			}
+			Program.CheckUpdate();
 		}
 
 		public static bool contain_jap(string str)
@@ -2092,7 +2056,7 @@ namespace TrOCR
 						else
 						{
 							minico.Visible = true;
-							thread = new Thread(new ThreadStart(ShowLoading));
+							thread = new Thread(ShowLoading);
 							thread.Start();
 							ts = new TimeSpan(DateTime.Now.Ticks);
 							getSubPics_ocr(image_screen, buildRects);
@@ -2222,7 +2186,7 @@ namespace TrOCR
 							if (IniHelp.GetValue("工具栏", "分栏") == "True")
 							{
 								minico.Visible = true;
-								thread = new Thread(new ThreadStart(ShowLoading));
+								thread = new Thread(ShowLoading);
 								thread.Start();
 								ts = new TimeSpan(DateTime.Now.Ticks);
 								var image = image_screen;
@@ -2237,14 +2201,14 @@ namespace TrOCR
 							else
 							{
 								minico.Visible = true;
-								thread = new Thread(new ThreadStart(ShowLoading));
+								thread = new Thread(ShowLoading);
 								thread.Start();
 								ts = new TimeSpan(DateTime.Now.Ticks);
 								var messageload = new Messageload();
 								messageload.ShowDialog();
 								if (messageload.DialogResult == DialogResult.OK)
 								{
-									esc_thread = new Thread(new ThreadStart(Main_OCR_Thread));
+									esc_thread = new Thread(Main_OCR_Thread);
 									esc_thread.Start();
 								}
 							}
@@ -2646,7 +2610,7 @@ namespace TrOCR
 			httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)";
 			httpWebRequest.ServicePoint.Expect100Continue = false;
 			httpWebRequest.ProtocolVersion = new Version(1, 1);
-			httpWebRequest.ContentLength = (long)content.Length;
+			httpWebRequest.ContentLength = content.Length;
 			var requestStream = httpWebRequest.GetRequestStream();
 			requestStream.Write(content, 0, content.Length);
 			requestStream.Close();
@@ -3287,7 +3251,7 @@ namespace TrOCR
 						{
 							new ManualResetEvent(false)
 						};
-						ThreadPool.QueueUserWorkItem(new WaitCallback(DoWork), array[0]);
+						ThreadPool.QueueUserWorkItem(DoWork, array[0]);
 					}
 				}
 			}
@@ -3500,15 +3464,15 @@ namespace TrOCR
 		{
 			var array = new ManualResetEvent[5];
 			array[0] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(baidu_image_a), array[0]);
+			ThreadPool.QueueUserWorkItem(baidu_image_a, array[0]);
 			array[1] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(baidu_image_b), array[1]);
+			ThreadPool.QueueUserWorkItem(baidu_image_b, array[1]);
 			array[2] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(baidu_image_c), array[2]);
+			ThreadPool.QueueUserWorkItem(baidu_image_c, array[2]);
 			array[3] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(baidu_image_d), array[3]);
+			ThreadPool.QueueUserWorkItem(baidu_image_d, array[3]);
 			array[4] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(baidu_image_e), array[4]);
+			ThreadPool.QueueUserWorkItem(baidu_image_e, array[4]);
 			WaitHandle[] waitHandles = array;
 			WaitHandle.WaitAll(waitHandles);
 			shupai_Right_txt = string.Concat(OCR_baidu_a, OCR_baidu_b, OCR_baidu_c, OCR_baidu_d, OCR_baidu_e).Replace("\r\n\r\n", "");
@@ -4043,13 +4007,13 @@ namespace TrOCR
 			var result = imageInput;
 			for (var i = -20; i < 20; i++)
 			{
-				var image = imageInput.Rotate((double)i, new Gray(1.0));
+				var image = imageInput.Rotate(i, new Gray(1.0));
 				for (var j = 0; j < height; j++)
 				{
 					var num2 = 0;
 					for (var k = 0; k < width; k++)
 					{
-						num2 += (int)image.Data[j, k, 0];
+						num2 += image.Data[j, k, 0];
 					}
 					array[j] = num2;
 				}
@@ -4127,17 +4091,17 @@ namespace TrOCR
 		{
 			var num = (double)bitmap1.Width;
 			var num2 = (double)bitmap1.Height;
-			if (num < (double)destHeight)
+			if (num < destHeight)
 			{
-				while (num < (double)destHeight)
+				while (num < destHeight)
 				{
 					num2 *= 1.1;
 					num *= 1.1;
 				}
 			}
-			if (num2 < (double)destWidth)
+			if (num2 < destWidth)
 			{
-				while (num2 < (double)destWidth)
+				while (num2 < destWidth)
 				{
 					num2 *= 1.1;
 					num *= 1.1;
@@ -5031,7 +4995,7 @@ namespace TrOCR
 				httpWebRequest.Headers.Add("Accept-Language: zh-CN,zh;q=0.9");
 				httpWebRequest.Headers.Add("cookie:" + GetCookies("http://fanyi.qq.com"));
 				var bytes = Encoding.UTF8.GetBytes(content);
-				httpWebRequest.ContentLength = (long)bytes.Length;
+				httpWebRequest.ContentLength = bytes.Length;
 				var requestStream = httpWebRequest.GetRequestStream();
 				requestStream.Write(bytes, 0, bytes.Length);
 				requestStream.Close();
@@ -5186,7 +5150,7 @@ namespace TrOCR
 				var array = new byte[2048];
 				for (var i = responseStream.Read(array, 0, array.Length); i > 0; i = responseStream.Read(array, 0, array.Length))
 				{
-					num = (long)i + num;
+					num = i + num;
 					stream.Write(array, 0, i);
 				}
 				stream.Close();
@@ -5569,7 +5533,7 @@ namespace TrOCR
 				for (var j = 0; j < mybm.Height; j++)
 				{
 					var pixel = mybm.GetPixel(i, j);
-					var num = (int)((pixel.R + pixel.G + pixel.B) / 3);
+					var num = (pixel.R + pixel.G + pixel.B) / 3;
 					bitmap.SetPixel(i, j, Color.FromArgb(num, num, num));
 				}
 			}

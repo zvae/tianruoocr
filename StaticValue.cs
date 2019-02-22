@@ -23,8 +23,8 @@ namespace TrOCR
 			set_记录 = false;
 			set_截图 = false;
 			Dpifactor = 1f;
-			current_v = "4.49";
-			v_date = "2019-01-13";
+			current_v = "5.0.0";
+			v_date = "2019-02-22";
 		}
 
 		public static string v_Split;
