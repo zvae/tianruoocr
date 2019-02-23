@@ -15,7 +15,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Windows.Forms;
-using CsharpHttpHelper;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -24,6 +23,7 @@ using MSScriptControl;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ShareX.ScreenCaptureLib;
+using TrOCR.Helper;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
@@ -1475,17 +1475,17 @@ namespace TrOCR
 						text4 = "ko";
 					}
 				}
-				var httpHelper = new HttpHelper();
-				var item = new HttpItem
-				{
-					URL = "https://translate.google.cn/translate_a/single",
-					Method = "POST",
-					ContentType = "application/x-www-form-urlencoded; charset=UTF-8",
-					Postdata = string.Concat("client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=", HttpUtility.UrlEncode(text).Replace("+", "%20")),
-					UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
-					Accept = "*/*"
-				};
-				var jarray = (JArray)JsonConvert.DeserializeObject(httpHelper.GetHtml(item).Html);
+
+                //string.Concat("client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=", HttpUtility.UrlEncode(text).Replace("+", "%20"))
+                var data = new Dictionary<string, string>();
+                data.Add("client", "gtx");
+                data.Add("sl", text3);
+                data.Add("tl", text4);
+                data.Add("dt", "t");
+                data.Add("q", text);
+                var html = CommonHelper.PostData("https://translate.google.cn/translate_a/single", data);
+
+				var jarray = (JArray)JsonConvert.DeserializeObject(html);
 				var count = ((JArray)jarray[0]).Count;
 				for (var i = 0; i < count; i++)
 				{
@@ -4946,16 +4946,10 @@ namespace TrOCR
 						text3 = "kor";
 					}
 				}
-				var httpHelper = new HttpHelper();
-				var item = new HttpItem
-				{
-					URL = "https://fanyi.baidu.com/basetrans",
-					Method = "post",
-					ContentType = "application/x-www-form-urlencoded; charset=UTF-8",
-					Postdata = string.Concat("query=", HttpUtility.UrlEncode(Text.Trim()).Replace("+", "%20"), "&from=", text2, "&to=", text3),
-					UserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Mobile Safari/537.36"
-				};
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(httpHelper.GetHtml(item).Html))["trans"].ToString());
+                var html = CommonHelper.PostData("https://fanyi.baidu.com/basetrans",
+                    string.Concat("query=", HttpUtility.UrlEncode(Text.Trim()).Replace("+", "%20"), "&from=", text2,
+                        "&to=", text3));
+				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(html))["trans"].ToString());
 				for (var i = 0; i < jarray.Count; i++)
 				{
 					var jobject = JObject.Parse(jarray[i].ToString());
@@ -5307,7 +5301,7 @@ namespace TrOCR
 					text += "\\row\\intbl";
 				}
 			}
-			RichBoxBody.rtf = str + str2 + text + str3;
+			RichBoxBody.Rtx1Rtf = str + str2 + text + str3;
 		}
 
 		public void Main_OCR_Thread_table()
@@ -5334,7 +5328,7 @@ namespace TrOCR
 			if (interface_flag == "百度表格")
 			{
 				var dataObject = new DataObject();
-				dataObject.SetData(DataFormats.Rtf, RichBoxBody.rtf);
+				dataObject.SetData(DataFormats.Rtf, RichBoxBody.Rtx1Rtf);
 				dataObject.SetData(DataFormats.UnicodeText, RichBoxBody.Text);
 				RichBoxBody.Text = "[消息]：表格已复制到粘贴板！";
 				Clipboard.SetDataObject(dataObject);
@@ -5397,7 +5391,7 @@ namespace TrOCR
 					text += "\\row\\intbl";
 				}
 			}
-			RichBoxBody.rtf = str + str2 + text + str3;
+			RichBoxBody.Rtx1Rtf = str + str2 + text + str3;
 		}
 
 		public string Translate_Googlekey(string text)

@@ -1201,7 +1201,7 @@ namespace TrOCR
         }
 
 
-        public string rtf
+        public string Rtx1Rtf
         {
             get
             {

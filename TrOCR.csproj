@@ -56,9 +56,6 @@
     <Reference Include="Emgu.CV.World">
       <HintPath>DLL\Emgu\CV\Emgu.CV.World.dll</HintPath>
     </Reference>
-    <Reference Include="HttpHelper">
-      <HintPath>DLL\HttpHelper.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.mshtml">
       <HintPath>D:\C#学习\百度ocr\Microsoft.mshtml.dll</HintPath>
     </Reference>
@@ -75,6 +72,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http">
+      <HintPath>DLL\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
@@ -139,10 +139,11 @@
     <Compile Include="FmSetting.Designer.cs">
       <DependentUpon>FmSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helper\CommonHelper.cs" />
     <Compile Include="Helper\HelpRepaint.cs" />
     <Compile Include="Helper\HelpWin32.cs" />
     <Compile Include="Helper\IniHelp.cs" />
-    <Compile Include="Helper\WebHelper.cs" />
+    <Compile Include="Helper\TranslateHelper.cs" />
     <Compile Include="Messageload.cs">
       <SubType>Form</SubType>
     </Compile>
