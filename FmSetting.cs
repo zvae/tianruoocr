@@ -341,12 +341,6 @@ namespace TrOCR
 			readIniFile();
 			chbox_代理服务器.CheckedChanged += chbox_代理服务器_CheckedChanged;
 			更新Button_check.Click += 更新Button_check_Click;
-			label_更新日期.Text = "更新时间：" + StaticValue.v_date;
-			label_版本号.Text = "当前版本：" + StaticValue.current_v;
-			txt_更新说明.Text = (string)componentResourceManager.GetObject("更新说明");
-			txt_更新说明.ReadOnly = true;
-			txt_更新说明.WordWrap = true;
-			txt_更新说明.ScrollBars = ScrollBars.Vertical;
 		}
 
 		private void 百度申请_Click(object sender, EventArgs e)
@@ -405,21 +399,6 @@ namespace TrOCR
 			if (tab_标签.SelectedTab == Page_更新)
 			{
 				tab_标签.Height = (int)(135.0 * Program.factor);
-				Height = tab_标签.Height + 50;
-			}
-			if (tab_标签.SelectedTab == Page_关于)
-			{
-				tab_标签.Height = (int)(340.0 * Program.factor);
-				Height = tab_标签.Height + 50;
-			}
-			if (tab_标签.SelectedTab == Page_赞助)
-			{
-				tab_标签.Height = (int)(225.0 * Program.factor);
-				Height = tab_标签.Height + 50;
-			}
-			if (tab_标签.SelectedTab == Page_反馈)
-			{
-				tab_标签.Height = (int)(200.0 * Program.factor);
 				Height = tab_标签.Height + 50;
 			}
 		}
