@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using mshtml;
 
-namespace TrOCR
+namespace TrOCR.Helper
 {
 
 	internal class WebBrowserHelper

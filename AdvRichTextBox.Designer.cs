@@ -22,6 +22,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TrOCR.Helper;
 
 namespace TrOCR
 {
@@ -234,7 +235,7 @@ namespace TrOCR
             ((ToolStripDropDownMenu)this.languagle.DropDown).ShowImageMargin = false;
             this.languagle.DropDown.BackColor = Color.White;
             this.languagle.DropDown.AutoSize = false;
-            if (Program.factor == 1f)
+            if (Program.Factor == 1f)
             {
                 this.languagle.DropDown.AutoSize = false;
             }
@@ -262,7 +263,7 @@ namespace TrOCR
             ((ToolStripDropDownMenu)this.Fontstyle.DropDown).ShowImageMargin = false;
             this.Fontstyle.DropDown.BackColor = Color.White;
             this.Fontstyle.DropDown.AutoSize = false;
-            if (Program.factor == 1f)
+            if (Program.Factor == 1f)
             {
                 this.Fontstyle.DropDown.AutoSize = false;
             }
@@ -313,14 +314,14 @@ namespace TrOCR
             this.richTextBox1.DragDrop += this.Form1_DragDrop;
             this.richTextBox1.SelectionAlignment = HelpRepaint.TextAlign.Justify;
             this.richTextBox1.SetLine = "行高";
-            this.richTextBox1.Font = new Font("Times New Roman", 16f * Program.factor, GraphicsUnit.Pixel);
+            this.richTextBox1.Font = new Font("Times New Roman", 16f * Program.Factor, GraphicsUnit.Pixel);
             this.richTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
             this.richTextBox1.TextChanged += this.richeditbox_TextChanged;
             this.richTextBox1.Cursor = Cursors.IBeam;
             this.indent_two(1);
-            this.mode.Font = new Font("微软雅黑", 9f * Program.factor, FontStyle.Regular);
-            this.languagle.Font = new Font("微软雅黑", 9f * Program.factor, FontStyle.Regular);
-            this.Fontstyle.Font = new Font("微软雅黑", 9f * Program.factor, FontStyle.Regular);
+            this.mode.Font = new Font("微软雅黑", 9f * Program.Factor, FontStyle.Regular);
+            this.languagle.Font = new Font("微软雅黑", 9f * Program.Factor, FontStyle.Regular);
+            this.Fontstyle.Font = new Font("微软雅黑", 9f * Program.Factor, FontStyle.Regular);
             base.AutoScaleMode = AutoScaleMode.None;
             base.Controls.Add(this.richTextBox1);
             base.Controls.Add(this.toolStripToolBar);
@@ -338,7 +339,7 @@ namespace TrOCR
             this.toolspace = true;
             this.toolFull = true;
             this.c = new AdvRichTextBox.cmd(50);
-            this.Font = new Font(this.Font.Name, 9f / StaticValue.Dpifactor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
+            this.Font = new Font(this.Font.Name, 9f / StaticValue.DpiFactor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
             this.InitializeComponent();
             this.readIniFile();
             this.richTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
@@ -352,9 +353,9 @@ namespace TrOCR
             }
             set
             {
-                this.richTextBox1.Font = new Font("Times New Roman", 16f * Program.factor, GraphicsUnit.Pixel);
+                this.richTextBox1.Font = new Font("Times New Roman", 16f * Program.Factor, GraphicsUnit.Pixel);
                 this.richTextBox1.Text = value;
-                this.richTextBox1.Font = new Font("Times New Roman", 16f * Program.factor, GraphicsUnit.Pixel);
+                this.richTextBox1.Font = new Font("Times New Roman", 16f * Program.Factor, GraphicsUnit.Pixel);
             }
         }
 
@@ -371,7 +372,7 @@ namespace TrOCR
                 Font selectionFont3 = new Font(selectionFont, selectionFont.Style | FontStyle.Bold);
                 this.richTextBox1.SelectionFont = selectionFont3;
             }
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonParagraph_Click(object sender, EventArgs e)
@@ -380,7 +381,7 @@ namespace TrOCR
 
         public void toolStripButtonFind_Click(object sender, EventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             ReplaceForm replaceForm = new ReplaceForm(this);
             if (this.txt_flag == "天若幽心")
             {
@@ -398,7 +399,7 @@ namespace TrOCR
         public void toolStripButtonColor_Click(object sender, EventArgs e)
         {
             this.richTextBox1.SelectionColor = this.toolStripButtonColor.SelectedColor;
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonFence_Click(object sender, EventArgs e)
@@ -409,7 +410,7 @@ namespace TrOCR
                 Process.Start("https://www.lanzous.com/i1ab3vg");
                 return;
             }
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             if (File.Exists("Data\\分栏预览图.jpg"))
             {
                 Process process = new Process();
@@ -424,19 +425,19 @@ namespace TrOCR
         {
             this.richTextBox1.Text = StaticValue.v_Split;
             Application.DoEvents();
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtoncheck_Click(object sender, EventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             new Thread(new ThreadStart(this.错别字检查API)).Start();
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonIndent_Click(object sender, EventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonLeft_Click(object sender, EventArgs e)
@@ -444,7 +445,7 @@ namespace TrOCR
             this.richTextBox1.SelectAll();
             this.richTextBox1.SelectionAlignment = HelpRepaint.TextAlign.Left;
             this.richTextBox1.Select(0, 0);
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonMerge_Click(object sender, EventArgs e)
@@ -489,14 +490,14 @@ namespace TrOCR
                 this.richTextBox1.Text = text2;
             }
             Application.DoEvents();
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonVoice_Click(object sender, EventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
-            HelpWin32.SendMessage(StaticValue.mainhandle, 786, 518);
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
+            HelpWin32.SendMessage(StaticValue.mainHandle, 786, 518);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonFull_Click(object sender, EventArgs e)
@@ -504,7 +505,7 @@ namespace TrOCR
             this.richTextBox1.SelectAll();
             this.richTextBox1.SelectionAlignment = HelpRepaint.TextAlign.Justify;
             this.richTextBox1.Select(0, 0);
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonspace_Click(object sender, EventArgs e)
@@ -523,7 +524,7 @@ namespace TrOCR
                 this.richTextBox1.Select(0, 0);
                 this.toolspace = true;
             }
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripButtonSend_Click(object sender, EventArgs e)
@@ -534,9 +535,7 @@ namespace TrOCR
             HelpWin32.keybd_event(Keys.V, 0, 0u, 0u);
             HelpWin32.keybd_event(Keys.V, 0, 2u, 0u);
             HelpWin32.keybd_event(Keys.ControlKey, 0, 2u, 0u);
-            FmFlags fmflags = new FmFlags();
-            fmflags.Show();
-            fmflags.DrawStr("已复制");
+            CommonHelper.ShowHelpMsg("已复制");
         }
 
 
@@ -600,14 +599,14 @@ namespace TrOCR
 
         public void toolStripButtonclose_Click(object sender, EventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             HelpWin32.SendMessage(HelpWin32.GetForegroundWindow(), 786, 511);
         }
 
         public void toolStripButtonTrans_Click(object sender, EventArgs e)
         {
-            HelpWin32.SendMessage(StaticValue.mainhandle, 786, 512);
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SendMessage(StaticValue.mainHandle, 786, 512);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         public void toolStripToolBar_Click(object sender, EventArgs e)
@@ -619,10 +618,10 @@ namespace TrOCR
             this.zh_en.ForeColor = Color.Red;
             this.zh_jp.ForeColor = Color.Black;
             this.zh_ko.ForeColor = Color.Black;
-            StaticValue.zh_en = true;
-            StaticValue.zh_jp = false;
-            StaticValue.zh_ko = false;
-            HelpWin32.SendMessage(StaticValue.mainhandle, 786, 512);
+            StaticValue.ZH2EN = true;
+            StaticValue.ZH2JP = false;
+            StaticValue.ZH2KO = false;
+            HelpWin32.SendMessage(StaticValue.mainHandle, 786, 512);
         }
 
         private void zh_jp_Click(object sender, EventArgs e)
@@ -630,10 +629,10 @@ namespace TrOCR
             this.zh_en.ForeColor = Color.Black;
             this.zh_jp.ForeColor = Color.Red;
             this.zh_ko.ForeColor = Color.Black;
-            StaticValue.zh_en = false;
-            StaticValue.zh_jp = true;
-            StaticValue.zh_ko = false;
-            HelpWin32.SendMessage(StaticValue.mainhandle, 786, 512);
+            StaticValue.ZH2EN = false;
+            StaticValue.ZH2JP = true;
+            StaticValue.ZH2KO = false;
+            HelpWin32.SendMessage(StaticValue.mainHandle, 786, 512);
         }
 
         private void zh_ko_Click(object sender, EventArgs e)
@@ -641,10 +640,10 @@ namespace TrOCR
             this.zh_en.ForeColor = Color.Black;
             this.zh_jp.ForeColor = Color.Black;
             this.zh_ko.ForeColor = Color.Red;
-            StaticValue.zh_en = false;
-            StaticValue.zh_jp = false;
-            StaticValue.zh_ko = true;
-            HelpWin32.SendMessage(StaticValue.mainhandle, 786, 512);
+            StaticValue.ZH2EN = false;
+            StaticValue.ZH2JP = false;
+            StaticValue.ZH2KO = true;
+            HelpWin32.SendMessage(StaticValue.mainHandle, 786, 512);
         }
 
         public void font_宋体c(object sender, EventArgs e)
@@ -656,7 +655,7 @@ namespace TrOCR
             this.font_新罗马.ForeColor = Color.Black;
             string text = this.richTextBox1.Text;
             this.richTextBox1.Text = "";
-            Font font = new Font("宋体", 16f * Program.factor, GraphicsUnit.Pixel);
+            Font font = new Font("宋体", 16f * Program.Factor, GraphicsUnit.Pixel);
             this.richTextBox1.Font = font;
             this.richTextBox1.Text = text;
         }
@@ -670,7 +669,7 @@ namespace TrOCR
             this.font_新罗马.ForeColor = Color.Black;
             string text = this.richTextBox1.Text;
             this.richTextBox1.Text = "";
-            Font font = new Font("黑体", 16f * Program.factor, GraphicsUnit.Pixel);
+            Font font = new Font("黑体", 16f * Program.Factor, GraphicsUnit.Pixel);
             this.richTextBox1.Font = font;
             this.richTextBox1.Text = text;
         }
@@ -684,7 +683,7 @@ namespace TrOCR
             this.font_新罗马.ForeColor = Color.Black;
             string text = this.richTextBox1.Text;
             this.richTextBox1.Text = "";
-            Font font = new Font("STKaiti", 16f * Program.factor, GraphicsUnit.Pixel);
+            Font font = new Font("STKaiti", 16f * Program.Factor, GraphicsUnit.Pixel);
             this.richTextBox1.Font = font;
             this.richTextBox1.Text = text;
         }
@@ -698,7 +697,7 @@ namespace TrOCR
             this.font_新罗马.ForeColor = Color.Black;
             string text = this.richTextBox1.Text;
             this.richTextBox1.Text = "";
-            Font font = new Font("微软雅黑", 16f * Program.factor, GraphicsUnit.Pixel);
+            Font font = new Font("微软雅黑", 16f * Program.Factor, GraphicsUnit.Pixel);
             this.richTextBox1.Font = font;
             this.richTextBox1.Text = text;
         }
@@ -712,14 +711,14 @@ namespace TrOCR
             this.font_新罗马.ForeColor = Color.Red;
             string text = this.richTextBox1.Text;
             this.richTextBox1.Text = "";
-            Font font = new Font("Times New Roman", 16f * Program.factor, GraphicsUnit.Pixel);
+            Font font = new Font("Times New Roman", 16f * Program.Factor, GraphicsUnit.Pixel);
             this.richTextBox1.Font = font;
             this.richTextBox1.Text = text;
         }
 
         public void indent_two(int fla)
         {
-            Font font = new Font(this.Font.Name, 9f * Program.factor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
+            Font font = new Font(this.Font.Name, 9f * Program.Factor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
             Graphics graphics = base.CreateGraphics();
             SizeF sizeF = graphics.MeasureString("中", font);
             this.richTextBox1.SelectionIndent = (int)sizeF.Width * 2 * fla;
@@ -747,7 +746,7 @@ namespace TrOCR
 
         private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             if (e.Control && e.KeyCode == Keys.V)
             {
                 e.SuppressKeyPress = true;
@@ -785,7 +784,7 @@ namespace TrOCR
             set
             {
                 new Thread(new ThreadStart(this.错别字检查API)).Start();
-                HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+                HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             }
         }
 
@@ -849,15 +848,15 @@ namespace TrOCR
         {
             if (e.Button == MouseButtons.Left)
             {
-                HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+                HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
             }
         }
 
         public void toolStripButtonNote_Click(object sender, EventArgs e)
         {
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
-            HelpWin32.SendMessage(StaticValue.mainhandle, 786, 520);
-            HelpWin32.SetForegroundWindow(StaticValue.mainhandle);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
+            HelpWin32.SendMessage(StaticValue.mainHandle, 786, 520);
+            HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
         }
 
         private void Form1_MouseEnter(object sender, EventArgs e)
@@ -879,7 +878,7 @@ namespace TrOCR
             try
             {
                 StaticValue.image_OCR = Image.FromFile((e.Data.GetData(DataFormats.FileDrop, false) as string[])[0]);
-                HelpWin32.SendMessage(StaticValue.mainhandle, 786, 580);
+                HelpWin32.SendMessage(StaticValue.mainHandle, 786, 580);
             }
             catch (Exception)
             {
@@ -921,8 +920,8 @@ namespace TrOCR
                     this.mergecolor = false;
                     StaticValue.set_拆分 = true;
                     StaticValue.set_合并 = false;
-                    IniHelp.SetValue("工具栏", "拆分", "True");
-                    IniHelp.SetValue("工具栏", "合并", "False");
+                    IniHelper.SetValue("工具栏", "拆分", "True");
+                    IniHelper.SetValue("工具栏", "合并", "False");
                     return;
                 }
                 if (this.splitcolor)
@@ -933,8 +932,8 @@ namespace TrOCR
                     this.mergecolor = false;
                     StaticValue.set_拆分 = false;
                     StaticValue.set_合并 = false;
-                    IniHelp.SetValue("工具栏", "合并", "False");
-                    IniHelp.SetValue("工具栏", "拆分", "False");
+                    IniHelper.SetValue("工具栏", "合并", "False");
+                    IniHelper.SetValue("工具栏", "拆分", "False");
                 }
             }
         }
@@ -952,8 +951,8 @@ namespace TrOCR
                     this.mergecolor = true;
                     StaticValue.set_拆分 = false;
                     StaticValue.set_合并 = true;
-                    IniHelp.SetValue("工具栏", "合并", "True");
-                    IniHelp.SetValue("工具栏", "拆分", "False");
+                    IniHelper.SetValue("工具栏", "合并", "True");
+                    IniHelper.SetValue("工具栏", "拆分", "False");
                     return;
                 }
                 if (this.mergecolor)
@@ -964,8 +963,8 @@ namespace TrOCR
                     this.mergecolor = false;
                     StaticValue.set_拆分 = false;
                     StaticValue.set_合并 = false;
-                    IniHelp.SetValue("工具栏", "合并", "False");
-                    IniHelp.SetValue("工具栏", "拆分", "False");
+                    IniHelper.SetValue("工具栏", "合并", "False");
+                    IniHelper.SetValue("工具栏", "拆分", "False");
                 }
             }
         }
@@ -980,24 +979,24 @@ namespace TrOCR
                     this.topmost.Image = (Image)componentResourceManager.GetObject("main.Image");
                     StaticValue.v_topmost = true;
                     this.topmost_flag = true;
-                    IniHelp.SetValue("工具栏", "顶置", "True");
-                    HelpWin32.SendMessage(StaticValue.mainhandle, 600, 725);
+                    IniHelper.SetValue("工具栏", "顶置", "True");
+                    HelpWin32.SendMessage(StaticValue.mainHandle, 600, 725);
                     return;
                 }
                 this.topmost.Image = (Image)componentResourceManager.GetObject("mode.Image");
                 StaticValue.v_topmost = false;
                 this.topmost_flag = false;
-                IniHelp.SetValue("工具栏", "顶置", "False");
-                HelpWin32.SendMessage(StaticValue.mainhandle, 600, 725);
+                IniHelper.SetValue("工具栏", "顶置", "False");
+                HelpWin32.SendMessage(StaticValue.mainHandle, 600, 725);
             }
         }
 
         public void readIniFile()
         {
-            string value = IniHelp.GetValue("工具栏", "顶置");
-            if (IniHelp.GetValue("工具栏", "顶置") == "发生错误")
+            string value = IniHelper.GetValue("工具栏", "顶置");
+            if (IniHelper.GetValue("工具栏", "顶置") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "顶置", "False");
+                IniHelper.SetValue("工具栏", "顶置", "False");
             }
             try
             {
@@ -1005,7 +1004,7 @@ namespace TrOCR
             }
             catch
             {
-                IniHelp.SetValue("工具栏", "顶置", "True");
+                IniHelper.SetValue("工具栏", "顶置", "True");
                 this.topmost_flag = true;
             }
             ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof(AdvRichTextBox));
@@ -1019,36 +1018,36 @@ namespace TrOCR
                 this.topmost.Image = (Image)componentResourceManager.GetObject("mode.Image");
                 StaticValue.v_topmost = false;
             }
-            if (IniHelp.GetValue("工具栏", "合并") == "发生错误")
+            if (IniHelper.GetValue("工具栏", "合并") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "合并", "False");
+                IniHelper.SetValue("工具栏", "合并", "False");
             }
-            this.mergecolor = bool.Parse(IniHelp.GetValue("工具栏", "合并"));
-            if (IniHelp.GetValue("工具栏", "拆分") == "发生错误")
+            this.mergecolor = bool.Parse(IniHelper.GetValue("工具栏", "合并"));
+            if (IniHelper.GetValue("工具栏", "拆分") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "拆分", "False");
+                IniHelper.SetValue("工具栏", "拆分", "False");
             }
-            this.splitcolor = bool.Parse(IniHelp.GetValue("工具栏", "拆分"));
-            if (IniHelp.GetValue("工具栏", "检查") == "发生错误")
+            this.splitcolor = bool.Parse(IniHelper.GetValue("工具栏", "拆分"));
+            if (IniHelper.GetValue("工具栏", "检查") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "检查", "False");
+                IniHelper.SetValue("工具栏", "检查", "False");
             }
-            this.checkcolor = bool.Parse(IniHelp.GetValue("工具栏", "检查"));
-            if (IniHelp.GetValue("工具栏", "翻译") == "发生错误")
+            this.checkcolor = bool.Parse(IniHelper.GetValue("工具栏", "检查"));
+            if (IniHelper.GetValue("工具栏", "翻译") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "翻译", "False");
+                IniHelper.SetValue("工具栏", "翻译", "False");
             }
-            this.transcolor = bool.Parse(IniHelp.GetValue("工具栏", "翻译"));
-            if (IniHelp.GetValue("工具栏", "分段") == "发生错误")
+            this.transcolor = bool.Parse(IniHelper.GetValue("工具栏", "翻译"));
+            if (IniHelper.GetValue("工具栏", "分段") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "分段", "False");
+                IniHelper.SetValue("工具栏", "分段", "False");
             }
-            this.Paragraphcolor = bool.Parse(IniHelp.GetValue("工具栏", "分段"));
-            if (IniHelp.GetValue("工具栏", "分栏") == "发生错误")
+            this.Paragraphcolor = bool.Parse(IniHelper.GetValue("工具栏", "分段"));
+            if (IniHelper.GetValue("工具栏", "分栏") == "发生错误")
             {
-                IniHelp.SetValue("工具栏", "分栏", "False");
+                IniHelper.SetValue("工具栏", "分栏", "False");
             }
-            this.Fencecolor = bool.Parse(IniHelp.GetValue("工具栏", "分栏"));
+            this.Fencecolor = bool.Parse(IniHelper.GetValue("工具栏", "分栏"));
             if (this.Fencecolor)
             {
                 this.toolStripButtonFence.Image = (Image)componentResourceManager.GetObject("toolStripButtonFence2.Image");
@@ -1099,7 +1098,7 @@ namespace TrOCR
 
         public void saveIniFile()
         {
-            IniHelp.SetValue("工具栏", "顶置", this.topmost_flag.ToString());
+            IniHelper.SetValue("工具栏", "顶置", this.topmost_flag.ToString());
         }
 
         public void toolStripButtoncheck_keydown(object sender, MouseEventArgs e)
@@ -1111,14 +1110,14 @@ namespace TrOCR
                 {
                     this.toolStripButtoncheck.Image = (Image)componentResourceManager.GetObject("toolStripButtoncheck2.Image");
                     this.checkcolor = true;
-                    IniHelp.SetValue("工具栏", "检查", "True");
+                    IniHelper.SetValue("工具栏", "检查", "True");
                     return;
                 }
                 if (this.checkcolor)
                 {
                     this.toolStripButtoncheck.Image = (Image)componentResourceManager.GetObject("toolStripButtoncheck.Image");
                     this.checkcolor = false;
-                    IniHelp.SetValue("工具栏", "检查", "False");
+                    IniHelper.SetValue("工具栏", "检查", "False");
                 }
             }
         }
@@ -1132,14 +1131,14 @@ namespace TrOCR
                 {
                     this.toolStripButtonTrans.Image = (Image)componentResourceManager.GetObject("toolStripButtonTrans2.Image");
                     this.transcolor = true;
-                    IniHelp.SetValue("工具栏", "翻译", "True");
+                    IniHelper.SetValue("工具栏", "翻译", "True");
                     return;
                 }
                 if (this.transcolor)
                 {
                     this.toolStripButtonTrans.Image = (Image)componentResourceManager.GetObject("toolStripButtonTrans.Image");
                     this.transcolor = false;
-                    IniHelp.SetValue("工具栏", "翻译", "False");
+                    IniHelper.SetValue("工具栏", "翻译", "False");
                 }
             }
         }
@@ -1153,14 +1152,14 @@ namespace TrOCR
                 {
                     this.toolStripButtonParagraph.Image = (Image)componentResourceManager.GetObject("toolStripButtonParagraph2.Image");
                     this.Paragraphcolor = true;
-                    IniHelp.SetValue("工具栏", "分段", "True");
+                    IniHelper.SetValue("工具栏", "分段", "True");
                     return;
                 }
                 if (this.Paragraphcolor)
                 {
                     this.toolStripButtonParagraph.Image = (Image)componentResourceManager.GetObject("toolStripButtonParagraph.Image");
                     this.Paragraphcolor = false;
-                    IniHelp.SetValue("工具栏", "分段", "False");
+                    IniHelper.SetValue("工具栏", "分段", "False");
                 }
             }
         }
@@ -1180,14 +1179,14 @@ namespace TrOCR
                 {
                     this.toolStripButtonFence.Image = (Image)componentResourceManager.GetObject("toolStripButtonFence2.Image");
                     this.Fencecolor = true;
-                    IniHelp.SetValue("工具栏", "分栏", "True");
+                    IniHelper.SetValue("工具栏", "分栏", "True");
                     return;
                 }
                 if (this.Fencecolor)
                 {
                     this.toolStripButtonFence.Image = (Image)componentResourceManager.GetObject("toolStripButtonFence.Image");
                     this.Fencecolor = false;
-                    IniHelp.SetValue("工具栏", "分栏", "False");
+                    IniHelper.SetValue("工具栏", "分栏", "False");
                 }
             }
         }

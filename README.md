@@ -18,5 +18,5 @@
 项目地址：https://github.com/AnyListen/tianruoocr_last
 
 ## 下载地址
-百度网盘：https://pan.baidu.com/s/17T1MR6R7EQ4zvgeokTMFeA
-Github：https://github.com/AnyListen/tianruoocr_last/releases
+- 百度网盘：https://pan.baidu.com/s/17T1MR6R7EQ4zvgeokTMFeA
+- Github：https://github.com/AnyListen/tianruoocr_last/releases

@@ -2,14 +2,15 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using TrOCR.Helper;
 
 namespace TrOCR
 {
 
-	public partial class Fmloading : Form
-	{
+	public partial class FmLoading
+    {
 
-		public Fmloading()
+		public FmLoading()
 		{
 			InitializeComponent();
 		}
@@ -58,15 +59,15 @@ namespace TrOCR
 				{
 					var point = new HelpWin32.Point(Left, Top);
 					var size = new HelpWin32.Size(bitmap.Width, bitmap.Height);
-					var blendfunction = default(HelpWin32.BLENDFUNCTION);
+					var blendFunction = default(HelpWin32.BLENDFUNCTION);
 					var point2 = new HelpWin32.Point(0, 0);
 					intPtr = bitmap.GetHbitmap(Color.FromArgb(0));
 					hObj = HelpWin32.SelectObject(intPtr2, intPtr);
-					blendfunction.BlendOp = 0;
-					blendfunction.SourceConstantAlpha = byte.MaxValue;
-					blendfunction.AlphaFormat = 1;
-					blendfunction.BlendFlags = 0;
-					HelpWin32.UpdateLayeredWindow(Handle, dc, ref point, ref size, intPtr2, ref point2, 0, ref blendfunction, 2);
+					blendFunction.BlendOp = 0;
+					blendFunction.SourceConstantAlpha = byte.MaxValue;
+					blendFunction.AlphaFormat = 1;
+					blendFunction.BlendFlags = 0;
+					HelpWin32.UpdateLayeredWindow(Handle, dc, ref point, ref size, intPtr2, ref point2, 0, ref blendFunction, 2);
 					return;
 				}
 				finally
@@ -142,7 +143,7 @@ namespace TrOCR
 				{
 					i_c = 0;
 				}
-				bgImg = (Image)new ComponentResourceManager(typeof(Fmloading)).GetObject(i_c + fla_2 + ".png");
+				bgImg = (Image)new ComponentResourceManager(typeof(FmLoading)).GetObject(i_c + fla_2 + ".png");
 				SetBits((Bitmap)bgImg);
 				i_c++;
 			}
@@ -157,7 +158,7 @@ namespace TrOCR
 			string a;
 			try
 			{
-				a = IniHelp.GetValue("配置", "窗体动画");
+				a = IniHelper.GetValue("配置", "窗体动画");
 			}
 			catch
 			{
@@ -203,17 +204,11 @@ namespace TrOCR
 		}
 
 
-		public string fml_close
+		public string FmlClose
 		{
-			get
-			{
-				return fm_close;
-			}
-			set
-			{
-				fm_close = value;
-			}
-		}
+			get => fm_close;
+            set => fm_close = value;
+        }
 
 		public int i_c;
 
@@ -224,8 +219,6 @@ namespace TrOCR
 		public int fla_1;
 
 		public string fla_2;
-
-		public string str;
 
 		public string fm_close;
 	}

@@ -6,7 +6,7 @@
 
 		protected override void Dispose(bool disposing)
 		{
-			global::TrOCR.HelpWin32.ChangeClipboardChain(base.Handle, this.nextClipboardViewer);
+			global::TrOCR.Helper.HelpWin32.ChangeClipboardChain(base.Handle, this.nextClipboardViewer);
 			if (disposing && this.components != null)
 			{
 				this.components.Dispose();
@@ -29,7 +29,7 @@
 			this.ali_table = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.ocr_table = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.menu = new global::System.Windows.Forms.ContextMenuStrip();
-			this.menu.Renderer = new global::TrOCR.HelpRepaint.MenuItemRendererT();
+			this.menu.Renderer = new global::TrOCR.Helper.HelpRepaint.MenuItemRendererT();
 			this.ch_en = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.jap = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.kor = new global::System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +73,7 @@
 			this.Split = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.Restore = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.menu_copy = new global::System.Windows.Forms.ContextMenuStrip();
-			this.menu_copy.Renderer = new global::TrOCR.HelpRepaint.MenuItemRendererT();
+			this.menu_copy.Renderer = new global::TrOCR.Helper.HelpRepaint.MenuItemRendererT();
 			this.PictureBox1 = new global::System.Windows.Forms.PictureBox();
 			this.RichBoxBody = new global::TrOCR.AdvRichTextBox();
 			this.RichBoxBody_T = new global::TrOCR.AdvRichTextBox();
@@ -128,7 +128,7 @@
 				this.trans_baidu,
 				this.trans_tencent
 			});
-			this.menu_copy.Font = new global::System.Drawing.Font("微软雅黑", 9f / global::TrOCR.StaticValue.Dpifactor, global::System.Drawing.FontStyle.Regular);
+			this.menu_copy.Font = new global::System.Drawing.Font("微软雅黑", 9f / global::TrOCR.Helper.StaticValue.DpiFactor, global::System.Drawing.FontStyle.Regular);
 			this.Main_copy.Text = "复制";
 			this.Main_copy.Click += new global::System.EventHandler(this.Main_copy_Click);
 			this.Main_paste.Text = "粘贴";
@@ -154,7 +154,7 @@
 				this.Main_jiekou,
 				this.Main_exit
 			});
-			this.menu.Font = new global::System.Drawing.Font("微软雅黑", 9f / global::TrOCR.StaticValue.Dpifactor, global::System.Drawing.FontStyle.Regular);
+			this.menu.Font = new global::System.Drawing.Font("微软雅黑", 9f / global::TrOCR.Helper.StaticValue.DpiFactor, global::System.Drawing.FontStyle.Regular);
 			this.sougou.Text = "搜狗√";
 			this.sougou.Click += new global::System.EventHandler(this.OCR_sougou_Click);
 			this.Mathfuntion.Text = "公式";
@@ -216,7 +216,7 @@
 				this.ocr_table,
 				this.shupai
 			});
-			if (global::TrOCR.IniHelp.GetValue("配置", "接口") == "百度")
+			if (global::TrOCR.Helper.IniHelper.GetValue("配置", "接口") == "百度")
 			{
 				this.ch_en.Text = "中英√";
 			}
@@ -262,7 +262,7 @@
 			base.Resize += new global::System.EventHandler(this.Form_Resize);
 			base.Name = "Form1";
 			this.Text = "耗时：";
-			if (global::TrOCR.IniHelp.GetValue("工具栏", "顶置") == "True")
+			if (global::TrOCR.Helper.IniHelper.GetValue("工具栏", "顶置") == "True")
 			{
 				base.TopMost = true;
 			}

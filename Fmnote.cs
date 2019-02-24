@@ -2,14 +2,15 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using TrOCR.Helper;
 
 namespace TrOCR
 {
 
-	public partial class Fmnote : Form
-	{
+	public partial class FmNote
+    {
 
-		public Fmnote()
+		public FmNote()
 		{
 			InitializeComponent();
 			Focus();
@@ -23,12 +24,12 @@ namespace TrOCR
 			var componentResourceManager = new ComponentResourceManager(typeof(FmMain));
 			Icon = (Icon)componentResourceManager.GetObject("minico.Icon");
 			dataGridView1.ColumnCount = 1;
-			dataGridView1.RowCount = StaticValue.v_notecount;
-			dataGridView1.Columns[0].Width = Convert.ToInt32(400f * Program.factor);
+			dataGridView1.RowCount = StaticValue.NoteCount;
+			dataGridView1.Columns[0].Width = Convert.ToInt32(400f * Program.Factor);
 			dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.None;
 			dataGridView1.AllowUserToResizeRows = false;
 			dataGridView1.AllowUserToResizeColumns = false;
-			for (var i = 0; i < StaticValue.v_notecount; i++)
+			for (var i = 0; i < StaticValue.NoteCount; i++)
 			{
 				var flag = i < 9;
 				if (flag)
@@ -41,7 +42,7 @@ namespace TrOCR
 				}
 			}
 			dataGridView1.Columns[0].DefaultCellStyle.SelectionBackColor = Color.DodgerBlue;
-			dataGridView1.Size = new Size(Convert.ToInt32(402f * Program.factor), StaticValue.v_notecount * dataGridView1.Rows[0].Cells[0].Size.Height + 2);
+			dataGridView1.Size = new Size(Convert.ToInt32(402f * Program.Factor), StaticValue.NoteCount * dataGridView1.Rows[0].Cells[0].Size.Height + 2);
 			ClientSize = dataGridView1.Size;
 			base.MaximumSize = new Size(Size.Width, Screen.GetWorkingArea(this).Height / 4 * 3);
 			dataGridView1.MaximumSize = new Size(Size.Width, Screen.GetWorkingArea(this).Height / 4 * 3 - 5);
@@ -101,21 +102,13 @@ namespace TrOCR
 			Clipboard.SetDataObject(text);
 		}
 
-		private void CopyItem_Click(object sender, EventArgs e)
-		{
-			throw new NotImplementedException();
-		}
 
-
-		public string Text_note
+        public string TextNote
 		{
-			get
+			get => null;
+            set
 			{
-				return null;
-			}
-			set
-			{
-				for (var i = 0; i < StaticValue.v_notecount; i++)
+				for (var i = 0; i < StaticValue.NoteCount; i++)
 				{
 					var flag = i < 9;
 					var flag2 = flag;
@@ -164,29 +157,24 @@ namespace TrOCR
 			if (flag8)
 			{
 				Clipboard.SetDataObject(dataGridView1.SelectedCells[0].Value.ToString().Remove(0, 3));
-				var fmflags = new FmFlags();
-				fmflags.Show();
-				fmflags.DrawStr("已复制");
+				CommonHelper.ShowHelpMsg("已复制");
 			}
 		}
 
 
-		public string Text_note_change
+		public string TextNoteChange
 		{
-			get
-			{
-				return null;
-			}
-			set
+			get => null;
+            set
 			{
 				dataGridView1.Rows.Clear();
 				dataGridView1.ColumnCount = 1;
-				dataGridView1.RowCount = StaticValue.v_notecount;
-				dataGridView1.Columns[0].Width = Convert.ToInt32(400f * Program.factor);
+				dataGridView1.RowCount = StaticValue.NoteCount;
+				dataGridView1.Columns[0].Width = Convert.ToInt32(400f * Program.Factor);
 				dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.None;
 				dataGridView1.AllowUserToResizeRows = false;
 				dataGridView1.AllowUserToResizeColumns = false;
-				for (var i = 0; i < StaticValue.v_notecount; i++)
+				for (var i = 0; i < StaticValue.NoteCount; i++)
 				{
 					var flag = i < 9;
 					var flag2 = flag;
@@ -206,7 +194,7 @@ namespace TrOCR
 					}
 				}
 				dataGridView1.Columns[0].DefaultCellStyle.SelectionBackColor = Color.DodgerBlue;
-				dataGridView1.Size = new Size(Convert.ToInt32(402f * Program.factor), StaticValue.v_notecount * dataGridView1.Rows[0].Cells[0].Size.Height + 2);
+				dataGridView1.Size = new Size(Convert.ToInt32(402f * Program.Factor), StaticValue.NoteCount * dataGridView1.Rows[0].Cells[0].Size.Height + 2);
 				ClientSize = dataGridView1.Size;
 				base.MaximumSize = new Size(Size.Width, Screen.GetWorkingArea(this).Height / 4 * 3);
 				dataGridView1.MaximumSize = new Size(Size.Width, Screen.GetWorkingArea(this).Height / 4 * 3 - 5);

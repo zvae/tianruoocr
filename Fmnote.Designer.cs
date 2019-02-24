@@ -1,7 +1,7 @@
 ﻿namespace TrOCR
 {
 
-	public partial class Fmnote : global::System.Windows.Forms.Form
+	public partial class FmNote : global::System.Windows.Forms.Form
 	{
 
 		protected override void Dispose(bool disposing)
@@ -25,12 +25,12 @@
 		{
 			base.Location = new global::System.Drawing.Point(global::System.Windows.Forms.Screen.AllScreens[0].WorkingArea.Width - base.Width, global::System.Windows.Forms.Screen.AllScreens[0].WorkingArea.Height - base.Height);
 			base.Hide();
-			this.Font = new global::System.Drawing.Font(this.Font.Name, 9f / global::TrOCR.StaticValue.Dpifactor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
+			this.Font = new global::System.Drawing.Font(this.Font.Name, 9f / global::TrOCR.Helper.StaticValue.DpiFactor, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
 			this.copyItem = new global::System.Windows.Forms.ToolStripMenuItem();
 			this.components = new global::System.ComponentModel.Container();
 			this.dataGridView1 = new global::System.Windows.Forms.DataGridView();
 			this.contextMenuStrip1 = new global::System.Windows.Forms.ContextMenuStrip(this.components);
-			this.contextMenuStrip1.Renderer = new global::TrOCR.HelpRepaint.MenuItemRendererT();
+			this.contextMenuStrip1.Renderer = new global::TrOCR.Helper.HelpRepaint.MenuItemRendererT();
 			((global::System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
 			base.SuspendLayout();
 			this.dataGridView1.BackgroundColor = global::System.Drawing.Color.White;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using mshtml;
+using TrOCR.Helper;
 
 namespace TrOCR
 {
@@ -82,7 +83,7 @@ namespace TrOCR
 			if (textBox1.Text.Contains("login_aliyunid=\""))
 			{
 				webBrowser1.Url = new Uri("https://data.aliyun.com/ai/ocr-other#/ocr-other");
-				IniHelp.SetValue("特殊", "ali_cookie", textBox1.Text);
+				IniHelper.SetValue("特殊", "ali_cookie", textBox1.Text);
                 Hide();
 			}
 		}
@@ -126,8 +127,8 @@ namespace TrOCR
 			IHTMLDocument3 documentFromWindow = WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2);
 			string value = documentFromWindow.getElementById("fm-login-id").getAttribute("value", 0).ToString();
 			string value2 = documentFromWindow.getElementById("fm-login-password").getAttribute("value", 0).ToString();
-            IniHelp.SetValue("特殊", "ali_account", value);
-            IniHelp.SetValue("特殊", "ali_password", value2);
+            IniHelper.SetValue("特殊", "ali_account", value);
+            IniHelper.SetValue("特殊", "ali_password", value2);
 			timer1.Stop();
 			return true;
 		}
@@ -136,10 +137,10 @@ namespace TrOCR
 		{
 			try
 			{
-				if (IniHelp.GetValue("特殊", "ali_account").Trim() != "" && IniHelp.GetValue("特殊", "ali_password").Trim() != "")
+				if (IniHelper.GetValue("特殊", "ali_account").Trim() != "" && IniHelper.GetValue("特殊", "ali_password").Trim() != "")
 				{
-                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-id").setAttribute("value", IniHelp.GetValue("特殊", "ali_account"), 1);
-                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-password").setAttribute("value", IniHelp.GetValue("特殊", "ali_password"), 1);
+                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-id").setAttribute("value", IniHelper.GetValue("特殊", "ali_account"), 1);
+                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-password").setAttribute("value", IniHelper.GetValue("特殊", "ali_password"), 1);
 				}
 			}
 			catch

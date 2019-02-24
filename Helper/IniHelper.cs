@@ -3,10 +3,10 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace TrOCR
+namespace TrOCR.Helper
 {
 
-	public static class IniHelp
+	public static class IniHelper
 	{
 
 		[DllImport("kernel32")]
@@ -76,7 +76,7 @@ namespace TrOCR
 			return result;
 		}
 
-		public static bool Removekey(string sectionName, string key, string filePath)
+		public static bool RemoveKey(string sectionName, string key, string filePath)
 		{
 			bool result;
 			try

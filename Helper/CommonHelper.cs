@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 
 // ReSharper disable StringLiteralTypo
 
@@ -15,6 +17,13 @@ namespace TrOCR.Helper
 {
     public static class CommonHelper
     {
+        public static void ShowHelpMsg(string msg)
+        {
+            var fmFlags = new FmFlags();
+            fmFlags.Show();
+            fmFlags.DrawStr(msg);
+        }
+
         public static void AddLog(string str)
         {
             str = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss ") + str + "\r\n";
@@ -292,5 +301,32 @@ namespace TrOCR.Helper
             return s1 == s2;
         }
 
+        [DllImport("user32.dll")]
+        public static extern bool SetProcessDPIAware();
+
+        public static float GetDpiFactor()
+        {
+            float result;
+            try
+            {
+                const string name = "AppliedDPI";
+                var registryKey = Registry.CurrentUser.OpenSubKey("Control Panel\\Desktop\\WindowMetrics", true);
+                if (registryKey != null)
+                {
+                    var value = registryKey.GetValue(name).ToString();
+                    registryKey.Close();
+                    result = Convert.ToSingle(value) / 96f;
+                }
+                else
+                {
+                    result = 1f;
+                }
+            }
+            catch
+            {
+                result = 1f;
+            }
+            return result;
+        }
     }
 }

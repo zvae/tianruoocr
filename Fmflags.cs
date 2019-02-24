@@ -4,17 +4,18 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Threading;
 using System.Windows.Forms;
+using TrOCR.Helper;
 
 namespace TrOCR
 {
 
-	public partial class FmFlags : Form
-	{
+	public partial class FmFlags
+    {
 
 		public FmFlags()
-		{
-			InitializeComponent();
-		}
+        {
+            InitializeComponent();
+        }
 
 		protected override CreateParams CreateParams
 		{
@@ -105,7 +106,7 @@ namespace TrOCR
 			var r = new Rectangle(0, 3, 宽度, 50);
 			g.FillRectangle(new SolidBrush(Color.FromArgb(120, Color.Black)), 1, 1, 宽度 - 2, 48);
 			g.DrawRectangle(new Pen(Color.FromArgb(224, 224, 224)), 2, 2, 宽度 - 2 - 2, 46);
-			g.DrawString(str, new Font("微软雅黑", 24f / Program.factor), new SolidBrush(Color.FromArgb(255, Color.White)), r, stringFormat);
+			g.DrawString(str, new Font("微软雅黑", 24f / Program.Factor), new SolidBrush(Color.FromArgb(255, Color.White)), r, stringFormat);
 			SetBits(bmp);
 			g.Dispose();
 			bmp.Dispose();

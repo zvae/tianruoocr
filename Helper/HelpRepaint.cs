@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace TrOCR
+namespace TrOCR.Helper
 {
 
 	public class HelpRepaint
@@ -132,7 +132,7 @@ namespace TrOCR
 
 			public HWColorPicker()
 			{
-				Font = new Font(Font.Name, 9f / StaticValue.Dpifactor, Font.Style, Font.Unit, Font.GdiCharSet, Font.GdiVerticalFont);
+				Font = new Font(Font.Name, 9f / StaticValue.DpiFactor, Font.Style, Font.Unit, Font.GdiCharSet, Font.GdiVerticalFont);
 				hoverItem = -1;
 				InitializeComponent();
 				InitColor();
@@ -455,7 +455,7 @@ namespace TrOCR
 
 			public MenuItemRenderer()
 			{
-				textFont = new Font("微软雅黑", 9f / StaticValue.Dpifactor, FontStyle.Regular, GraphicsUnit.Point, 0);
+				textFont = new Font("微软雅黑", 9f / StaticValue.DpiFactor, FontStyle.Regular, GraphicsUnit.Point, 0);
 				menuItemSelectedColor = Color.White;
 				menuItemBorderColor = Color.White;
 				menuItemSelectedColor = Color.White;
@@ -646,7 +646,7 @@ namespace TrOCR
 
 			public MenuItemRendererT()
 			{
-				textFont = new Font("微软雅黑", 9f / StaticValue.Dpifactor, FontStyle.Regular, GraphicsUnit.Point, 0);
+				textFont = new Font("微软雅黑", 9f / StaticValue.DpiFactor, FontStyle.Regular, GraphicsUnit.Point, 0);
 				menuItemSelectedColor = Color.White;
 				menuItemBorderColor = Color.White;
 				menuItemSelectedColor = Color.White;

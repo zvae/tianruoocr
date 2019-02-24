@@ -14,7 +14,7 @@ namespace TrOCR
 			components = null;
 			InitializeComponent();
 			panel_识别说明.Visible = true;
-			listBox1.Font = new Font("宋体", 10f / Program.factor);
+			listBox1.Font = new Font("宋体", 10f / Program.Factor);
 		}
 
         private const string KEY_DOC =

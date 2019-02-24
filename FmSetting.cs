@@ -10,6 +10,7 @@ using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using TrOCR.Helper;
 using TrOCR.Properties;
 
 namespace TrOCR
@@ -20,13 +21,13 @@ namespace TrOCR
 
 		public FmSetting()
 		{
-			Font = new Font(Font.Name, 9f / StaticValue.Dpifactor, Font.Style, Font.Unit, Font.GdiCharSet, Font.GdiVerticalFont);
+			Font = new Font(Font.Name, 9f / StaticValue.DpiFactor, Font.Style, Font.Unit, Font.GdiCharSet, Font.GdiVerticalFont);
 			InitializeComponent();
 		}
 
 		public void readIniFile()
 		{
-			var value = IniHelp.GetValue("配置", "开机自启");
+			var value = IniHelper.GetValue("配置", "开机自启");
 			if (value == "发生错误")
 			{
 				cbBox_开机.Checked = true;
@@ -39,7 +40,7 @@ namespace TrOCR
 			{
 				cbBox_开机.Checked = true;
 			}
-			var value2 = IniHelp.GetValue("配置", "快速翻译");
+			var value2 = IniHelper.GetValue("配置", "快速翻译");
 			if (value2 == "发生错误")
 			{
 				cbBox_翻译.Checked = true;
@@ -52,7 +53,7 @@ namespace TrOCR
 			{
 				cbBox_翻译.Checked = true;
 			}
-			var value3 = IniHelp.GetValue("配置", "识别弹窗");
+			var value3 = IniHelper.GetValue("配置", "识别弹窗");
 			if (value3 == "发生错误")
 			{
 				cbBox_弹窗.Checked = true;
@@ -65,19 +66,19 @@ namespace TrOCR
 			{
 				cbBox_弹窗.Checked = true;
 			}
-			var value4 = IniHelp.GetValue("配置", "窗体动画");
+			var value4 = IniHelper.GetValue("配置", "窗体动画");
 			cobBox_动画.Text = value4;
 			if (value4 == "发生错误")
 			{
 				cobBox_动画.Text = "窗体";
 			}
-			var value5 = IniHelp.GetValue("配置", "记录数目");
+			var value5 = IniHelper.GetValue("配置", "记录数目");
 			numbox_记录.Value = Convert.ToInt32(value5);
 			if (value5 == "发生错误")
 			{
 				numbox_记录.Value = 20m;
 			}
-			var value6 = IniHelp.GetValue("配置", "自动保存");
+			var value6 = IniHelper.GetValue("配置", "自动保存");
 			if (value6 == "发生错误")
 			{
 				cbBox_保存.Checked = false;
@@ -100,31 +101,31 @@ namespace TrOCR
 				textBox_path.Enabled = false;
 				btn_浏览.Enabled = false;
 			}
-			var value7 = IniHelp.GetValue("配置", "截图位置");
+			var value7 = IniHelper.GetValue("配置", "截图位置");
 			textBox_path.Text = value7;
 			if (value7 == "发生错误")
 			{
 				textBox_path.Text = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 			}
-			var value8 = IniHelp.GetValue("快捷键", "文字识别");
+			var value8 = IniHelper.GetValue("快捷键", "文字识别");
 			txtBox_文字识别.Text = value8;
 			if (value8 == "发生错误")
 			{
 				txtBox_文字识别.Text = "F4";
 			}
-			var value9 = IniHelp.GetValue("快捷键", "翻译文本");
+			var value9 = IniHelper.GetValue("快捷键", "翻译文本");
 			txtBox_翻译文本.Text = value9;
 			if (value9 == "发生错误")
 			{
 				txtBox_翻译文本.Text = "F9";
 			}
-			var value10 = IniHelp.GetValue("快捷键", "记录界面");
+			var value10 = IniHelper.GetValue("快捷键", "记录界面");
 			txtBox_记录界面.Text = value10;
 			if (value10 == "发生错误")
 			{
 				txtBox_记录界面.Text = "请按下快捷键";
 			}
-			var value11 = IniHelp.GetValue("快捷键", "识别界面");
+			var value11 = IniHelper.GetValue("快捷键", "识别界面");
 			txtBox_识别界面.Text = value11;
 			if (value11 == "发生错误")
 			{
@@ -134,19 +135,19 @@ namespace TrOCR
 			pictureBox_翻译文本.Image = txtBox_翻译文本.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
 			pictureBox_记录界面.Image = txtBox_记录界面.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
 			pictureBox_识别界面.Image = txtBox_识别界面.Text == "请按下快捷键" ? Resources.快捷键_0 : Resources.快捷键_1;
-			var value12 = IniHelp.GetValue("密钥_百度", "secret_id");
+			var value12 = IniHelper.GetValue("密钥_百度", "secret_id");
 			text_baiduaccount.Text = value12;
 			if (value12 == "发生错误")
 			{
 				text_baiduaccount.Text = "YsZKG1wha34PlDOPYaIrIIKO";
 			}
-			var value13 = IniHelp.GetValue("密钥_百度", "secret_key");
+			var value13 = IniHelper.GetValue("密钥_百度", "secret_key");
 			text_baidupassword.Text = value13;
 			if (value13 == "发生错误")
 			{
 				text_baidupassword.Text = "HPRZtdOHrdnnETVsZM2Nx7vbDkMfxrkD";
 			}
-			var value14 = IniHelp.GetValue("代理", "代理类型");
+			var value14 = IniHelper.GetValue("代理", "代理类型");
 			combox_代理.Text = value14;
 			if (value14 == "发生错误")
 			{
@@ -165,19 +166,19 @@ namespace TrOCR
 				text_端口.Enabled = true;
 				text_服务器.Enabled = true;
 			}
-			var value15 = IniHelp.GetValue("代理", "服务器");
+			var value15 = IniHelper.GetValue("代理", "服务器");
 			text_服务器.Text = value15;
 			if (value15 == "发生错误")
 			{
 				text_服务器.Text = "127.0.0.1";
 			}
-			var value16 = IniHelp.GetValue("代理", "端口");
+			var value16 = IniHelper.GetValue("代理", "端口");
 			text_端口.Text = value16;
 			if (value16 == "发生错误")
 			{
 				text_端口.Text = "1080";
 			}
-			var value17 = IniHelp.GetValue("代理", "需要密码");
+			var value17 = IniHelper.GetValue("代理", "需要密码");
 			if (value17 == "发生错误")
 			{
 				chbox_代理服务器.Checked = false;
@@ -190,13 +191,13 @@ namespace TrOCR
 			{
 				chbox_代理服务器.Checked = false;
 			}
-			var value18 = IniHelp.GetValue("代理", "服务器账号");
+			var value18 = IniHelper.GetValue("代理", "服务器账号");
 			text_账号.Text = value18;
 			if (value18 == "发生错误")
 			{
 				text_账号.Text = "";
 			}
-			var value19 = IniHelp.GetValue("代理", "服务器密码");
+			var value19 = IniHelper.GetValue("代理", "服务器密码");
 			text_密码.Text = value19;
 			if (value19 == "发生错误")
 			{
@@ -212,7 +213,7 @@ namespace TrOCR
 				text_账号.Enabled = false;
 				text_密码.Enabled = false;
 			}
-			var value20 = IniHelp.GetValue("更新", "检测更新");
+			var value20 = IniHelper.GetValue("更新", "检测更新");
 			if (value20 == "发生错误")
 			{
 				check_检查更新.Checked = false;
@@ -234,7 +235,7 @@ namespace TrOCR
 				checkBox_更新间隔.Enabled = false;
 				numbox_间隔时间.Enabled = false;
 			}
-			var value21 = IniHelp.GetValue("更新", "更新间隔");
+			var value21 = IniHelper.GetValue("更新", "更新间隔");
 			if (value21 == "发生错误")
 			{
 				checkBox_更新间隔.Checked = false;
@@ -255,13 +256,13 @@ namespace TrOCR
 			{
 				numbox_间隔时间.Enabled = false;
 			}
-			var value22 = IniHelp.GetValue("更新", "间隔时间");
+			var value22 = IniHelper.GetValue("更新", "间隔时间");
 			numbox_间隔时间.Value = Convert.ToInt32(value22);
 			if (value5 == "发生错误")
 			{
 				numbox_间隔时间.Value = 24m;
 			}
-			var value23 = IniHelp.GetValue("截图音效", "粘贴板");
+			var value23 = IniHelper.GetValue("截图音效", "粘贴板");
 			if (value23 == "发生错误")
 			{
 				chbox_copy.Checked = false;
@@ -274,7 +275,7 @@ namespace TrOCR
 			{
 				chbox_copy.Checked = false;
 			}
-			var value24 = IniHelp.GetValue("截图音效", "自动保存");
+			var value24 = IniHelper.GetValue("截图音效", "自动保存");
 			if (value24 == "发生错误")
 			{
 				chbox_save.Checked = true;
@@ -287,13 +288,13 @@ namespace TrOCR
 			{
 				chbox_save.Checked = true;
 			}
-			var value25 = IniHelp.GetValue("截图音效", "音效路径");
+			var value25 = IniHelper.GetValue("截图音效", "音效路径");
 			text_音效path.Text = value25;
 			if (value25 == "发生错误")
 			{
 				text_音效path.Text = "Data\\screenshot.wav";
 			}
-			var value26 = IniHelp.GetValue("取色器", "类型");
+			var value26 = IniHelper.GetValue("取色器", "类型");
 			if (value26 == "发生错误")
 			{
 				chbox_取色.Checked = false;
@@ -336,7 +337,7 @@ namespace TrOCR
 			var array6 = new int[4];
 			array6[0] = 1;
 			numericUpDown6.Value = new decimal(array6);
-			tab_标签.Height = (int)(350.0 * Program.factor);
+			tab_标签.Height = (int)(350.0 * Program.Factor);
 			Height = tab_标签.Height + 50;
 			readIniFile();
 			chbox_代理服务器.CheckedChanged += chbox_代理服务器_CheckedChanged;
@@ -378,27 +379,27 @@ namespace TrOCR
 		{
 			if (tab_标签.SelectedTab == page_常规)
 			{
-				tab_标签.Height = (int)(350.0 * Program.factor);
+				tab_标签.Height = (int)(350.0 * Program.Factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_快捷键)
 			{
-				tab_标签.Height = (int)(225.0 * Program.factor);
+				tab_标签.Height = (int)(225.0 * Program.Factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_密钥)
 			{
-				tab_标签.Height = (int)(190.0 * Program.factor);
+				tab_标签.Height = (int)(190.0 * Program.Factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_代理)
 			{
-				tab_标签.Height = (int)(245.0 * Program.factor);
+				tab_标签.Height = (int)(245.0 * Program.Factor);
 				Height = tab_标签.Height + 50;
 			}
 			if (tab_标签.SelectedTab == Page_更新)
 			{
-				tab_标签.Height = (int)(135.0 * Program.factor);
+				tab_标签.Height = (int)(135.0 * Program.Factor);
 				Height = tab_标签.Height + 50;
 			}
 		}
@@ -497,19 +498,19 @@ namespace TrOCR
 				pictureBox.Image = Resources.快捷键_0;
 				if (textBox.Name.Contains("文字识别"))
 				{
-					IniHelp.SetValue("快捷键", "文字识别", txtBox_文字识别.Text);
+					IniHelper.SetValue("快捷键", "文字识别", txtBox_文字识别.Text);
 				}
 				if (textBox.Name.Contains("翻译文本"))
 				{
-					IniHelp.SetValue("快捷键", "翻译文本", txtBox_翻译文本.Text);
+					IniHelper.SetValue("快捷键", "翻译文本", txtBox_翻译文本.Text);
 				}
 				if (textBox.Name.Contains("记录界面"))
 				{
-					IniHelp.SetValue("快捷键", "记录界面", txtBox_记录界面.Text);
+					IniHelper.SetValue("快捷键", "记录界面", txtBox_记录界面.Text);
 				}
 				if (textBox.Name.Contains("识别界面"))
 				{
-					IniHelp.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
+					IniHelper.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
                 }
 			}
 			else if (e.KeyValue != 16 && e.KeyValue != 17 && e.KeyValue != 18)
@@ -528,19 +529,19 @@ namespace TrOCR
 				{
 					if (textBox.Name.Contains("文字识别"))
 					{
-						IniHelp.SetValue("快捷键", "文字识别", txtBox_文字识别.Text);
+						IniHelper.SetValue("快捷键", "文字识别", txtBox_文字识别.Text);
 					}
 					if (textBox.Name.Contains("翻译文本"))
 					{
-						IniHelp.SetValue("快捷键", "翻译文本", txtBox_翻译文本.Text);
+						IniHelper.SetValue("快捷键", "翻译文本", txtBox_翻译文本.Text);
 					}
 					if (textBox.Name.Contains("记录界面"))
 					{
-						IniHelp.SetValue("快捷键", "记录界面", txtBox_记录界面.Text);
+						IniHelper.SetValue("快捷键", "记录界面", txtBox_记录界面.Text);
 					}
 					if (textBox.Name.Contains("识别界面"))
 					{
-						IniHelp.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
+						IniHelper.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
 					}
 				}
 			}
@@ -734,38 +735,38 @@ namespace TrOCR
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			IniHelp.SetValue("配置", "开机自启", cbBox_开机.Checked.ToString());
-			IniHelp.SetValue("配置", "快速翻译", cbBox_翻译.Checked.ToString());
-			IniHelp.SetValue("配置", "识别弹窗", cbBox_弹窗.Checked.ToString());
-			IniHelp.SetValue("配置", "窗体动画", cobBox_动画.Text);
-			IniHelp.SetValue("配置", "记录数目", numbox_记录.Text);
-			IniHelp.SetValue("配置", "自动保存", cbBox_保存.Checked.ToString());
-			IniHelp.SetValue("配置", "截图位置", textBox_path.Text);
-			IniHelp.SetValue("快捷键", "文字识别", txtBox_文字识别.Text);
-			IniHelp.SetValue("快捷键", "翻译文本", txtBox_翻译文本.Text);
-			IniHelp.SetValue("快捷键", "记录界面", txtBox_记录界面.Text);
-			IniHelp.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
-			IniHelp.SetValue("密钥_百度", "secret_id", text_baiduaccount.Text);
-			IniHelp.SetValue("密钥_百度", "secret_key", text_baidupassword.Text);
-			IniHelp.SetValue("代理", "代理类型", combox_代理.Text);
-			IniHelp.SetValue("代理", "服务器", text_服务器.Text);
-			IniHelp.SetValue("代理", "端口", text_端口.Text);
-			IniHelp.SetValue("代理", "需要密码", chbox_代理服务器.Checked.ToString());
-			IniHelp.SetValue("代理", "服务器账号", text_账号.Text);
-			IniHelp.SetValue("代理", "服务器密码", text_密码.Text);
-			IniHelp.SetValue("更新", "检测更新", check_检查更新.Checked.ToString());
-			IniHelp.SetValue("更新", "更新间隔", checkBox_更新间隔.Checked.ToString());
-			IniHelp.SetValue("更新", "间隔时间", numbox_间隔时间.Value.ToString());
-			IniHelp.SetValue("截图音效", "自动保存", chbox_save.Checked.ToString());
-			IniHelp.SetValue("截图音效", "音效路径", text_音效path.Text);
-			IniHelp.SetValue("截图音效", "粘贴板", chbox_copy.Checked.ToString());
+			IniHelper.SetValue("配置", "开机自启", cbBox_开机.Checked.ToString());
+			IniHelper.SetValue("配置", "快速翻译", cbBox_翻译.Checked.ToString());
+			IniHelper.SetValue("配置", "识别弹窗", cbBox_弹窗.Checked.ToString());
+			IniHelper.SetValue("配置", "窗体动画", cobBox_动画.Text);
+			IniHelper.SetValue("配置", "记录数目", numbox_记录.Text);
+			IniHelper.SetValue("配置", "自动保存", cbBox_保存.Checked.ToString());
+			IniHelper.SetValue("配置", "截图位置", textBox_path.Text);
+			IniHelper.SetValue("快捷键", "文字识别", txtBox_文字识别.Text);
+			IniHelper.SetValue("快捷键", "翻译文本", txtBox_翻译文本.Text);
+			IniHelper.SetValue("快捷键", "记录界面", txtBox_记录界面.Text);
+			IniHelper.SetValue("快捷键", "识别界面", txtBox_识别界面.Text);
+			IniHelper.SetValue("密钥_百度", "secret_id", text_baiduaccount.Text);
+			IniHelper.SetValue("密钥_百度", "secret_key", text_baidupassword.Text);
+			IniHelper.SetValue("代理", "代理类型", combox_代理.Text);
+			IniHelper.SetValue("代理", "服务器", text_服务器.Text);
+			IniHelper.SetValue("代理", "端口", text_端口.Text);
+			IniHelper.SetValue("代理", "需要密码", chbox_代理服务器.Checked.ToString());
+			IniHelper.SetValue("代理", "服务器账号", text_账号.Text);
+			IniHelper.SetValue("代理", "服务器密码", text_密码.Text);
+			IniHelper.SetValue("更新", "检测更新", check_检查更新.Checked.ToString());
+			IniHelper.SetValue("更新", "更新间隔", checkBox_更新间隔.Checked.ToString());
+			IniHelper.SetValue("更新", "间隔时间", numbox_间隔时间.Value.ToString());
+			IniHelper.SetValue("截图音效", "自动保存", chbox_save.Checked.ToString());
+			IniHelper.SetValue("截图音效", "音效路径", text_音效path.Text);
+			IniHelper.SetValue("截图音效", "粘贴板", chbox_copy.Checked.ToString());
 			if (!chbox_取色.Checked)
 			{
-				IniHelp.SetValue("取色器", "类型", "RGB");
+				IniHelper.SetValue("取色器", "类型", "RGB");
 			}
 			if (chbox_取色.Checked)
 			{
-				IniHelp.SetValue("取色器", "类型", "HEX");
+				IniHelper.SetValue("取色器", "类型", "HEX");
 			}
 			DialogResult = DialogResult.OK;
 		}
@@ -800,19 +801,15 @@ namespace TrOCR
 
 		private void 反馈send()
 		{
-			if (txt_问题反馈.Text != "")
+			if (string.IsNullOrEmpty(txt_问题反馈.Text))
 			{
-				var str = "sm=%E5%A4%A9%E8%8B%A5OCR%E6%96%87%E5%AD%97%E8%AF%86%E5%88%AB" + StaticValue.current_v + "&nr=";
-				Post_Html("http://cd.ys168.com/f_ht/ajcx/lyd.aspx?cz=lytj&pdgk=1&pdgly=0&pdzd=0&tou=1&yzm=undefined&_dlmc=tianruoyouxin&_dlmm=", str + HttpUtility.UrlEncode(txt_问题反馈.Text));
-				txt_问题反馈.Text = "";
-				var fmflags = new FmFlags();
-				fmflags.Show();
-				fmflags.DrawStr("感谢您的反馈！");
-				return;
+                CommonHelper.ShowHelpMsg("反馈文本不能为空");
+                return;
 			}
-			var fmflags2 = new FmFlags();
-			fmflags2.Show();
-			fmflags2.DrawStr("反馈文本不能为空");
+            var str = "sm=%E5%A4%A9%E8%8B%A5OCR%E6%96%87%E5%AD%97%E8%AF%86%E5%88%AB" + StaticValue.CurrentVersion + "&nr=";
+            Post_Html("http://cd.ys168.com/f_ht/ajcx/lyd.aspx?cz=lytj&pdgk=1&pdgly=0&pdzd=0&tou=1&yzm=undefined&_dlmc=tianruoyouxin&_dlmm=", str + HttpUtility.UrlEncode(txt_问题反馈.Text));
+            txt_问题反馈.Text = "";
+            CommonHelper.ShowHelpMsg("感谢您的反馈！");
 		}
 
 		public void PlaySong(string file)
