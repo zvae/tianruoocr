@@ -9,7 +9,9 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 
 // ReSharper disable StringLiteralTypo
 
@@ -327,6 +329,32 @@ namespace TrOCR.Helper
                 result = 1f;
             }
             return result;
+        }
+
+        public static string EnPunctuation2Ch(string text)
+        {
+            var array = text.ToCharArray();
+            for (var i = 0; i < array.Length; i++)
+            {
+                var num = ":;,?!()".IndexOf(array[i]);
+                if (num != -1)
+                {
+                    array[i] = "：；，？！（）"[num];
+                }
+            }
+            return new string(array);
+        }
+
+        public static string LangDetect(string text)
+        {
+            text = HttpUtility.UrlEncode(Regex.Replace(text, " +", "+"));
+            var url = "https://fanyi.baidu.com/langdetect?query=" + text;
+            var html = GetHtmlContent(url);
+            if (string.IsNullOrEmpty(html))
+            {
+                return "zh";
+            }
+            return JObject.Parse(html)["lan"].Value<string>();
         }
     }
 }

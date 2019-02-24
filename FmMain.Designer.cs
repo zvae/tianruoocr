@@ -1,7 +1,7 @@
 ﻿namespace TrOCR
 {
 
-	public partial class FmMain : global::System.Windows.Forms.Form
+	public sealed partial class FmMain : global::System.Windows.Forms.Form
 	{
 
 		protected override void Dispose(bool disposing)
@@ -130,7 +130,7 @@
 			});
 			this.menu_copy.Font = new global::System.Drawing.Font("微软雅黑", 9f / global::TrOCR.Helper.StaticValue.DpiFactor, global::System.Drawing.FontStyle.Regular);
 			this.Main_copy.Text = "复制";
-			this.Main_copy.Click += new global::System.EventHandler(this.Main_copy_Click);
+			this.Main_copy.Click += new global::System.EventHandler(this.MainCopyClick);
 			this.Main_paste.Text = "粘贴";
 			this.Main_paste.Click += new global::System.EventHandler(this.Main_paste_Click);
 			this.Main_selectall.Text = "全选";
@@ -138,11 +138,11 @@
 			this.speak.Text = "朗读";
 			this.speak.Click += new global::System.EventHandler(this.Main_Voice_Click);
 			this.baidu_s.Text = "搜索";
-			this.baidu_s.Click += new global::System.EventHandler(this.Main_baidu_search);
+			this.baidu_s.Click += new global::System.EventHandler(this.SearchSelText);
 			this.Main_change.Text = "转换";
 			this.Main_jiekou.Text = "接口";
 			this.Main_exit.Text = "退出";
-			this.Main_exit.Click += new global::System.EventHandler(this.tray_exit_Click);
+			this.Main_exit.Click += new global::System.EventHandler(this.trayExitClick);
 			this.menu.Items.AddRange(new global::System.Windows.Forms.ToolStripItem[]
 			{
 				this.Main_copy,

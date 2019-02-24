@@ -18,7 +18,7 @@ namespace TrOCR
         [STAThread]
         public static void Main(string[] args)
         {
-            var programStarted = new EventWaitHandle(false, EventResetMode.AutoReset, "天若OCR文字识别", out bool needNew);
+            var programStarted = new EventWaitHandle(false, EventResetMode.AutoReset, "天若OCR文字识别", out var needNew);
             if (!needNew)
             {
                 programStarted.Set();
