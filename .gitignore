@@ -5,3 +5,8 @@
 /.vs/TrOCR/v15
 /bin
 /obj
+/packages
+/TrOcrTest/obj/Debug
+/TrOcrTest/bin/Debug
+/TrOCR/bin/Debug
+/TrOCR/obj/Debug
