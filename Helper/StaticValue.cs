@@ -62,7 +62,7 @@ namespace TrOCR.Helper
 
         public static string BD_API_KEY = "";
 
-        public static bool 截图排斥;
+        public static bool IsCapture;
 
         public static bool v_topmost;
 

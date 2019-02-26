@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
+using TrOCR.Properties;
 
 // ReSharper disable StringLiteralTypo
 
@@ -58,8 +63,6 @@ namespace TrOCR.Helper
                 var handler = new HttpClientHandler {CookieContainer = cookies};
                 using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 15) })
                 {
-                    
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Method", "GET");
                     myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
                     switch (userAgent)
                     {
@@ -126,7 +129,6 @@ namespace TrOCR.Helper
                 var handler = new HttpClientHandler { CookieContainer = cookies };
                 using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 10) })
                 {
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Method", "POST");
                     myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
                     myHttpWebRequest.DefaultRequestHeaders.Add("ContentType",
                         userAgent == 0 ? "application/x-www-form-urlencoded" : "application/json;charset=UTF-8");
@@ -181,7 +183,7 @@ namespace TrOCR.Helper
             }
         }
 
-        public static string PostData(string url, string data, string cookie = "")
+        public static string PostData(string url, string data, string cookie = "", string referer = "")
         {
             try
             {
@@ -189,11 +191,44 @@ namespace TrOCR.Helper
                 var handler = new HttpClientHandler { CookieContainer = cookies };
                 using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 10) })
                 {
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Method", "POST");
+                    if (!string.IsNullOrEmpty(referer))
+                    {
+                        myHttpWebRequest.DefaultRequestHeaders.Add("Referer", referer);
+                    }
                     myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
                     myHttpWebRequest.DefaultRequestHeaders.Add("ContentType", "application/x-www-form-urlencoded");
                     myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
                     var response = myHttpWebRequest.PostAsync(url, new StringContent(data, Encoding.UTF8)).Result;
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.ToString());
+                return null;
+            }
+        }
+
+        public static string PostMultiData(string url, byte[] data, string boundary, string disposition, string cookie = "", string referer = "")
+        {
+            try
+            {
+                var cookies = new CookieContainer();
+                var handler = new HttpClientHandler
+                {
+                    CookieContainer = cookies
+                };
+                using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 10) })
+                {
+                    if (!string.IsNullOrEmpty(referer))
+                    {
+                        myHttpWebRequest.DefaultRequestHeaders.Add("Referer", referer);
+                    }
+                    myHttpWebRequest.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
+                    var multi = new MultipartFormDataContent(boundary);
+                    multi.Add(new StreamContent(new MemoryStream(data)));
+
+                    var response = myHttpWebRequest.PostAsync(url, multi).Result;
                     return response.Content.ReadAsStringAsync().Result;
                 }
             }
@@ -224,7 +259,6 @@ namespace TrOCR.Helper
             try
             {
                 var myHttpWebRequest = new HttpClient { Timeout = new TimeSpan(0, 0, 15) };
-                myHttpWebRequest.DefaultRequestHeaders.Add("Method", "GET");
                 myHttpWebRequest.DefaultRequestHeaders.Add("Cookie", cookie);
                 myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
                 myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) XIAMI-MUSIC/3.0.2 Chrome/51.0.2704.106 Electron/1.2.8 Safari/537.36");
@@ -355,6 +389,18 @@ namespace TrOCR.Helper
                 return "zh";
             }
             return JObject.Parse(html)["lan"].Value<string>();
+        }
+
+        public static string GetResponseHtml(HttpWebRequest httpWebRequest)
+        {
+            var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
+            if (responseStream != null)
+            {
+                var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
+                responseStream.Close();
+                return value;
+            }
+            return "";
         }
     }
 }

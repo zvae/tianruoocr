@@ -39,7 +39,7 @@ namespace TrOCR
 			set_merge = false;
 			set_split = false;
 			set_split = false;
-			StaticValue.截图排斥 = false;
+			StaticValue.IsCapture = false;
 			pinyin_flag = false;
 			tranclick = false;
 			are = new AutoResetEvent(false);
@@ -147,7 +147,7 @@ namespace TrOCR
                 Trans_close.PerformClick();
                 Size = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
                 FormBorderStyle = FormBorderStyle.Sizable;
-                StaticValue.截图排斥 = true;
+                StaticValue.IsCapture = true;
                 image_screen = StaticValue.image_OCR;
                 if (IniHelper.GetValue("工具栏", "分栏") == "True")
                 {
@@ -200,7 +200,7 @@ namespace TrOCR
             }
             if (m.Msg == 786 && m.WParam.ToInt32() == 512)
             {
-                transtalate_Click();
+                TransClick();
             }
             if (m.Msg == 786 && m.WParam.ToInt32() == 518)
             {
@@ -230,7 +230,7 @@ namespace TrOCR
                 {
                     try
                     {
-                        StaticValue.截图排斥 = false;
+                        StaticValue.IsCapture = false;
                         esc = "退出";
                         fmloading.FmlClose = "窗体已关闭";
                         esc_thread.Abort();
@@ -258,7 +258,7 @@ namespace TrOCR
                     menu.Hide();
                     RichBoxBody.Hide = "";
                     RichBoxBody_T.Hide = "";
-                    Main_OCR_Quickscreenshots();
+                    MainOCRQuickScreenShots();
                 }
                 if (m.Msg == 786 && m.WParam.ToInt32() == 206)
                 {
@@ -466,7 +466,6 @@ namespace TrOCR
 			try
 			{
 				split_txt = "";
-				var text = "------WebKitFormBoundaryRDEqU0w702X9cWPJ";
 				var image = image_screen;
 				if (image.Width > 90 && image.Height < 90)
 				{
@@ -499,29 +498,9 @@ namespace TrOCR
 				{
 					image = image_screen;
 				}
-				var b = OCR_ImgToByte(image);
-				var s = text + "\r\nContent-Disposition: form-data; name=\"image_file\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-				var s2 = "\r\n" + text + "--\r\n";
-				var bytes = Encoding.ASCII.GetBytes(s);
-				var bytes2 = Encoding.ASCII.GetBytes(s2);
-				var array = Mergebyte(bytes, b, bytes2);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://ai.qq.com/cgi-bin/appdemo_generalocr");
-				httpWebRequest.Method = "POST";
-				httpWebRequest.Referer = "http://ai.qq.com/product/ocr.shtml";
-				httpWebRequest.Headers.Add("Accept-Encoding", "gzip,deflate");
-				httpWebRequest.ContentType = "multipart/form-data; boundary=" + text.Substring(2);
-				httpWebRequest.Timeout = 8000;
-				httpWebRequest.ReadWriteTimeout = 2000;
-				var buffer = array;
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(buffer, 0, array.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["item_list"].ToString());
-				checked_txt(jarray, 1, "itemstring");
+                var value = OcrHelper.TxOcr(image);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["item_list"].ToString());
+				checked_txt(jArray, 1, "itemstring");
 			}
 			catch
 			{
@@ -545,78 +524,56 @@ namespace TrOCR
 				var str = "CHN_ENG";
 				split_txt = "";
 				var image = image_screen;
-				var memoryStream = new MemoryStream();
-				image.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				if (interface_flag == "中英")
-				{
-					str = "CHN_ENG";
-				}
-				if (interface_flag == "日语")
-				{
-					str = "JAP";
-				}
-				if (interface_flag == "韩语")
-				{
-					str = "KOR";
-				}
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var array = OcrHelper.ImgToBytes(image);
+				switch (interface_flag)
+                {
+                    case "中英":
+                        str = "CHN_ENG";
+                        break;
+                    case "日语":
+                        str = "JAP";
+                        break;
+                    case "韩语":
+                        str = "KOR";
+                        break;
+                }
+				var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+                var value = CommonHelper.PostData("http://ai.baidu.com/tech/ocr/general", data);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var str2 = "";
 				var str3 = "";
-				for (var i = 0; i < jarray.Count; i++)
-				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					var array2 = jobject["words"].ToString().ToCharArray();
-					if (!char.IsPunctuation(array2[array2.Length - 1]))
-					{
-						if (!contain_ch(jobject["words"].ToString()))
-						{
-							str3 = str3 + jobject["words"].ToString().Trim() + " ";
-						}
-						else
-						{
-							str3 += jobject["words"].ToString();
-						}
-					}
-					else if (own_punctuation(array2[array2.Length - 1].ToString()))
-					{
-						if (!contain_ch(jobject["words"].ToString()))
-						{
-							str3 = str3 + jobject["words"].ToString().Trim() + " ";
-						}
-						else
-						{
-							str3 += jobject["words"].ToString();
-						}
-					}
-					else
-					{
-						str3 = str3 + jobject["words"] + "\r\n";
-					}
-					str2 = str2 + jobject["words"] + "\r\n";
-				}
+				foreach (var arr in jArray)
+                {
+                    var jObject = JObject.Parse(arr.ToString());
+                    var array2 = jObject["words"].ToString().ToCharArray();
+                    if (!char.IsPunctuation(array2[array2.Length - 1]))
+                    {
+                        if (!contain_ch(jObject["words"].ToString()))
+                        {
+                            str3 = str3 + jObject["words"].ToString().Trim() + " ";
+                        }
+                        else
+                        {
+                            str3 += jObject["words"].ToString();
+                        }
+                    }
+                    else if (own_punctuation(array2[array2.Length - 1].ToString()))
+                    {
+                        if (!contain_ch(jObject["words"].ToString()))
+                        {
+                            str3 = str3 + jObject["words"].ToString().Trim() + " ";
+                        }
+                        else
+                        {
+                            str3 += jObject["words"].ToString();
+                        }
+                    }
+                    else
+                    {
+                        str3 = str3 + jObject["words"] + "\r\n";
+                    }
+                    str2 = str2 + jObject["words"] + "\r\n";
+                }
 				split_txt = str2;
 				typeset_txt = str3;
 			}
@@ -709,24 +666,12 @@ namespace TrOCR
 				graphics4.Save();
 				graphics4.Dispose();
 				image = new Bitmap(bitmap4);
-				var inArray = OCR_ImgToByte(image);
-				var s = "imgBase=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(inArray)) + "&lang=auto&company=";
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://aidemo.youdao.com/ocrapi1");
-				httpWebRequest.Method = "POST";
-				httpWebRequest.Referer = "http://aidemo.youdao.com/ocrdemo";
-				httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest.Timeout = 8000;
-				httpWebRequest.ReadWriteTimeout = 2000;
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["lines"].ToString());
-				checked_txt(jarray, 1, "words");
+				var inArray = OcrHelper.ImgToBytes(image);
+				var data = "imgBase=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(inArray)) + "&lang=auto&company=";
+				var value = CommonHelper.PostData("http://aidemo.youdao.com/ocrapi1", data, "",
+                    "http://aidemo.youdao.com/ocrdemo");
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["lines"].ToString());
+				checked_txt(jArray, 1, "words");
 				image.Dispose();
 			}
 			catch
@@ -859,7 +804,6 @@ namespace TrOCR
 
 		public void tray_Set_Click(object sender, EventArgs e)
 		{
-			var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 			HelpWin32.UnregisterHotKey(Handle, 200);
 			HelpWin32.UnregisterHotKey(Handle, 205);
 			HelpWin32.UnregisterHotKey(Handle, 206);
@@ -920,18 +864,17 @@ namespace TrOCR
 
 		public bool own_punctuation(string text)
 		{
-			return ",;，、<>《》()-（）.。".IndexOf(text) != -1;
+			return ",;，、<>《》()-（）.。".IndexOf(text, StringComparison.Ordinal) != -1;
 		}
 
 		public static string punctuation_Del_space(string text)
 		{
 			var pattern = "(?<=.)([^\\*]+)(?=.)";
 			string result;
-			if (Regex.Match(text, pattern).ToString().IndexOf(" ") >= 0)
+			if (Regex.Match(text, pattern).ToString().IndexOf(" ", StringComparison.Ordinal) >= 0)
 			{
 				text = Regex.Replace(text, "(?<=[\\p{P}*])([a-zA-Z])(?=[a-zA-Z])", " $1");
-				char[] trimChars = null;
-				text = text.TrimEnd(trimChars).Replace("- ", "-").Replace("_ ", "_").Replace("( ", "(").Replace("/ ", "/").Replace("\" ", "\"");
+				text = text.TrimEnd(null).Replace("- ", "-").Replace("_ ", "_").Replace("( ", "(").Replace("/ ", "/").Replace("\" ", "\"");
 				result = text;
 			}
 			else
@@ -946,7 +889,7 @@ namespace TrOCR
 			return Regex.IsMatch(str, "[\\u4e00-\\u9fa5]");
 		}
 
-		public void transtalate_Click()
+		public void TransClick()
 		{
 			typeset_txt = RichBoxBody.Text;
 			RichBoxBody_T.Visible = true;
@@ -1265,12 +1208,14 @@ namespace TrOCR
 				}
 
                 //string.Concat("client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=", HttpUtility.UrlEncode(text).Replace("+", "%20"))
-                var data = new Dictionary<string, string>();
-                data.Add("client", "gtx");
-                data.Add("sl", text3);
-                data.Add("tl", text4);
-                data.Add("dt", "t");
-                data.Add("q", text);
+                var data = new Dictionary<string, string>
+                {
+                    {"client", "gtx"},
+                    {"sl", text3},
+                    {"tl", text4},
+                    {"dt", "t"},
+                    {"q", text}
+                };
                 var html = CommonHelper.PostData("https://translate.google.cn/translate_a/single", data);
 
 				var jArray = (JArray)JsonConvert.DeserializeObject(html);
@@ -1546,11 +1491,6 @@ namespace TrOCR
 			}
 			HelpWin32.RegisterHotKey(Handle, flag, (HelpWin32.KeyModifiers)Enum.Parse(typeof(HelpWin32.KeyModifiers), array2[0].Trim()), (Keys)Enum.Parse(typeof(Keys), array2[1].Trim()));
 		}
-
-		public void bool_error()
-		{
-		}
-
 		public void p_note(string a)
 		{
 			for (var i = 0; i < StaticValue.NoteCount; i++)
@@ -1564,45 +1504,6 @@ namespace TrOCR
 					pubnote[i] = pubnote[i + 1];
 				}
 			}
-		}
-
-		public void tray_note_Click(object sender, EventArgs e)
-		{
-			fmNote.Show();
-			fmNote.WindowState = FormWindowState.Normal;
-			fmNote.Visible = true;
-		}
-
-		public string Google_Hotkey(string text)
-		{
-			var text2 = "";
-			try
-			{
-				string text3;
-				string text4;
-				if (contain_ch(trans_hotkey.Trim()))
-				{
-					text3 = "zh-CN";
-					text4 = "en";
-				}
-				else
-				{
-					text3 = "en";
-					text4 = "zh-CN";
-				}
-				var url = string.Concat("https://translate.google.cn/translate_a/single?client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=", HttpUtility.UrlEncode(text).Replace("+", "%20"));
-				var jarray = (JArray)JsonConvert.DeserializeObject(Get_GoogletHtml(url));
-				var count = ((JArray)jarray[0]).Count;
-				for (var i = 0; i < count; i++)
-				{
-					text2 += jarray[0][i][0].ToString();
-				}
-			}
-			catch (Exception ex)
-			{
-				text2 = "[Error]:" + ex.Message;
-			}
-			return text2;
 		}
 
 		private string GetTextFromClipboard()
@@ -1632,373 +1533,256 @@ namespace TrOCR
 			return text;
 		}
 
-		public static string Get_html(string url)
-		{
-			var result = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-			httpWebRequest.Method = "POST";
-			httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-			try
-			{
-				using (var httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
-				{
-					using (var streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8))
-					{
-						result = streamReader.ReadToEnd();
-						streamReader.Close();
-						httpWebResponse.Close();
-					}
-				}
-				httpWebRequest.Abort();
-			}
-			catch
-			{
-				result = "";
-			}
-			return result;
-		}
-
-		public CookieContainer Post_Html_Getcookie(string url, string post_str)
-		{
-			var bytes = Encoding.UTF8.GetBytes(post_str);
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-			httpWebRequest.Method = "POST";
-			httpWebRequest.Timeout = 5000;
-			httpWebRequest.Headers.Add("Accept-Language:zh-CN,zh;q=0.8");
-			httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-			httpWebRequest.CookieContainer = new CookieContainer();
-			try
-			{
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var streamReader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-				streamReader.ReadToEnd();
-				responseStream.Close();
-				streamReader.Close();
-				httpWebRequest.Abort();
-			}
-			catch
-			{
-			}
-			return httpWebRequest.CookieContainer;
-		}
-
-		public string Post_Html_Reccookie(string url, string post_str, CookieContainer CookieContainer)
-		{
-			var bytes = Encoding.UTF8.GetBytes(post_str);
-			var result = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-			httpWebRequest.Method = "POST";
-			httpWebRequest.Timeout = 6000;
-			httpWebRequest.Headers.Add("Accept-Language:zh-CN,zh;q=0.8");
-			httpWebRequest.Headers.Add("Accept-Encoding: gzip, deflate");
-			httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-			httpWebRequest.CookieContainer = CookieContainer;
-			try
-			{
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var streamReader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-				result = streamReader.ReadToEnd();
-				responseStream.Close();
-				streamReader.Close();
-				httpWebRequest.Abort();
-			}
-			catch
-			{
-			}
-			return result;
-		}
-
-		public string Post_Html(string url, string post_str)
-		{
-			var bytes = Encoding.UTF8.GetBytes(post_str);
-			var result = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-			httpWebRequest.Method = "POST";
-			httpWebRequest.Timeout = 6000;
-			httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-			httpWebRequest.Headers.Add("Accept-Language: zh-CN,en,*");
-			try
-			{
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var streamReader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-				result = streamReader.ReadToEnd();
-				responseStream.Close();
-				streamReader.Close();
-				httpWebRequest.Abort();
-			}
-			catch
-			{
-			}
-			return result;
-		}
-
-		public void Main_OCR_Quickscreenshots()
-		{
-			if (!StaticValue.截图排斥)
-			{
-				try
-				{
-					change_QQ_screenshot = false;
-					FormBorderStyle = FormBorderStyle.None;
-					Visible = false;
-					Thread.Sleep(100);
-					if (transtalate_fla == "开启")
-					{
-						form_width = Width / 2;
-					}
-					else
-					{
-						form_width = Width;
-					}
-					shupai_Right_txt = "";
-					shupai_Left_txt = "";
-					form_height = Height;
-					minico.Visible = false;
-					minico.Visible = true;
-					menu.Close();
-					menu_copy.Close();
-					auto_fla = "开启";
-					split_txt = "";
-					RichBoxBody.Text = "***该区域未发现文本***";
-					RichBoxBody_T.Text = "";
-					typeset_txt = "";
-					transtalate_fla = "关闭";
-					if (IniHelper.GetValue("工具栏", "翻译") == "False")
-					{
-						Trans_close.PerformClick();
-					}
-					Size = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
-					FormBorderStyle = FormBorderStyle.Sizable;
-					StaticValue.截图排斥 = true;
-					string mode_flag;
-					Point point;
-					Rectangle[] buildRects;
-					image_screen = RegionCaptureTasks.GetRegionImage_Mo(new RegionCaptureOptions
-					{
-						ShowMagnifier = false,
-						UseSquareMagnifier = false,
-						MagnifierPixelCount = 15,
-						MagnifierPixelSize = 10
-					}, out mode_flag, out point, out buildRects);
-					if (mode_flag == "高级截图")
-					{
-						var mode = RegionCaptureMode.Annotation;
-						var options = new RegionCaptureOptions();
-						using (var regionCaptureForm = new RegionCaptureForm(mode, options))
-						{
-							regionCaptureForm.Image_get = false;
-							regionCaptureForm.Prepare(image_screen);
-							regionCaptureForm.ShowDialog();
-							image_screen = null;
-							image_screen = regionCaptureForm.GetResultImage();
-							mode_flag = regionCaptureForm.Mode_flag;
-						}
-					}
-					HelpWin32.RegisterHotKey(Handle, 222, HelpWin32.KeyModifiers.None, Keys.Escape);
-					if (mode_flag == "贴图")
-					{
-						var locationPoint = new Point(point.X, point.Y);
-						new FmScreenPaste(image_screen, locationPoint).Show();
-						if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-						{
-							var value = IniHelper.GetValue("快捷键", "翻译文本");
-							var text = "None";
-							var text2 = "F9";
-							SetHotkey(text, text2, value, 205);
-						}
-						HelpWin32.UnregisterHotKey(Handle, 222);
-						StaticValue.截图排斥 = false;
-					}
-					else if (mode_flag == "区域多选")
-					{
-						if (image_screen == null)
-						{
-							if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-							{
-								var value2 = IniHelper.GetValue("快捷键", "翻译文本");
-								var text3 = "None";
-								var text4 = "F9";
-								SetHotkey(text3, text4, value2, 205);
-							}
-							HelpWin32.UnregisterHotKey(Handle, 222);
-							StaticValue.截图排斥 = false;
-						}
-						else
-						{
-							minico.Visible = true;
-							thread = new Thread(ShowLoading);
-							thread.Start();
-							ts = new TimeSpan(DateTime.Now.Ticks);
-							getSubPics_ocr(image_screen, buildRects);
-						}
-					}
-					else if (mode_flag == "取色")
-					{
-						if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-						{
-							var value3 = IniHelper.GetValue("快捷键", "翻译文本");
-							var text5 = "None";
-							var text6 = "F9";
-							SetHotkey(text5, text6, value3, 205);
-						}
-						HelpWin32.UnregisterHotKey(Handle, 222);
-						StaticValue.截图排斥 = false;
-						CommonHelper.ShowHelpMsg("已复制颜色");
-					}
-					else if (image_screen == null)
-					{
-						if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-						{
-							var value4 = IniHelper.GetValue("快捷键", "翻译文本");
-							var text7 = "None";
-							var text8 = "F9";
-							SetHotkey(text7, text8, value4, 205);
-						}
-						HelpWin32.UnregisterHotKey(Handle, 222);
-						StaticValue.截图排斥 = false;
-					}
-					else
-					{
-						if (mode_flag == "百度")
-						{
-							baidu_flags = "百度";
-						}
-						if (mode_flag == "拆分")
-						{
-							set_merge = false;
-							set_split = true;
-						}
-						if (mode_flag == "合并")
-						{
-							set_merge = true;
-							set_split = false;
-						}
-						if (mode_flag == "截图")
-						{
-							Clipboard.SetImage(image_screen);
-							if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-							{
-								var value5 = IniHelper.GetValue("快捷键", "翻译文本");
-								var text9 = "None";
-								var text10 = "F9";
-								SetHotkey(text9, text10, value5, 205);
-							}
-							HelpWin32.UnregisterHotKey(Handle, 222);
-							StaticValue.截图排斥 = false;
-							if (IniHelper.GetValue("截图音效", "粘贴板") == "True")
-							{
-								PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
-							}
-                            CommonHelper.ShowHelpMsg("已复制截图");
+		public void MainOCRQuickScreenShots()
+        {
+            if (StaticValue.IsCapture) return;
+            try
+            {
+                change_QQ_screenshot = false;
+                FormBorderStyle = FormBorderStyle.None;
+                Visible = false;
+                Thread.Sleep(100);
+                if (transtalate_fla == "开启")
+                {
+                    form_width = Width / 2;
+                }
+                else
+                {
+                    form_width = Width;
+                }
+                shupai_Right_txt = "";
+                shupai_Left_txt = "";
+                form_height = Height;
+                minico.Visible = false;
+                minico.Visible = true;
+                menu.Close();
+                menu_copy.Close();
+                auto_fla = "开启";
+                split_txt = "";
+                RichBoxBody.Text = "***该区域未发现文本***";
+                RichBoxBody_T.Text = "";
+                typeset_txt = "";
+                transtalate_fla = "关闭";
+                if (IniHelper.GetValue("工具栏", "翻译") == "False")
+                {
+                    Trans_close.PerformClick();
+                }
+                Size = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
+                FormBorderStyle = FormBorderStyle.Sizable;
+                StaticValue.IsCapture = true;
+                image_screen = RegionCaptureTasks.GetRegionImage_Mo(new RegionCaptureOptions
+                {
+                    ShowMagnifier = false,
+                    UseSquareMagnifier = false,
+                    MagnifierPixelCount = 15,
+                    MagnifierPixelSize = 10
+                }, out var mode_flag, out var point, out var buildRects);
+                if (mode_flag == "高级截图")
+                {
+                    var mode = RegionCaptureMode.Annotation;
+                    var options = new RegionCaptureOptions();
+                    using (var regionCaptureForm = new RegionCaptureForm(mode, options))
+                    {
+                        regionCaptureForm.Image_get = false;
+                        regionCaptureForm.Prepare(image_screen);
+                        regionCaptureForm.ShowDialog();
+                        image_screen = null;
+                        image_screen = regionCaptureForm.GetResultImage();
+                        mode_flag = regionCaptureForm.Mode_flag;
+                    }
+                }
+                HelpWin32.RegisterHotKey(Handle, 222, HelpWin32.KeyModifiers.None, Keys.Escape);
+                if (mode_flag == "贴图")
+                {
+                    var locationPoint = new Point(point.X, point.Y);
+                    new FmScreenPaste(image_screen, locationPoint).Show();
+                    if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                    {
+                        var value = IniHelper.GetValue("快捷键", "翻译文本");
+                        var text = "None";
+                        var text2 = "F9";
+                        SetHotkey(text, text2, value, 205);
+                    }
+                    HelpWin32.UnregisterHotKey(Handle, 222);
+                    StaticValue.IsCapture = false;
+                }
+                else if (mode_flag == "区域多选")
+                {
+                    if (image_screen == null)
+                    {
+                        if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                        {
+                            var value2 = IniHelper.GetValue("快捷键", "翻译文本");
+                            var text3 = "None";
+                            var text4 = "F9";
+                            SetHotkey(text3, text4, value2, 205);
                         }
-						else if (mode_flag == "自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
-						{
-							var filename = IniHelper.GetValue("配置", "截图位置") + "\\" + ReFileName(IniHelper.GetValue("配置", "截图位置"), "图片.Png");
-							image_screen.Save(filename, ImageFormat.Png);
-							StaticValue.截图排斥 = false;
-							if (IniHelper.GetValue("截图音效", "自动保存") == "True")
-							{
-								PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
-							}
-                            CommonHelper.ShowHelpMsg("已保存图片");
+                        HelpWin32.UnregisterHotKey(Handle, 222);
+                        StaticValue.IsCapture = false;
+                    }
+                    else
+                    {
+                        minico.Visible = true;
+                        thread = new Thread(ShowLoading);
+                        thread.Start();
+                        ts = new TimeSpan(DateTime.Now.Ticks);
+                        getSubPics_ocr(image_screen, buildRects);
+                    }
+                }
+                else if (mode_flag == "取色")
+                {
+                    if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                    {
+                        var value3 = IniHelper.GetValue("快捷键", "翻译文本");
+                        var text5 = "None";
+                        var text6 = "F9";
+                        SetHotkey(text5, text6, value3, 205);
+                    }
+                    HelpWin32.UnregisterHotKey(Handle, 222);
+                    StaticValue.IsCapture = false;
+                    CommonHelper.ShowHelpMsg("已复制颜色");
+                }
+                else if (image_screen == null)
+                {
+                    if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                    {
+                        var value4 = IniHelper.GetValue("快捷键", "翻译文本");
+                        var text7 = "None";
+                        var text8 = "F9";
+                        SetHotkey(text7, text8, value4, 205);
+                    }
+                    HelpWin32.UnregisterHotKey(Handle, 222);
+                    StaticValue.IsCapture = false;
+                }
+                else
+                {
+                    if (mode_flag == "百度")
+                    {
+                        baidu_flags = "百度";
+                    }
+                    if (mode_flag == "拆分")
+                    {
+                        set_merge = false;
+                        set_split = true;
+                    }
+                    if (mode_flag == "合并")
+                    {
+                        set_merge = true;
+                        set_split = false;
+                    }
+                    if (mode_flag == "截图")
+                    {
+                        Clipboard.SetImage(image_screen);
+                        if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                        {
+                            var value5 = IniHelper.GetValue("快捷键", "翻译文本");
+                            var text9 = "None";
+                            var text10 = "F9";
+                            SetHotkey(text9, text10, value5, 205);
                         }
-						else if (mode_flag == "多区域自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
-						{
-							getSubPics(image_screen, buildRects);
-							StaticValue.截图排斥 = false;
-							if (IniHelper.GetValue("截图音效", "自动保存") == "True")
-							{
-								PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
-							}
-                            CommonHelper.ShowHelpMsg("已保存图片");
-						}
-						else if (mode_flag == "保存")
-						{
-							var saveFileDialog = new SaveFileDialog();
-							saveFileDialog.Filter = "png图片(*.png)|*.png|jpg图片(*.jpg)|*.jpg|bmp图片(*.bmp)|*.bmp";
-							saveFileDialog.AddExtension = false;
-							saveFileDialog.FileName = string.Concat("tianruo_", DateTime.Now.Year.ToString(), "-", DateTime.Now.Month.ToString(), "-", DateTime.Now.Day.ToString(), "-", DateTime.Now.Ticks.ToString());
-							saveFileDialog.Title = "保存图片";
-							saveFileDialog.FilterIndex = 1;
-							saveFileDialog.RestoreDirectory = true;
-							if (saveFileDialog.ShowDialog() == DialogResult.OK)
-							{
-								var extension = Path.GetExtension(saveFileDialog.FileName);
-								if (extension.Equals(".jpg"))
-								{
-									image_screen.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
-								}
-								if (extension.Equals(".png"))
-								{
-									image_screen.Save(saveFileDialog.FileName, ImageFormat.Png);
-								}
-								if (extension.Equals(".bmp"))
-								{
-									image_screen.Save(saveFileDialog.FileName, ImageFormat.Bmp);
-								}
-							}
-							if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-							{
-								var value6 = IniHelper.GetValue("快捷键", "翻译文本");
-								var text11 = "None";
-								var text12 = "F9";
-								SetHotkey(text11, text12, value6, 205);
-							}
-							HelpWin32.UnregisterHotKey(Handle, 222);
-							StaticValue.截图排斥 = false;
-						}
-						else if (image_screen != null)
-						{
-							if (IniHelper.GetValue("工具栏", "分栏") == "True")
-							{
-								minico.Visible = true;
-								thread = new Thread(ShowLoading);
-								thread.Start();
-								ts = new TimeSpan(DateTime.Now.Ticks);
-								var image = image_screen;
-								var graphics = Graphics.FromImage(new Bitmap(image.Width, image.Height));
-								graphics.DrawImage(image, 0, 0, image.Width, image.Height);
-								graphics.Save();
-								graphics.Dispose();
-								((Bitmap)FindBundingBox_fences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
-								image.Dispose();
-								image_screen.Dispose();
-							}
-							else
-							{
-								minico.Visible = true;
-								thread = new Thread(ShowLoading);
-								thread.Start();
-								ts = new TimeSpan(DateTime.Now.Ticks);
-								var messageload = new Messageload();
-								messageload.ShowDialog();
-								if (messageload.DialogResult == DialogResult.OK)
-								{
-									esc_thread = new Thread(Main_OCR_Thread);
-									esc_thread.Start();
-								}
-							}
-						}
-					}
-				}
-				catch
-				{
-					StaticValue.截图排斥 = false;
-				}
-			}
-		}
+                        HelpWin32.UnregisterHotKey(Handle, 222);
+                        StaticValue.IsCapture = false;
+                        if (IniHelper.GetValue("截图音效", "粘贴板") == "True")
+                        {
+                            PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
+                        }
+                        CommonHelper.ShowHelpMsg("已复制截图");
+                    }
+                    else if (mode_flag == "自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
+                    {
+                        var filename = IniHelper.GetValue("配置", "截图位置") + "\\" + ReFileName(IniHelper.GetValue("配置", "截图位置"), "图片.Png");
+                        image_screen.Save(filename, ImageFormat.Png);
+                        StaticValue.IsCapture = false;
+                        if (IniHelper.GetValue("截图音效", "自动保存") == "True")
+                        {
+                            PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
+                        }
+                        CommonHelper.ShowHelpMsg("已保存图片");
+                    }
+                    else if (mode_flag == "多区域自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
+                    {
+                        getSubPics(image_screen, buildRects);
+                        StaticValue.IsCapture = false;
+                        if (IniHelper.GetValue("截图音效", "自动保存") == "True")
+                        {
+                            PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
+                        }
+                        CommonHelper.ShowHelpMsg("已保存图片");
+                    }
+                    else if (mode_flag == "保存")
+                    {
+                        var saveFileDialog = new SaveFileDialog();
+                        saveFileDialog.Filter = "png图片(*.png)|*.png|jpg图片(*.jpg)|*.jpg|bmp图片(*.bmp)|*.bmp";
+                        saveFileDialog.AddExtension = false;
+                        saveFileDialog.FileName = string.Concat("tianruo_", DateTime.Now.Year.ToString(), "-", DateTime.Now.Month.ToString(), "-", DateTime.Now.Day.ToString(), "-", DateTime.Now.Ticks.ToString());
+                        saveFileDialog.Title = "保存图片";
+                        saveFileDialog.FilterIndex = 1;
+                        saveFileDialog.RestoreDirectory = true;
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            var extension = Path.GetExtension(saveFileDialog.FileName);
+                            if (extension.Equals(".jpg"))
+                            {
+                                image_screen.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
+                            }
+                            if (extension.Equals(".png"))
+                            {
+                                image_screen.Save(saveFileDialog.FileName, ImageFormat.Png);
+                            }
+                            if (extension.Equals(".bmp"))
+                            {
+                                image_screen.Save(saveFileDialog.FileName, ImageFormat.Bmp);
+                            }
+                        }
+                        if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                        {
+                            var value6 = IniHelper.GetValue("快捷键", "翻译文本");
+                            var text11 = "None";
+                            var text12 = "F9";
+                            SetHotkey(text11, text12, value6, 205);
+                        }
+                        HelpWin32.UnregisterHotKey(Handle, 222);
+                        StaticValue.IsCapture = false;
+                    }
+                    else if (image_screen != null)
+                    {
+                        if (IniHelper.GetValue("工具栏", "分栏") == "True")
+                        {
+                            minico.Visible = true;
+                            thread = new Thread(ShowLoading);
+                            thread.Start();
+                            ts = new TimeSpan(DateTime.Now.Ticks);
+                            var image = image_screen;
+                            var graphics = Graphics.FromImage(new Bitmap(image.Width, image.Height));
+                            graphics.DrawImage(image, 0, 0, image.Width, image.Height);
+                            graphics.Save();
+                            graphics.Dispose();
+                            ((Bitmap)FindBundingBox_fences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
+                            image.Dispose();
+                            image_screen.Dispose();
+                        }
+                        else
+                        {
+                            minico.Visible = true;
+                            thread = new Thread(ShowLoading);
+                            thread.Start();
+                            ts = new TimeSpan(DateTime.Now.Ticks);
+                            var messageload = new Messageload();
+                            messageload.ShowDialog();
+                            if (messageload.DialogResult == DialogResult.OK)
+                            {
+                                esc_thread = new Thread(Main_OCR_Thread);
+                                esc_thread.Start();
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                StaticValue.IsCapture = false;
+            }
+        }
 
 		public void Main_OCR_Thread()
 		{
@@ -2012,7 +1796,7 @@ namespace TrOCR
 			}
 			if (interface_flag == "搜狗")
 			{
-				OCR_sougou2();
+				SougouOCR();
 				fmloading.FmlClose = "窗体已关闭";
 				Invoke(new ocr_thread(Main_OCR_Thread_last));
 				return;
@@ -2085,7 +1869,7 @@ namespace TrOCR
 		public void Main_OCR_Thread_last()
 		{
 			image_screen.Dispose();
-			StaticValue.截图排斥 = false;
+			StaticValue.IsCapture = false;
 			var text = typeset_txt;
 			text = check_str(text);
 			split_txt = check_str(split_txt);
@@ -2196,7 +1980,7 @@ namespace TrOCR
 				try
 				{
 					auto_fla = "";
-					Invoke(new translate(transtalate_Click));
+					Invoke(new translate(TransClick));
 				}
 				catch
 				{
@@ -2277,8 +2061,8 @@ namespace TrOCR
 			split_txt = "";
 			try
 			{
-				baidu_vip = Get_html(string.Format("{0}?{1}", "https://aip.baidubce.com/oauth/2.0/token", "grant_type=client_credentials&client_id=" + StaticValue.BD_API_ID + "&client_secret=" + StaticValue.BD_API_KEY));
-				if (baidu_vip == "")
+				baidu_vip = CommonHelper.GetHtmlContent("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" + StaticValue.BD_API_ID + "&client_secret=" + StaticValue.BD_API_KEY);
+				if (string.IsNullOrEmpty(baidu_vip))
 				{
 					MessageBox.Show("请检查密钥输入是否正确！", "提醒");
 				}
@@ -2287,35 +2071,25 @@ namespace TrOCR
 					var str = "CHN_ENG";
 					split_txt = "";
 					var img = image_screen;
-					var inArray = OCR_ImgToByte(img);
-					if (interface_flag == "中英")
-					{
-						str = "CHN_ENG";
-					}
-					if (interface_flag == "日语")
-					{
-						str = "JAP";
-					}
-					if (interface_flag == "韩语")
-					{
-						str = "KOR";
-					}
-					var s = "image=" + HttpUtility.UrlEncode(Convert.ToBase64String(inArray)) + "&language_type=" + str;
-					var bytes = Encoding.UTF8.GetBytes(s);
-					var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"]);
-					httpWebRequest.Method = "POST";
-					httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-					httpWebRequest.Timeout = 8000;
-					httpWebRequest.ReadWriteTimeout = 5000;
-					using (var requestStream = httpWebRequest.GetRequestStream())
-					{
-						requestStream.Write(bytes, 0, bytes.Length);
-					}
-					var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-					var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-					responseStream.Close();
-					var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["words_result"].ToString());
-					checked_txt(jarray, 1, "words");
+					var inArray = OcrHelper.ImgToBytes(img);
+					switch (interface_flag)
+                    {
+                        case "中英":
+                            str = "CHN_ENG";
+                            break;
+                        case "日语":
+                            str = "JAP";
+                            break;
+                        case "韩语":
+                            str = "KOR";
+                            break;
+                    }
+                    var s = "image=" + HttpUtility.UrlEncode(Convert.ToBase64String(inArray)) + "&language_type=" + str;
+                    var url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" +
+                              ((JObject) JsonConvert.DeserializeObject(baidu_vip))["access_token"];
+                    var value = CommonHelper.PostData(url, s);
+					var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["words_result"].ToString());
+					checked_txt(jArray, 1, "words");
 				}
 			}
 			catch
@@ -2366,8 +2140,7 @@ namespace TrOCR
 
 		public string OCR_sougou_SogouPost(string url, CookieContainer cookie, byte[] content)
 		{
-			var text = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 			httpWebRequest.Method = "POST";
 			httpWebRequest.CookieContainer = cookie;
 			httpWebRequest.Timeout = 10000;
@@ -2386,7 +2159,8 @@ namespace TrOCR
 			string result;
 			try
 			{
-				using (var httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
+                var text = "";
+                using (var httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
 				{
 					var stream = httpWebResponse.GetResponseStream();
 					if (httpWebResponse.ContentEncoding.ToLower().Contains("gzip"))
@@ -2412,7 +2186,7 @@ namespace TrOCR
 		public string OCR_sougou_SogouGet(string url, CookieContainer cookie, string refer)
 		{
 			var text = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
+			var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 			httpWebRequest.Method = "GET";
 			httpWebRequest.CookieContainer = cookie;
 			httpWebRequest.Referer = refer;
@@ -2460,30 +2234,12 @@ namespace TrOCR
 			return OCR_sougou_SogouGet(url2, cookie, refer);
 		}
 
-		private byte[] OCR_ImgToByte(Image img)
-		{
-			byte[] result;
-			try
-			{
-				var memoryStream = new MemoryStream();
-				img.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				result = array;
-			}
-			catch
-			{
-				result = null;
-			}
-			return result;
-		}
+		
 
 		public byte[] OCR_sougou_Content_Length(Image img)
 		{
 			var bytes = Encoding.UTF8.GetBytes("------WebKitFormBoundary1ZZDB9E4sro7pf0g\r\nContent-Disposition: form-data; name=\"pic_path\"; filename=\"test2018.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n");
-			var array = OCR_ImgToByte(img);
+			var array = OcrHelper.ImgToBytes(img);
 			var bytes2 = Encoding.UTF8.GetBytes("\r\n------WebKitFormBoundary1ZZDB9E4sro7pf0g--\r\n");
 			var array2 = new byte[bytes.Length + array.Length + bytes2.Length];
 			bytes.CopyTo(array2, 0);
@@ -2492,38 +2248,21 @@ namespace TrOCR
 			return array2;
 		}
 
-		public void OCR_sougou2()
+		public void SougouOCR()
 		{
 			try
 			{
 				split_txt = "";
-				var text = "------WebKitFormBoundary8orYTmcj8BHvQpVU";
 				Image image = ZoomImage((Bitmap)image_screen, 120, 120);
-				var b = OCR_ImgToByte(image);
-				var s = text + "\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-				var s2 = "\r\n" + text + "--\r\n";
-				var bytes = Encoding.ASCII.GetBytes(s);
-				var bytes2 = Encoding.ASCII.GetBytes(s2);
-				var array = Mergebyte(bytes, b, bytes2);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ocr.shouji.sogou.com/v2/ocr/json");
-				httpWebRequest.Timeout = 8000;
-				httpWebRequest.Method = "POST";
-				httpWebRequest.ContentType = "multipart/form-data; boundary=" + text.Substring(2);
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(array, 0, array.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString());
+                var value = OcrHelper.SgOcr(image);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString());
 				if (IniHelper.GetValue("工具栏", "分段") == "True")
 				{
-					checked_location_sougou(jarray, 2, "content", "frame");
+					checked_location_sougou(jArray, 2, "content", "frame");
 				}
 				else
 				{
-					checked_txt(jarray, 2, "content");
+					checked_txt(jArray, 2, "content");
 				}
 				image.Dispose();
 			}
@@ -2541,7 +2280,7 @@ namespace TrOCR
 			}
 		}
 
-		public static byte[] Mergebyte(byte[] a, byte[] b, byte[] c)
+		public static byte[] MergeByte(byte[] a, byte[] b, byte[] c)
 		{
 			var array = new byte[a.Length + b.Length + c.Length];
 			a.CopyTo(array, 0);
@@ -2695,94 +2434,81 @@ namespace TrOCR
 		private void OCR_foreach(string name)
 		{
 			var filePath = AppDomain.CurrentDomain.BaseDirectory + "Data\\config.ini";
-			if (name == "韩语")
-			{
-				interface_flag = "韩语";
-				Refresh();
-				baidu.Text = "百度√";
-				kor.Text = "韩语√";
-			}
-			if (name == "日语")
-			{
-				interface_flag = "日语";
-				Refresh();
-				baidu.Text = "百度√";
-				jap.Text = "日语√";
-			}
-			if (name == "中英")
-			{
-				interface_flag = "中英";
-				Refresh();
-				baidu.Text = "百度√";
-				ch_en.Text = "中英√";
-			}
-			if (name == "搜狗")
-			{
-				interface_flag = "搜狗";
-				Refresh();
-				sougou.Text = "搜狗√";
-			}
-			if (name == "腾讯")
-			{
-				interface_flag = "腾讯";
-				Refresh();
-				tencent.Text = "腾讯√";
-			}
-			if (name == "有道")
-			{
-				interface_flag = "有道";
-				Refresh();
-				youdao.Text = "有道√";
-			}
-			if (name == "公式")
-			{
-				interface_flag = "公式";
-				Refresh();
-				Mathfuntion.Text = "公式√";
-			}
-			if (name == "百度表格")
-			{
-				interface_flag = "百度表格";
-				Refresh();
-				ocr_table.Text = "表格√";
-				baidu_table.Text = "百度√";
-			}
-			if (name == "阿里表格")
-			{
-				interface_flag = "阿里表格";
-				Refresh();
-				ocr_table.Text = "表格√";
-				ali_table.Text = "阿里√";
-			}
-			if (name == "从左向右")
-			{
-				if (!File.Exists("cvextern.dll"))
-				{
-					MessageBox.Show("请从蓝奏网盘中下载cvextern.dll大小约25m，点击确定自动弹出网页。\r\n将下载后的文件与 天若OCR文字识别.exe 这个文件放在一起。");
-					Process.Start("https://www.lanzous.com/i1ab3vg");
-				}
-				else
-				{
-					interface_flag = "从左向右";
-					Refresh();
-					shupai.Text = "竖排√";
-					left_right.Text = "从左向右√";
-				}
-			}
-			if (name == "从右向左")
-			{
-				if (!File.Exists("cvextern.dll"))
-				{
-					MessageBox.Show("请从蓝奏网盘中下载cvextern.dll大小约25m，点击确定自动弹出网页。\r\n将下载后的文件与 天若OCR文字识别.exe 这个文件放在一起。");
-					Process.Start("https://www.lanzous.com/i1ab3vg");
-					return;
-				}
-				interface_flag = "从右向左";
-				Refresh();
-				shupai.Text = "竖排√";
-				righ_left.Text = "从右向左√";
-			}
-			HelpWin32.IniFileHelper.SetValue("配置", "接口", interface_flag, filePath);
+			switch (name)
+            {
+                case "韩语":
+                    interface_flag = "韩语";
+                    Refresh();
+                    baidu.Text = "百度√";
+                    kor.Text = "韩语√";
+                    break;
+                case "日语":
+                    interface_flag = "日语";
+                    Refresh();
+                    baidu.Text = "百度√";
+                    jap.Text = "日语√";
+                    break;
+                case "中英":
+                    interface_flag = "中英";
+                    Refresh();
+                    baidu.Text = "百度√";
+                    ch_en.Text = "中英√";
+                    break;
+                case "搜狗":
+                    interface_flag = "搜狗";
+                    Refresh();
+                    sougou.Text = "搜狗√";
+                    break;
+                case "腾讯":
+                    interface_flag = "腾讯";
+                    Refresh();
+                    tencent.Text = "腾讯√";
+                    break;
+                case "有道":
+                    interface_flag = "有道";
+                    Refresh();
+                    youdao.Text = "有道√";
+                    break;
+                case "公式":
+                    interface_flag = "公式";
+                    Refresh();
+                    Mathfuntion.Text = "公式√";
+                    break;
+                case "百度表格":
+                    interface_flag = "百度表格";
+                    Refresh();
+                    ocr_table.Text = "表格√";
+                    baidu_table.Text = "百度√";
+                    break;
+                case "阿里表格":
+                    interface_flag = "阿里表格";
+                    Refresh();
+                    ocr_table.Text = "表格√";
+                    ali_table.Text = "阿里√";
+                    break;
+                case "从左向右" when !File.Exists("cvextern.dll"):
+                    MessageBox.Show("请从蓝奏网盘中下载cvextern.dll大小约25m，点击确定自动弹出网页。\r\n将下载后的文件与 天若OCR文字识别.exe 这个文件放在一起。");
+                    Process.Start("https://www.lanzous.com/i1ab3vg");
+                    break;
+                case "从左向右":
+                    interface_flag = "从左向右";
+                    Refresh();
+                    shupai.Text = "竖排√";
+                    left_right.Text = "从左向右√";
+                    break;
+                case "从右向左" when !File.Exists("cvextern.dll"):
+                    MessageBox.Show("请从蓝奏网盘中下载cvextern.dll大小约25m，点击确定自动弹出网页。\r\n将下载后的文件与 天若OCR文字识别.exe 这个文件放在一起。");
+                    Process.Start("https://www.lanzous.com/i1ab3vg");
+                    return;
+                case "从右向左":
+                    interface_flag = "从右向左";
+                    Refresh();
+                    shupai.Text = "竖排√";
+                    righ_left.Text = "从右向左√";
+                    break;
+            }
+
+            HelpWin32.IniFileHelper.SetValue("配置", "接口", interface_flag, filePath);
 		}
 
 		private void OCR_shupai_Click(object sender, EventArgs e)
@@ -2810,7 +2536,7 @@ namespace TrOCR
 			var text = "";
 			try
 			{
-				baidu_vip = Get_html(string.Format("{0}?{1}", "https://aip.baidubce.com/oauth/2.0/token", "grant_type=client_credentials&client_id=" + StaticValue.BD_API_ID + "&client_secret=" + StaticValue.BD_API_KEY));
+				baidu_vip = CommonHelper.GetHtmlContent(string.Format("{0}?{1}", "https://aip.baidubce.com/oauth/2.0/token", "grant_type=client_credentials&client_id=" + StaticValue.BD_API_ID + "&client_secret=" + StaticValue.BD_API_KEY));
 				if (baidu_vip == "")
 				{
 					MessageBox.Show("请检查密钥输入是否正确！", "提醒");
@@ -2819,7 +2545,7 @@ namespace TrOCR
 				{
 					split_txt = "";
 					var img = image_screen;
-					var inArray = OCR_ImgToByte(img);
+					var inArray = OcrHelper.ImgToBytes(img);
 					var s = "image=" + HttpUtility.UrlEncode(Convert.ToBase64String(inArray));
 					var bytes = Encoding.UTF8.GetBytes(s);
 					var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"]);
@@ -2849,7 +2575,7 @@ namespace TrOCR
 			catch
 			{
 				MessageBox.Show(text, "提醒");
-				StaticValue.截图排斥 = false;
+				StaticValue.IsCapture = false;
 				esc = "退出";
 				fmloading.FmlClose = "窗体已关闭";
 				esc_thread.Abort();
@@ -2861,7 +2587,6 @@ namespace TrOCR
 			try
 			{
 				split_txt = "";
-				var text = "------WebKitFormBoundaryRDEqU0w702X9cWPJ";
 				var image = image_screen;
 				if (image.Width > 90 && image.Height < 90)
 				{
@@ -2894,29 +2619,12 @@ namespace TrOCR
 				{
 					image = image_screen;
 				}
-				var b = OCR_ImgToByte(image);
-				var s = text + "\r\nContent-Disposition: form-data; name=\"image_file\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-				var s2 = "\r\n" + text + "--\r\n";
-				var bytes = Encoding.ASCII.GetBytes(s);
-				var bytes2 = Encoding.ASCII.GetBytes(s2);
-				var array = Mergebyte(bytes, b, bytes2);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://ai.qq.com/cgi-bin/appdemo_handwritingocr");
-				httpWebRequest.Method = "POST";
-				httpWebRequest.Referer = "http://ai.qq.com/product/ocr.shtml";
-				httpWebRequest.Headers.Add("Accept-Encoding", "gzip,deflate");
-				httpWebRequest.ContentType = "multipart/form-data; boundary=" + text.Substring(2);
-				httpWebRequest.Timeout = 8000;
-				httpWebRequest.ReadWriteTimeout = 2000;
-				var buffer = array;
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(buffer, 0, array.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["item_list"].ToString());
-				checked_txt(jarray, 1, "itemstring");
+                var text = "------WebKitFormBoundaryRDEqU0w702X9cWPJ";
+                var url = "https://ai.qq.com/cgi-bin/appdemo_handwritingocr";
+                var refer = "http://ai.qq.com/product/ocr.shtml";
+                var value = OcrHelper.CommPost(image, text, url, refer);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["item_list"].ToString());
+				checked_txt(jArray, 1, "itemstring");
 			}
 			catch
 			{
@@ -3054,13 +2762,13 @@ namespace TrOCR
 			var bitmap2 = Image.FromHbitmap(bitmap.GetHbitmap());
 			bitmap2.Save(saveFilePath, ImageFormat.Jpeg);
 			image_screen = bitmap2;
-			OCR_baidu_use();
+			BaiduOcr();
 			bitmap2.Dispose();
 			bitmap.Dispose();
 			graphics.Dispose();
 		}
 
-		public void OCR_baidu_use()
+		public void BaiduOcr()
 		{
 			split_txt = "";
 			try
@@ -3068,45 +2776,23 @@ namespace TrOCR
 				var str = "CHN_ENG";
 				split_txt = "";
 				var image = image_screen;
-				var memoryStream = new MemoryStream();
-				image.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var array = OcrHelper.ImgToBytes(image);
+				var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+				var value = CommonHelper.PostData("http://ai.baidu.com/tech/ocr/general", data);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var words = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					words[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
 				var text2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					text2 += array2[j];
-				}
+				foreach (var t in words)
+                {
+                    text2 += t;
+                }
 				shupai_Right_txt = (shupai_Right_txt + text + "\r\n").Replace("\r\n\r\n", "");
 				shupai_Left_txt = text2.Replace("\r\n\r\n", "");
 				MessageBox.Show(shupai_Left_txt);
@@ -3117,80 +2803,9 @@ namespace TrOCR
 			}
 		}
 
-		public void OCR_sougou_use()
-		{
-			try
-			{
-				split_txt = "";
-				var text = "------WebKitFormBoundary8orYTmcj8BHvQpVU";
-				var image = image_screen;
-				var i = image.Width;
-				var j = image.Height;
-				if (i < 300)
-				{
-					while (i < 300)
-					{
-						j *= 2;
-						i *= 2;
-					}
-				}
-				if (j < 120)
-				{
-					while (j < 120)
-					{
-						j *= 2;
-						i *= 2;
-					}
-				}
-				var bitmap = new Bitmap(i, j);
-				var graphics = Graphics.FromImage(bitmap);
-				graphics.DrawImage(image, 0, 0, i, j);
-				graphics.Save();
-				graphics.Dispose();
-				image = new Bitmap(bitmap);
-				var b = OCR_ImgToByte(image);
-				var s = text + "\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-				var s2 = "\r\n" + text + "--\r\n";
-				var bytes = Encoding.ASCII.GetBytes(s);
-				var bytes2 = Encoding.ASCII.GetBytes(s2);
-				var array = Mergebyte(bytes, b, bytes2);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ocr.shouji.sogou.com/v2/ocr/json");
-				httpWebRequest.Timeout = 8000;
-				httpWebRequest.Method = "POST";
-				httpWebRequest.ContentType = "multipart/form-data; boundary=" + text.Substring(2);
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(array, 0, array.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString());
-				var text2 = "";
-				for (var k = 0; k < jarray.Count; k++)
-				{
-					var jobject = JObject.Parse(jarray[k].ToString());
-					text2 += jobject["content"].ToString().Replace("\r", "").Replace("\n", "");
-				}
-				shupai_Right_txt = shupai_Right_txt + text2 + "\r\n";
-			}
-			catch
-			{
-				if (esc != "退出")
-				{
-					RichBoxBody.Text = "***该区域未发现文本***";
-				}
-				else
-				{
-					RichBoxBody.Text = "***该区域未发现文本***";
-					esc = "";
-				}
-			}
-		}
-
 		public bool split_paragraph(string text)
 		{
-			return "。？！?!：".IndexOf(text) != -1;
+			return "。？！?!：".IndexOf(text, StringComparison.Ordinal) != -1;
 		}
 
 		public void baidu_image_a(object objEvent)
@@ -3745,7 +3360,7 @@ namespace TrOCR
 		{
 			try
 			{
-				StaticValue.截图排斥 = false;
+				StaticValue.IsCapture = false;
 				esc = "退出";
 				fmloading.FmlClose = "窗体已关闭";
 				esc_thread.Abort();
@@ -3826,7 +3441,7 @@ namespace TrOCR
 		public void change_pinyin_Click(object sender, EventArgs e)
 		{
 			pinyin_flag = true;
-			transtalate_Click();
+			TransClick();
 		}
 
 		public string Post_Html_pinyin(string url, string post_str)
@@ -3920,7 +3535,7 @@ namespace TrOCR
 			SendKeys.SendWait("^c");
 			SendKeys.Flush();
 			RichBoxBody.Text = Clipboard.GetText();
-			transtalate_Click();
+			TransClick();
 			FormBorderStyle = FormBorderStyle.Sizable;
 			Visible = true;
 			HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
@@ -4168,7 +3783,7 @@ namespace TrOCR
 				{
 					if (interface_flag == "搜狗")
 					{
-						OCR_sougou2();
+						SougouOCR();
 					}
 					if (interface_flag == "腾讯")
 					{
@@ -4213,48 +3828,6 @@ namespace TrOCR
 			fmloading.FmlClose = "窗体已关闭";
 			Invoke(new ocr_thread(Main_OCR_Thread_last));
 			return array;
-		}
-
-		public void OCR_sougou_bat(Bitmap image_screen)
-		{
-			try
-			{
-				split_txt = "";
-				var text = "------WebKitFormBoundary8orYTmcj8BHvQpVU";
-				Image image = ZoomImage(image_screen, 120, 120);
-				var b = OCR_ImgToByte(image);
-				var s = text + "\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-				var s2 = "\r\n" + text + "--\r\n";
-				var bytes = Encoding.ASCII.GetBytes(s);
-				var bytes2 = Encoding.ASCII.GetBytes(s2);
-				var array = Mergebyte(bytes, b, bytes2);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ocr.shouji.sogou.com/v2/ocr/json");
-				httpWebRequest.Timeout = 8000;
-				httpWebRequest.Method = "POST";
-				httpWebRequest.ContentType = "multipart/form-data; boundary=" + text.Substring(2);
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(array, 0, array.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString());
-				checked_txt(jarray, 2, "content");
-				image.Dispose();
-			}
-			catch
-			{
-				if (esc != "退出")
-				{
-					RichBoxBody.Text = "***该区域未发现文本***";
-				}
-				else
-				{
-					RichBoxBody.Text = "***该区域未发现文本***";
-					esc = "";
-				}
-			}
 		}
 
 		public Image BoundingBox_fences(Image<Gray, byte> src, Image<Bgr, byte> draw)
@@ -4518,7 +4091,7 @@ namespace TrOCR
 			menu.Hide();
 			RichBoxBody.Hide = "";
 			RichBoxBody_T.Hide = "";
-			Main_OCR_Quickscreenshots();
+			MainOCRQuickScreenShots();
 		}
 
 		public int en_count(string text)
@@ -4877,7 +4450,7 @@ namespace TrOCR
 			split_txt = "";
 			try
 			{
-				baidu_vip = Get_html(string.Format("{0}?{1}", "https://aip.baidubce.com/oauth/2.0/token", "grant_type=client_credentials&client_id=" + StaticValue.BD_API_ID + "&client_secret=" + StaticValue.BD_API_KEY));
+				baidu_vip = CommonHelper.GetHtmlContent(string.Format("{0}?{1}", "https://aip.baidubce.com/oauth/2.0/token", "grant_type=client_credentials&client_id=" + StaticValue.BD_API_ID + "&client_secret=" + StaticValue.BD_API_KEY));
 				if (baidu_vip == "")
 				{
 					MessageBox.Show("请检查密钥输入是否正确！", "提醒");
@@ -4917,7 +4490,7 @@ namespace TrOCR
 							break;
 						}
 						Thread.Sleep(120);
-						text = Post_Html("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"], post_str);
+						text = CommonHelper.PostData("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"], post_str);
 					}
 					if (!text.Contains("image recognize error"))
 					{
@@ -5017,7 +4590,7 @@ namespace TrOCR
 			}
 			image_screen.Dispose();
 			GC.Collect();
-			StaticValue.截图排斥 = false;
+			StaticValue.IsCapture = false;
 			FormBorderStyle = FormBorderStyle.Sizable;
 			Visible = true;
 			base.Show();
@@ -5301,7 +4874,7 @@ namespace TrOCR
 			try
 			{
 				var img = image_screen;
-				var inArray = OCR_ImgToByte(img);
+				var inArray = OcrHelper.ImgToBytes(img);
 				var s = "{\t\"formats\": [\"latex_styled\", \"text\"],\t\"metadata\": {\t\t\"count\": 1,\t\t\"platform\": \"windows 10\",\t\t\"skip_recrop\": true,\t\t\"user_id\": \"123ab2a82ea246a0b011a37183c87bab\",\t\t\"version\": \"snip.windows@00.00.0083\"\t},\t\"ocr\": [\"text\", \"math\"],\t\"src\": \"data:image/jpeg;base64," + Convert.ToBase64String(inArray) + "\"}";
 				var bytes = Encoding.UTF8.GetBytes(s);
 				var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://api.mathpix.com/v3/latex");
