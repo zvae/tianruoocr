@@ -347,7 +347,11 @@ namespace TrOCR.Helper
 
         public static string LangDetect(string text)
         {
-            text = HttpUtility.UrlEncode(Regex.Replace(text, " +", "+"));
+            var mt = Regex.Match(text, "[.。，,！!?？]");
+            if (mt.Success)
+            {
+                text = text.Substring(0, mt.Index);
+            }
             var url = "https://fanyi.baidu.com/langdetect?query=" + text;
             var html = GetHtmlContent(url);
             if (string.IsNullOrEmpty(html))

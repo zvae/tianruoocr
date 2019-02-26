@@ -1007,8 +1007,8 @@ namespace TrOCR
             {
                 var text = htmltxt.Replace("***", "");
                 var lang = CommonHelper.LangDetect(text);
-                var url = "https://fanyi.baidu.com/gettts?lan=" + lang + "&text=" + HttpUtility.UrlEncode(text) +
-                          "&vol=9&per=0&spd=6&pit=4&source=web&ctp=1";
+                var url= "https://fanyi.baidu.com/gettts?lan=" + lang + "&text=" + HttpUtility.UrlEncode(text) +
+                                   "&vol=9&per=0&spd=6&pit=4&source=web&ctp=1";
                 ttsData = new WebClient().DownloadData(url);
                 if (speak_copyb == "朗读" || voice_count == 0)
                 {
@@ -4775,7 +4775,7 @@ namespace TrOCR
 			{
 				var img = image_screen;
 				var inArray = OcrHelper.ImgToBytes(img);
-				var s = "{\t\"formats\": [\"latex_styled\", \"text\"],\t\"metadata\": {\t\t\"count\": 1,\t\t\"platform\": \"windows 10\",\t\t\"skip_recrop\": true,\t\t\"user_id\": \"123ab2a82ea246a0b011a37183c87bab\",\t\t\"version\": \"snip.windows@00.00.0083\"\t},\t\"ocr\": [\"text\", \"math\"],\t\"src\": \"data:image/jpeg;base64," + Convert.ToBase64String(inArray) + "\"}";
+				var s = "{\t\"formats\": [\"latex_styled\", \"text\"],\t\"metadata\": {\t\t\"count\": 0,\t\t\"platform\": \"windows 10\",\t\t\"skip_recrop\": true,\t\t\"user_id\": \"\",\t\t\"version\": \"snip.windows@01.02.0027\"\t},\t\"ocr\": [\"text\", \"math\"],\t\"src\": \"data:image/jpeg;base64," + Convert.ToBase64String(inArray) + "\"}";
 				var bytes = Encoding.UTF8.GetBytes(s);
 				var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://api.mathpix.com/v3/latex");
 				httpWebRequest.Method = "POST";
