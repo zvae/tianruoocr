@@ -13,10 +13,10 @@ namespace TrOCR.Helper
 	public class HelpRepaint
 	{
 
-		public class ColorItemx
+		public class ColorItemX
 		{
 
-			public ColorItemx(string name, Color clr)
+			public ColorItemX(string name, Color clr)
 			{
 				Name = name;
 				ItemColor = clr;
@@ -25,70 +25,33 @@ namespace TrOCR.Helper
 
 			public Color ItemColor
 			{
-				get
-				{
-					return color;
-				}
-				set
-				{
-					color = value;
-				}
-			}
+				get => color;
+                set => color = value;
+            }
 
 
-			public string Name
-			{
-				get
-				{
-					return name;
-				}
-				set
-				{
-					name = value;
-				}
-			}
+			public string Name { get; set; }
 
-			public string name;
-
-			public Color color;
+            public Color color;
 		}
 
-		public class HWColorPicker : FloatLayerBase
+		public sealed class HwColorPicker : FloatLayerBase
 		{
 
-			public Color SelectedColor
-			{
-				get
-				{
-					return selectedColor;
-				}
-			}
+			public Color SelectedColor => selectedColor;
 
 
-			[DefaultValue(true)]
+            [DefaultValue(true)]
 			[Description("是否显示颜色提示")]
-			public bool ShowTip
-			{
-				get
-				{
-					return showTip;
-				}
-				set
-				{
-					showTip = value;
-				}
-			}
+			public bool ShowTip { get; set; }
 
 
-			[DefaultValue(typeof(Color), "255, 238, 194")]
+            [DefaultValue(typeof(Color), "255, 238, 194")]
 			[Description("高亮背景色")]
-			public Color HoverBKColor
+			public Color HoverBkColor
 			{
-				get
-				{
-					return hoverBKColor;
-				}
-				set
+				get => hoverBKColor;
+                set
 				{
 					var flag = hoverBKColor != value;
 					var flag2 = flag;
@@ -122,25 +85,17 @@ namespace TrOCR.Helper
 				}
 			}
 
-			public List<ColorItemx> ColorTable
-			{
-				get
-				{
-					return colorTable;
-				}
-			}
+			public List<ColorItemX> ColorTable => colorTable;
 
-			public HWColorPicker()
+            public HwColorPicker()
 			{
 				Font = new Font(Font.Name, 9f / StaticValue.DpiFactor, Font.Style, Font.Unit, Font.GdiCharSet, Font.GdiVerticalFont);
 				hoverItem = -1;
 				InitializeComponent();
 				InitColor();
 				CalcWindowSize();
-				sf = new StringFormat();
-				sf.Alignment = StringAlignment.Center;
-				sf.LineAlignment = StringAlignment.Center;
-				HoverBKColor = Color.FromArgb(255, 238, 194);
+                sf = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center};
+                HoverBkColor = Color.FromArgb(255, 238, 194);
 				ShowTip = true;
 			}
 
@@ -177,15 +132,7 @@ namespace TrOCR.Helper
 				var flag18 = flag17;
 				var flag19 = flag18;
 				var flag20 = flag19;
-				Rectangle result;
-				if (flag20)
-				{
-					result = Rectangle.FromLTRB(0, 0, 0, 0);
-				}
-				else
-				{
-					result = new Rectangle(index % 8 * 18 + 3, index / 8 * 18 + 3, 18, 18);
-				}
+                var result = flag20 ? Rectangle.FromLTRB(0, 0, 0, 0) : new Rectangle(index % 8 * 18 + 3, index / 8 * 18 + 3, 18, 18);
 				return result;
 			}
 
@@ -340,49 +287,49 @@ namespace TrOCR.Helper
 
 			public void InitColor()
 			{
-				colorTable = new List<ColorItemx>();
+				colorTable = new List<ColorItemX>();
 				colorTable.AddRange(new[]
 				{
-					new ColorItemx("黑色", Color.FromArgb(0, 0, 0)),
-					new ColorItemx("褐色", Color.FromArgb(153, 51, 0)),
-					new ColorItemx("橄榄色", Color.FromArgb(51, 51, 0)),
-					new ColorItemx("深绿", Color.FromArgb(0, 51, 0)),
-					new ColorItemx("深青", Color.FromArgb(0, 51, 102)),
-					new ColorItemx("深蓝", Color.FromArgb(0, 0, 128)),
-					new ColorItemx("靛蓝", Color.FromArgb(51, 51, 153)),
-					new ColorItemx("灰色-80%", Color.FromArgb(51, 51, 51)),
-					new ColorItemx("深红", Color.FromArgb(128, 0, 0)),
-					new ColorItemx("橙色", Color.FromArgb(255, 102, 0)),
-					new ColorItemx("深黄", Color.FromArgb(128, 128, 0)),
-					new ColorItemx("绿色", Color.FromArgb(0, 128, 0)),
-					new ColorItemx("青色", Color.FromArgb(0, 128, 128)),
-					new ColorItemx("蓝色", Color.FromArgb(0, 0, 255)),
-					new ColorItemx("蓝灰", Color.FromArgb(102, 102, 153)),
-					new ColorItemx("灰色-50%", Color.FromArgb(128, 128, 128)),
-					new ColorItemx("红色", Color.FromArgb(255, 0, 0)),
-					new ColorItemx("浅橙", Color.FromArgb(255, 153, 0)),
-					new ColorItemx("酸橙", Color.FromArgb(153, 204, 0)),
-					new ColorItemx("海绿", Color.FromArgb(51, 153, 102)),
-					new ColorItemx("水绿", Color.FromArgb(51, 204, 204)),
-					new ColorItemx("浅蓝", Color.FromArgb(51, 102, 255)),
-					new ColorItemx("紫罗兰", Color.FromArgb(128, 0, 128)),
-					new ColorItemx("灰色-40%", Color.FromArgb(153, 153, 153)),
-					new ColorItemx("粉红", Color.FromArgb(255, 0, 255)),
-					new ColorItemx("金色", Color.FromArgb(255, 204, 0)),
-					new ColorItemx("黄色", Color.FromArgb(255, 255, 0)),
-					new ColorItemx("鲜绿", Color.FromArgb(0, 255, 0)),
-					new ColorItemx("青绿", Color.FromArgb(0, 255, 255)),
-					new ColorItemx("天蓝", Color.FromArgb(0, 204, 255)),
-					new ColorItemx("梅红", Color.FromArgb(153, 51, 102)),
-					new ColorItemx("灰色-25%", Color.FromArgb(192, 192, 192)),
-					new ColorItemx("玫瑰红", Color.FromArgb(255, 153, 204)),
-					new ColorItemx("茶色", Color.FromArgb(255, 204, 153)),
-					new ColorItemx("浅黄", Color.FromArgb(255, 255, 204)),
-					new ColorItemx("浅绿", Color.FromArgb(204, 255, 204)),
-					new ColorItemx("浅青绿", Color.FromArgb(204, 255, 255)),
-					new ColorItemx("淡蓝", Color.FromArgb(153, 204, 255)),
-					new ColorItemx("淡紫", Color.FromArgb(204, 153, 255)),
-					new ColorItemx("白色", Color.FromArgb(255, 255, 255))
+					new ColorItemX("黑色", Color.FromArgb(0, 0, 0)),
+					new ColorItemX("褐色", Color.FromArgb(153, 51, 0)),
+					new ColorItemX("橄榄色", Color.FromArgb(51, 51, 0)),
+					new ColorItemX("深绿", Color.FromArgb(0, 51, 0)),
+					new ColorItemX("深青", Color.FromArgb(0, 51, 102)),
+					new ColorItemX("深蓝", Color.FromArgb(0, 0, 128)),
+					new ColorItemX("靛蓝", Color.FromArgb(51, 51, 153)),
+					new ColorItemX("灰色-80%", Color.FromArgb(51, 51, 51)),
+					new ColorItemX("深红", Color.FromArgb(128, 0, 0)),
+					new ColorItemX("橙色", Color.FromArgb(255, 102, 0)),
+					new ColorItemX("深黄", Color.FromArgb(128, 128, 0)),
+					new ColorItemX("绿色", Color.FromArgb(0, 128, 0)),
+					new ColorItemX("青色", Color.FromArgb(0, 128, 128)),
+					new ColorItemX("蓝色", Color.FromArgb(0, 0, 255)),
+					new ColorItemX("蓝灰", Color.FromArgb(102, 102, 153)),
+					new ColorItemX("灰色-50%", Color.FromArgb(128, 128, 128)),
+					new ColorItemX("红色", Color.FromArgb(255, 0, 0)),
+					new ColorItemX("浅橙", Color.FromArgb(255, 153, 0)),
+					new ColorItemX("酸橙", Color.FromArgb(153, 204, 0)),
+					new ColorItemX("海绿", Color.FromArgb(51, 153, 102)),
+					new ColorItemX("水绿", Color.FromArgb(51, 204, 204)),
+					new ColorItemX("浅蓝", Color.FromArgb(51, 102, 255)),
+					new ColorItemX("紫罗兰", Color.FromArgb(128, 0, 128)),
+					new ColorItemX("灰色-40%", Color.FromArgb(153, 153, 153)),
+					new ColorItemX("粉红", Color.FromArgb(255, 0, 255)),
+					new ColorItemX("金色", Color.FromArgb(255, 204, 0)),
+					new ColorItemX("黄色", Color.FromArgb(255, 255, 0)),
+					new ColorItemX("鲜绿", Color.FromArgb(0, 255, 0)),
+					new ColorItemX("青绿", Color.FromArgb(0, 255, 255)),
+					new ColorItemX("天蓝", Color.FromArgb(0, 204, 255)),
+					new ColorItemX("梅红", Color.FromArgb(153, 51, 102)),
+					new ColorItemX("灰色-25%", Color.FromArgb(192, 192, 192)),
+					new ColorItemX("玫瑰红", Color.FromArgb(255, 153, 204)),
+					new ColorItemX("茶色", Color.FromArgb(255, 204, 153)),
+					new ColorItemX("浅黄", Color.FromArgb(255, 255, 204)),
+					new ColorItemX("浅绿", Color.FromArgb(204, 255, 204)),
+					new ColorItemX("浅青绿", Color.FromArgb(204, 255, 255)),
+					new ColorItemX("淡蓝", Color.FromArgb(153, 204, 255)),
+					new ColorItemX("淡紫", Color.FromArgb(204, 153, 255)),
+					new ColorItemX("白色", Color.FromArgb(255, 255, 255))
 				});
 			}
 
@@ -412,7 +359,7 @@ namespace TrOCR.Helper
 				SuspendLayout();
 				BackColor = Color.White;
 				AutoScaleMode = AutoScaleMode.None;
-				Name = "HWColorPicker";
+				Name = "HwColorPicker";
 				Paint += HWColorPicker_Paint;
 				MouseClick += HWColorPicker_MouseClick;
 				MouseMove += HWColorPicker_MouseMove;
@@ -427,13 +374,11 @@ namespace TrOCR.Helper
 			[CompilerGenerated]
 			private EventHandler SelectedColorChanged;
 
-			public bool showTip;
+            private Color selectedColor;
 
-			public Color selectedColor;
+            private Color hoverBKColor;
 
-			public Color hoverBKColor;
-
-			public List<ColorItemx> colorTable;
+            private List<ColorItemX> colorTable;
 
 			public StringFormat sf;
 
@@ -498,14 +443,13 @@ namespace TrOCR.Helper
 			}
 
 			public void DrawMenuDropDownItemHighlight(ToolStripItemRenderEventArgs e)
-			{
-				var rect = default(Rectangle);
-				rect = new Rectangle(2, 0, (int)e.Graphics.VisibleClipBounds.Width - 36, (int)e.Graphics.VisibleClipBounds.Height - 1);
-				using (var pen = new Pen(menuItemBorderColor))
+            {
+                var rect = new Rectangle(2, 0, (int)e.Graphics.VisibleClipBounds.Width - 36, (int)e.Graphics.VisibleClipBounds.Height - 1);
+                using (var pen = new Pen(menuItemBorderColor))
 				{
 					e.Graphics.DrawRectangle(pen, rect);
 				}
-			}
+            }
 
 			protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
 			{
@@ -604,8 +548,7 @@ namespace TrOCR.Helper
 				var item = e.Item;
 				var graphics = e.Graphics;
 				graphics.SmoothingMode = SmoothingMode.HighQuality;
-				var item2 = e.Item;
-				var selected = item.Selected;
+                var selected = item.Selected;
 				var flag = selected;
 				var flag2 = flag;
 				var flag3 = flag2;
@@ -689,64 +632,19 @@ namespace TrOCR.Helper
 			}
 
 			public void DrawMenuDropDownItemHighlight(ToolStripItemRenderEventArgs e)
-			{
-				var rect = default(Rectangle);
-				rect = new Rectangle(2, 0, (int)e.Graphics.VisibleClipBounds.Width - 4, (int)e.Graphics.VisibleClipBounds.Height - 1);
-				using (var pen = new Pen(menuItemBorderColor))
+            {
+                var rect = new Rectangle(2, 0, (int)e.Graphics.VisibleClipBounds.Width - 4, (int)e.Graphics.VisibleClipBounds.Height - 1);
+                using (var pen = new Pen(menuItemBorderColor))
 				{
 					e.Graphics.DrawRectangle(pen, rect);
 				}
-			}
+            }
 
 			public Font textFont;
 
 			public Color menuItemSelectedColor;
 
 			public Color menuItemBorderColor;
-		}
-
-		public class myWebBroswer : WebBrowser
-		{
-
-			public override bool PreProcessMessage(ref Message msg)
-			{
-				var flag = msg.Msg == 256 && (int)msg.WParam == 86 && ModifierKeys == Keys.Control;
-				var flag2 = flag;
-				var flag3 = flag2;
-				var flag4 = flag3;
-				var flag5 = flag4;
-				var flag6 = flag5;
-				var flag7 = flag6;
-				var flag8 = flag7;
-				var flag9 = flag8;
-				var flag10 = flag9;
-				if (flag10)
-				{
-					Clipboard.SetDataObject((string)Clipboard.GetDataObject().GetData(DataFormats.UnicodeText));
-					HelpWin32.keybd_event(Keys.ControlKey, 0, 0u, 0u);
-					HelpWin32.keybd_event(Keys.D9, 0, 0u, 0u);
-					HelpWin32.keybd_event(Keys.D9, 0, 2u, 0u);
-					HelpWin32.keybd_event(Keys.ControlKey, 0, 2u, 0u);
-				}
-				var flag11 = msg.Msg == 256 && (int)msg.WParam == 67 && ModifierKeys == Keys.Control;
-				var flag12 = flag11;
-				var flag13 = flag12;
-				var flag14 = flag13;
-				var flag15 = flag14;
-				var flag16 = flag15;
-				var flag17 = flag16;
-				var flag18 = flag17;
-				var flag19 = flag18;
-				var flag20 = flag19;
-				if (flag20)
-				{
-					HelpWin32.keybd_event(Keys.ControlKey, 0, 0u, 0u);
-					HelpWin32.keybd_event(Keys.D8, 0, 0u, 0u);
-					HelpWin32.keybd_event(Keys.D8, 0, 2u, 0u);
-					HelpWin32.keybd_event(Keys.ControlKey, 0, 2u, 0u);
-				}
-				return base.PreProcessMessage(ref msg);
-			}
 		}
 
 		[Description("ToolStripItem that allows selecting a color from a color picker control.")]
@@ -802,17 +700,8 @@ namespace TrOCR.Helper
 			}
 
 
-			public Point GetPoint
-			{
-				get
-				{
-					return GetOpenPoint();
-				}
-				set
-				{
-				}
-			}
-		}
+			public Point GetPoint => GetOpenPoint();
+        }
 
 		public class ToolStripEx : ToolStrip
 		{
@@ -829,17 +718,12 @@ namespace TrOCR.Helper
 
 		public class FloatLayerBase : Form
 		{
-
-
 			[DefaultValue(BorderStyle.Fixed3D)]
 			[Description("获取或设置边框类型。")]
 			public BorderStyle BorderType
 			{
-				get
-				{
-					return _borderType;
-				}
-				set
+				get => _borderType;
+                set
 				{
 					var flag = _borderType != value;
 					var flag2 = flag;
@@ -864,11 +748,8 @@ namespace TrOCR.Helper
 			[Description("获取或设置三维边框样式。")]
 			public Border3DStyle Border3DStyle
 			{
-				get
-				{
-					return _border3DStyle;
-				}
-				set
+				get => _border3DStyle;
+                set
 				{
 					var flag = _border3DStyle != value;
 					var flag2 = flag;
@@ -893,11 +774,8 @@ namespace TrOCR.Helper
 			[Description("获取或设置线型边框样式。")]
 			public ButtonBorderStyle BorderSingleStyle
 			{
-				get
-				{
-					return _borderSingleStyle;
-				}
-				set
+				get => _borderSingleStyle;
+                set
 				{
 					var flag = _borderSingleStyle != value;
 					var flag2 = flag;
@@ -922,11 +800,8 @@ namespace TrOCR.Helper
 			[Description("获取或设置边框颜色（仅当边框类型为线型时有效）。")]
 			public Color BorderColor
 			{
-				get
-				{
-					return _borderColor;
-				}
-				set
+				get => _borderColor;
+                set
 				{
 					var flag = !(_borderColor == value);
 					var flag2 = flag;
@@ -1304,247 +1179,184 @@ namespace TrOCR.Helper
 
 			public void InitBaseProperties()
 			{
-				base.ControlBox = false;
-				base.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+				ControlBox = false;
+				FormBorderStyle = FormBorderStyle.SizableToolWindow;
 				base.Text = string.Empty;
-				base.HelpButton = false;
-				base.Icon = null;
-				base.IsMdiContainer = false;
-				base.MaximizeBox = false;
-				base.MinimizeBox = false;
-				base.ShowIcon = false;
-				base.ShowInTaskbar = false;
-				base.StartPosition = FormStartPosition.Manual;
-				base.TopMost = false;
-				base.WindowState = FormWindowState.Normal;
+				HelpButton = false;
+				Icon = null;
+				IsMdiContainer = false;
+				MaximizeBox = false;
+				MinimizeBox = false;
+				ShowIcon = false;
+				ShowInTaskbar = false;
+				StartPosition = FormStartPosition.Manual;
+				TopMost = false;
+				WindowState = FormWindowState.Normal;
 			}
-
-			[Obsolete("请使用别的重载！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			public new DialogResult ShowDialog()
-			{
-				throw new NotImplementedException();
-			}
-
-			[Obsolete("请使用别的重载！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			public new DialogResult ShowDialog(IWin32Window owner)
-			{
-				throw new NotImplementedException();
-			}
-
-			[Obsolete("请使用别的重载！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			public new void Show()
-			{
-				throw new NotImplementedException();
-			}
-
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			[Obsolete("请使用别的重载！", true)]
-			public new void Show(IWin32Window owner)
-			{
-				throw new NotImplementedException();
-			}
-
-
-			[Obsolete("禁用该属性！", true)]
-			[Browsable(false)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public new bool ControlBox
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
+//
+//			[Obsolete("请使用别的重载！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			public new DialogResult ShowDialog()
+//			{
+//				throw new NotImplementedException();
+//			}
+//
+//			[Obsolete("请使用别的重载！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			public new DialogResult ShowDialog(IWin32Window owner)
+//			{
+//				throw new NotImplementedException();
+//			}
+//
+//			[Obsolete("请使用别的重载！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			public new void Show()
+//			{
+//				throw new NotImplementedException();
+//			}
+//
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			[Obsolete("请使用别的重载！", true)]
+//			public new void Show(IWin32Window owner)
+//			{
+//				throw new NotImplementedException();
+//			}
 
 
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			[Obsolete("设置边框请使用Border相关属性！", true)]
-			public new FormBorderStyle FormBorderStyle
-			{
-				get
-				{
-					return FormBorderStyle.SizableToolWindow;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Browsable(false)]
+            [Browsable(false)]
 			[Obsolete("禁用该属性！", true)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public sealed override string Text
 			{
-				get
-				{
-					return string.Empty;
-				}
-				set
+				get => string.Empty;
+                set
 				{
 				}
 			}
-
-
-			[Obsolete("禁用该属性！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			public new bool HelpButton
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			[Obsolete("禁用该属性！", true)]
-			public new Image Icon
-			{
-				get
-				{
-					return null;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Obsolete("禁用该属性！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			public new bool IsMdiContainer
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Obsolete("禁用该属性！", true)]
-			[Browsable(false)]
-			public new bool MaximizeBox
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Browsable(false)]
-			[Obsolete("禁用该属性！", true)]
-			public new bool MinimizeBox
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Browsable(false)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Obsolete("禁用该属性！", true)]
-			public new bool ShowIcon
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Browsable(false)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Obsolete("禁用该属性！", true)]
-			public new bool ShowInTaskbar
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Browsable(false)]
-			[Obsolete("禁用该属性！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public new FormStartPosition StartPosition
-			{
-				get
-				{
-					return FormStartPosition.Manual;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Browsable(false)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			[Obsolete("禁用该属性！", true)]
-			public new bool TopMost
-			{
-				get
-				{
-					return false;
-				}
-				set
-				{
-				}
-			}
-
-
-			[Browsable(false)]
-			[Obsolete("禁用该属性！", true)]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public new FormWindowState WindowState
-			{
-				get
-				{
-					return FormWindowState.Normal;
-				}
-				set
-				{
-				}
-			}
+//
+//
+//			[Obsolete("禁用该属性！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			public new bool HelpButton
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			[Obsolete("禁用该属性！", true)]
+//			public new Image Icon
+//			{
+//				get => null;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[Obsolete("禁用该属性！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			public new bool IsMdiContainer
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Obsolete("禁用该属性！", true)]
+//			[Browsable(false)]
+//			public new bool MaximizeBox
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Browsable(false)]
+//			[Obsolete("禁用该属性！", true)]
+//			public new bool MinimizeBox
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[Browsable(false)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Obsolete("禁用该属性！", true)]
+//			public new bool ShowIcon
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[Browsable(false)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Obsolete("禁用该属性！", true)]
+//			public new bool ShowInTaskbar
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[Browsable(false)]
+//			[Obsolete("禁用该属性！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			public new FormStartPosition StartPosition
+//			{
+//				get => FormStartPosition.Manual;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[Browsable(false)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			[Obsolete("禁用该属性！", true)]
+//			public new bool TopMost
+//			{
+//				get => false;
+//                set
+//				{
+//				}
+//			}
+//
+//
+//			[Browsable(false)]
+//			[Obsolete("禁用该属性！", true)]
+//			[EditorBrowsable(EditorBrowsableState.Never)]
+//			public new FormWindowState WindowState
+//			{
+//				get => FormWindowState.Normal;
+//                set
+//				{
+//				}
+//			}
 
 			public readonly AppMouseMessageHandler _mouseMsgFilter;
 
@@ -1638,7 +1450,7 @@ namespace TrOCR.Helper
 
 			public ColorPicker()
 			{
-				cp = new HWColorPicker
+				cp = new HwColorPicker
 				{
 					BorderType = BorderStyle.FixedSingle
 				};
@@ -1663,15 +1475,9 @@ namespace TrOCR.Helper
 				}
 			}
 
-			public Color SelectedColor
-			{
-				get
-				{
-					return select_color;
-				}
-			}
+			public Color SelectedColor => select_color;
 
-			private readonly HWColorPicker cp;
+            private readonly HwColorPicker cp;
 
 			public Color select_color;
 		}
@@ -1793,11 +1599,8 @@ namespace TrOCR.Helper
 
 			public string SetLine
 			{
-				set
-				{
-					SetLineSpace();
-				}
-			}
+				set => SetLineSpace();
+            }
 
 			private const int EM_SETEVENTMASK = 1073;
 

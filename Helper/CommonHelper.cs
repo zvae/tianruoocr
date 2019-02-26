@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,7 +10,6 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
-using TrOCR.Properties;
 
 // ReSharper disable StringLiteralTypo
 
@@ -24,6 +17,8 @@ namespace TrOCR.Helper
 {
     public static class CommonHelper
     {
+        private static readonly HttpHelper DefaultHttpHelper = new HttpHelper();  
+
         public static void ShowHelpMsg(string msg)
         {
             var fmFlags = new FmFlags();
@@ -59,178 +54,13 @@ namespace TrOCR.Helper
         {
             try
             {
-                var cookies = new CookieContainer();
-                var handler = new HttpClientHandler {CookieContainer = cookies};
-                using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 15) })
+                var httpItem = new HttpItem
                 {
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-                    switch (userAgent)
-                    {
-                        case 1:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13F69 MicroMessenger/6.3.16 NetType/WIFI Language/zh_CN");
-                            break;
-                        case 2:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; U; Android 2.2; en-gb; GT-P1000 Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1");
-                            break;
-                        case 3:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; NOKIA; Lumia 930) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586");
-                            break;
-                        case 4:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "NativeHost");
-                            break;
-                        case 5:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Dalvik/1.6.0 (Linux; U; Android 4.4.2; NoxW Build/KOT49H) ITV_5.7.1.46583");
-                            break;
-                        case 6:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "qqlive");
-                            break;
-                        case 7:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Dalvik/1.6.0 (Linux; U; Android 4.2.2; 6S Build/JDQ39E)");
-                            break;
-                        case 8:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) XIAMI-MUSIC/3.0.2 Chrome/51.0.2704.106 Electron/1.2.8 Safari/537.36");
-                            break;
-                        case 9:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Dalvik/1.6.0 (Linux; U; Android 4.4.2; MI 6 Build/NMF26X)");
-                            break;
-                        default:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
-                            break;
-                    }
-                    if (headers != null)
-                    {
-                        foreach (var k in headers)
-                        {
-                            if (k.Key == "Cookie")
-                            {
-                                cookies.SetCookies(new Uri(url), k.Value.Replace(";", ","));
-                            }
-                            else
-                            {
-                                myHttpWebRequest.DefaultRequestHeaders.Add(k.Key, k.Value);
-                            }
-                        }
-                    }
-                    return myHttpWebRequest.GetStringAsync(url).Result;
-                }
-            }
-            catch (Exception ex)
-            {
-                AddLog(ex.ToString());
-                return null;
-            }
-        }
-
-        public static string PostData(string url, Dictionary<string, string> data, int contentType = 0, int userAgent = 0, Dictionary<string, string> headers = null, bool isDecode = true)
-        {
-            try
-            {
-                var cookies = new CookieContainer();
-                var handler = new HttpClientHandler { CookieContainer = cookies };
-                using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 10) })
-                {
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-                    myHttpWebRequest.DefaultRequestHeaders.Add("ContentType",
-                        userAgent == 0 ? "application/x-www-form-urlencoded" : "application/json;charset=UTF-8");
-                    switch (userAgent)
-                    {
-                        case 1:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
-                            break;
-                        case 2:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-                            break;
-                        case 3:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)");
-                            break;
-                        case 4:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "NativeHost");
-                            break;
-                        case 5:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Apache-HttpClient/UNAVAILABLE (java 1.4)");
-                            break;
-                        case 6:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPad; CPU OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4");
-                            break;
-                        default:
-                            myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
-                            break;
-                    }
-                    if (headers != null)
-                    {
-                        foreach (var k in headers)
-                        {
-                            if (k.Key == "Cookie")
-                            {
-                                cookies.SetCookies(new Uri(url), k.Value.Replace(";", ","));
-                            }
-                            else
-                            {
-                                myHttpWebRequest.DefaultRequestHeaders.Add(k.Key, k.Value);
-                            }
-                        }
-                    }
-                    var response = contentType == 0
-                        ? myHttpWebRequest.PostAsync(url, new FormUrlEncodedContent(data)).Result
-                        : myHttpWebRequest.PostAsync(url, new StringContent(data[data.Keys.First()], Encoding.UTF8)).Result;
-                    return response.Content.ReadAsStringAsync().Result;
-                }
-            }
-            catch (Exception ex)
-            {
-                AddLog(ex.ToString());
-                return null;
-            }
-        }
-
-        public static string PostData(string url, string data, string cookie = "", string referer = "")
-        {
-            try
-            {
-                var cookies = new CookieContainer();
-                var handler = new HttpClientHandler { CookieContainer = cookies };
-                using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 10) })
-                {
-                    if (!string.IsNullOrEmpty(referer))
-                    {
-                        myHttpWebRequest.DefaultRequestHeaders.Add("Referer", referer);
-                    }
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-                    myHttpWebRequest.DefaultRequestHeaders.Add("ContentType", "application/x-www-form-urlencoded");
-                    myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
-                    var response = myHttpWebRequest.PostAsync(url, new StringContent(data, Encoding.UTF8)).Result;
-                    return response.Content.ReadAsStringAsync().Result;
-                }
-            }
-            catch (Exception ex)
-            {
-                AddLog(ex.ToString());
-                return null;
-            }
-        }
-
-        public static string PostMultiData(string url, byte[] data, string boundary, string disposition, string cookie = "", string referer = "")
-        {
-            try
-            {
-                var cookies = new CookieContainer();
-                var handler = new HttpClientHandler
-                {
-                    CookieContainer = cookies
+                    Url = url,
+                    Timeout = 15000
                 };
-                using (var myHttpWebRequest = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 10) })
-                {
-                    if (!string.IsNullOrEmpty(referer))
-                    {
-                        myHttpWebRequest.DefaultRequestHeaders.Add("Referer", referer);
-                    }
-                    myHttpWebRequest.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
-                    var multi = new MultipartFormDataContent(boundary);
-                    multi.Add(new StreamContent(new MemoryStream(data)));
-
-                    var response = myHttpWebRequest.PostAsync(url, multi).Result;
-                    return response.Content.ReadAsStringAsync().Result;
-                }
+                SetUserAgent(httpItem, userAgent, headers);
+                return DefaultHttpHelper.GetHtml(httpItem).Html;
             }
             catch (Exception ex)
             {
@@ -239,30 +69,166 @@ namespace TrOCR.Helper
             }
         }
 
-        public static string GetPostCookie(string url, Dictionary<string,string> data)
+        public static string PostData(string url, string data, int contentType = 0, int userAgent = 0, Dictionary<string, string> headers = null)
         {
             try
             {
-                var webRequestHandler = new HttpClientHandler {AllowAutoRedirect = false};
-                var myHttpWebRequest = new HttpClient(webRequestHandler) { Timeout = new TimeSpan(0, 0, 15) };
-                myHttpWebRequest.DefaultRequestHeaders.Add("Method", "POST");
-                return myHttpWebRequest.PostAsync(url, new FormUrlEncodedContent(data)).Result.Headers.GetValues("Set-Cookie").Aggregate("", (current, c) => current + c + ";");
+                var httpItem = new HttpItem
+                {
+                    Url = url,
+                    Timeout = 15000,
+                    Method = "POST",
+                    PostDataType = PostDataType.String,
+                    PostData = data
+                };
+                SetContentType(httpItem, contentType);
+                SetUserAgent(httpItem, userAgent, headers);
+                return DefaultHttpHelper.GetHtml(httpItem).Html;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                AddLog(ex.ToString());
                 return null;
             }
         }
 
-        public static string GetHtmlCookie(string url, string cookie)
+        public static string PostStrData(string url, string data, string cookie = "", string referer = "")
         {
             try
             {
-                var myHttpWebRequest = new HttpClient { Timeout = new TimeSpan(0, 0, 15) };
-                myHttpWebRequest.DefaultRequestHeaders.Add("Cookie", cookie);
-                myHttpWebRequest.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-                myHttpWebRequest.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) XIAMI-MUSIC/3.0.2 Chrome/51.0.2704.106 Electron/1.2.8 Safari/537.36");
-                return myHttpWebRequest.GetAsync(url).Result.Headers.GetValues("Set-Cookie").Aggregate("", (current, c) => current + c + ";");
+                var httpItem = new HttpItem
+                {
+                    Url = url,
+                    Timeout = 15000,
+                    Method = "POST",
+                    PostDataType = PostDataType.String,
+                    PostData = data
+                };
+                SetContentType(httpItem, 0);
+                if (!string.IsNullOrEmpty(referer))
+                {
+                    httpItem.Referer = referer;
+                }
+                httpItem.Cookie = cookie;
+                return DefaultHttpHelper.GetHtml(httpItem).Html;
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.ToString());
+                return null;
+            }
+        }
+
+        private static void SetContentType(HttpItem httpItem, int contentType)
+        {
+            switch (contentType)
+            {
+                case 0:
+                    httpItem.ContentType = "application/x-www-form-urlencoded;charset=utf-8 ";
+                    break;
+                case 1:
+                    httpItem.ContentType = "application/json;charset=utf-8";
+                    break;
+                case 2:
+                    httpItem.ContentType = "application/xml";
+                    break;
+                case 3:
+                    httpItem.ContentType = "multipart/form-data";
+                    break;
+                case 4:
+                    httpItem.ContentType = "text/html";
+                    break;
+                default:
+                    httpItem.ContentType = "text/plain";
+                    break;
+            }
+        }
+
+        private static void SetUserAgent(HttpItem httpItem, int ua, Dictionary<string, string> headers)
+        {
+            switch (ua)
+            {
+                case 1:
+                    httpItem.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13F69 MicroMessenger/6.3.16 NetType/WIFI Language/zh_CN";
+                    break;
+                case 2:
+                    httpItem.UserAgent = "Mozilla/5.0 (Linux; U; Android 2.2; en-gb; GT-P1000 Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
+                    break;
+                case 3:
+                    httpItem.UserAgent = "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; NOKIA; Lumia 930) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586";
+                    break;
+                case 4:
+                    httpItem.UserAgent = "NativeHost";
+                    break;
+                case 5:
+                    httpItem.UserAgent = "Dalvik/1.6.0 (Linux; U; Android 4.4.2; NoxW Build/KOT49H) ITV_5.7.1.46583";
+                    break;
+                case 6:
+                    httpItem.UserAgent = "qqlive";
+                    break;
+                case 7:
+                    httpItem.UserAgent = "Dalvik/1.6.0 (Linux; U; Android 4.2.2; 6S Build/JDQ39E)";
+                    break;
+                case 8:
+                    httpItem.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) XIAMI-MUSIC/3.0.2 Chrome/51.0.2704.106 Electron/1.2.8 Safari/537.36";
+                    break;
+                case 9:
+                    httpItem.UserAgent = "Dalvik/1.6.0 (Linux; U; Android 4.4.2; MI 6 Build/NMF26X)";
+                    break;
+                case 10:
+                    httpItem.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3";
+                    break;
+                case 11:
+                    httpItem.UserAgent = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
+                    break;
+                case 12:
+                    httpItem.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)";
+                    break;
+                case 14:
+                    httpItem.UserAgent = "Apache-HttpClient/UNAVAILABLE (java 1.4)";
+                    break;
+                case 15:
+                    httpItem.UserAgent = "Mozilla/5.0 (iPad; CPU OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4";
+                    break;
+                default:
+                    httpItem.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+                    break;
+            }
+            if (headers != null)
+            {
+                foreach (var k in headers)
+                {
+                    if (k.Key == "Cookie")
+                    {
+                        httpItem.Cookie = k.Value;
+                    }
+                    else
+                    {
+                        httpItem.Header.Add(k.Key, k.Value);
+                    }
+                }
+            }
+        }
+
+        public static string PostMultiData(string url, byte[] data, string boundary, string cookie = "", string referer = "")
+        {
+            try
+            {
+                var httpItem = new HttpItem
+                {
+                    Url = url,
+                    Timeout = 15000,
+                    Method = "POST",
+                    PostDataType = PostDataType.Byte,
+                    PostDataByte = data,
+                    ContentType = "multipart/form-data; boundary=" + boundary
+                };
+                if (!string.IsNullOrEmpty(referer))
+                {
+                    httpItem.Referer = referer;
+                }
+                httpItem.Cookie = cookie;
+                return DefaultHttpHelper.GetHtml(httpItem).Html;
             }
             catch (Exception ex)
             {

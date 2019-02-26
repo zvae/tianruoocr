@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using mshtml;
 using TrOCR.Helper;
 
 namespace TrOCR
@@ -122,25 +121,14 @@ namespace TrOCR
 			}
 		}
 
-		private bool ComposeEncrypt_onclick()
-		{
-			IHTMLDocument3 documentFromWindow = WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2);
-			string value = documentFromWindow.getElementById("fm-login-id").getAttribute("value", 0).ToString();
-			string value2 = documentFromWindow.getElementById("fm-login-password").getAttribute("value", 0).ToString();
-            IniHelper.SetValue("特殊", "ali_account", value);
-            IniHelper.SetValue("特殊", "ali_password", value2);
-			timer1.Stop();
-			return true;
-		}
-
 		public void cclick()
 		{
 			try
 			{
 				if (IniHelper.GetValue("特殊", "ali_account").Trim() != "" && IniHelper.GetValue("特殊", "ali_password").Trim() != "")
 				{
-                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-id").setAttribute("value", IniHelper.GetValue("特殊", "ali_account"), 1);
-                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-password").setAttribute("value", IniHelper.GetValue("特殊", "ali_password"), 1);
+//                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-id").setAttribute("value", IniHelper.GetValue("特殊", "ali_account"), 1);
+//                    WebBrowserHelper.GetDocumentFromWindow(webBrowser1.Document.Window.Frames["alibaba-login-box"].DomWindow as IHTMLWindow2).getElementById("fm-login-password").setAttribute("value", IniHelper.GetValue("特殊", "ali_password"), 1);
 				}
 			}
 			catch

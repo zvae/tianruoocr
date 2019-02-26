@@ -8,7 +8,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,7 +18,6 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
-using MSScriptControl;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ShareX.ScreenCaptureLib;
@@ -538,7 +536,7 @@ namespace TrOCR
                         break;
                 }
 				var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-                var value = CommonHelper.PostData("http://ai.baidu.com/tech/ocr/general", data);
+                var value = CommonHelper.PostStrData("http://ai.baidu.com/tech/ocr/general", data);
 				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var str2 = "";
 				var str3 = "";
@@ -668,7 +666,7 @@ namespace TrOCR
 				image = new Bitmap(bitmap4);
 				var inArray = OcrHelper.ImgToBytes(image);
 				var data = "imgBase=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(inArray)) + "&lang=auto&company=";
-				var value = CommonHelper.PostData("http://aidemo.youdao.com/ocrapi1", data, "",
+				var value = CommonHelper.PostStrData("http://aidemo.youdao.com/ocrapi1", data, "",
                     "http://aidemo.youdao.com/ocrdemo");
 				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["lines"].ToString());
 				checked_txt(jArray, 1, "words");
@@ -1103,10 +1101,7 @@ namespace TrOCR
                 var lang = CommonHelper.LangDetect(text);
                 var url = "https://fanyi.baidu.com/gettts?lan=" + lang + "&text=" + HttpUtility.UrlEncode(text) +
                           "&vol=9&per=0&spd=6&pit=4&source=web&ctp=1";
-                ttsData = new HttpClient
-                {
-                    Timeout = new TimeSpan(0, 2, 0)
-                }.GetByteArrayAsync(url).Result;
+                ttsData = new WebClient().DownloadData(url);
                 if (speak_copyb == "朗读" || voice_count == 0)
                 {
                     Invoke(new translate(Speak_child));
@@ -1206,17 +1201,9 @@ namespace TrOCR
 						text4 = "ko";
 					}
 				}
-
-                //string.Concat("client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=", HttpUtility.UrlEncode(text).Replace("+", "%20"))
-                var data = new Dictionary<string, string>
-                {
-                    {"client", "gtx"},
-                    {"sl", text3},
-                    {"tl", text4},
-                    {"dt", "t"},
-                    {"q", text}
-                };
-                var html = CommonHelper.PostData("https://translate.google.cn/translate_a/single", data);
+                var data = string.Concat("client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=",
+                    HttpUtility.UrlEncode(text)?.Replace("+", "%20"));
+                var html = CommonHelper.PostStrData("https://translate.google.cn/translate_a/single", data);
 
 				var jArray = (JArray)JsonConvert.DeserializeObject(html);
 				var count = ((JArray)jArray[0]).Count;
@@ -2087,7 +2074,7 @@ namespace TrOCR
                     var s = "image=" + HttpUtility.UrlEncode(Convert.ToBase64String(inArray)) + "&language_type=" + str;
                     var url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=" +
                               ((JObject) JsonConvert.DeserializeObject(baidu_vip))["access_token"];
-                    var value = CommonHelper.PostData(url, s);
+                    var value = CommonHelper.PostStrData(url, s);
 					var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["words_result"].ToString());
 					checked_txt(jArray, 1, "words");
 				}
@@ -2619,10 +2606,8 @@ namespace TrOCR
 				{
 					image = image_screen;
 				}
-                var text = "------WebKitFormBoundaryRDEqU0w702X9cWPJ";
                 var url = "https://ai.qq.com/cgi-bin/appdemo_handwritingocr";
-                var refer = "http://ai.qq.com/product/ocr.shtml";
-                var value = OcrHelper.CommPost(image, text, url, refer);
+                var value = OcrHelper.TxComm(image, url);
 				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["item_list"].ToString());
 				checked_txt(jArray, 1, "itemstring");
 			}
@@ -2645,7 +2630,7 @@ namespace TrOCR
 			Image result;
 			using (var vectorOfVectorOfPoint = new VectorOfVectorOfPoint())
 			{
-				CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple, default(Point));
+				CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
 				Image image = draw.ToBitmap();
 				var graphics = Graphics.FromImage(image);
 				var size = vectorOfVectorOfPoint.Size;
@@ -2681,7 +2666,7 @@ namespace TrOCR
 			{
 				using (var vectorOfVectorOfPoint = new VectorOfVectorOfPoint())
 				{
-					CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple, default(Point));
+					CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
 					var num = vectorOfVectorOfPoint.Size / 2;
 					imagelist_lenght = num;
 					bool_image_count(num);
@@ -2742,7 +2727,7 @@ namespace TrOCR
 		{
 			var image = new Image<Bgr, byte>(bitmap);
 			var image2 = new Image<Gray, byte>(image.Width, image.Height);
-			CvInvoke.CvtColor(image, image2, ColorConversion.Bgra2Gray, 0);
+			CvInvoke.CvtColor(image, image2, ColorConversion.Bgra2Gray);
 			var structuringElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(4, 4), new Point(1, 1));
 			CvInvoke.Erode(image2, image2, structuringElement, new Point(0, 2), 1, BorderType.Reflect101, default(MCvScalar));
 			CvInvoke.Threshold(image2, image2, 100.0, 255.0, (ThresholdType)9);
@@ -2778,7 +2763,7 @@ namespace TrOCR
 				var image = image_screen;
                 var array = OcrHelper.ImgToBytes(image);
 				var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var value = CommonHelper.PostData("http://ai.baidu.com/tech/ocr/general", data);
+				var value = CommonHelper.PostStrData("http://ai.baidu.com/tech/ocr/general", data);
 				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
 				var words = new string[jArray.Count];
@@ -3835,7 +3820,7 @@ namespace TrOCR
 			Image result;
 			using (var vectorOfVectorOfPoint = new VectorOfVectorOfPoint())
 			{
-				CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple, default(Point));
+				CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
 				Image image = draw.ToBitmap();
 				var graphics = Graphics.FromImage(image);
 				var size = vectorOfVectorOfPoint.Size;
@@ -3868,7 +3853,7 @@ namespace TrOCR
 		{
 			var image = new Image<Bgr, byte>(bitmap);
 			var image2 = new Image<Gray, byte>(image.Width, image.Height);
-			CvInvoke.CvtColor(image, image2, ColorConversion.Bgra2Gray, 0);
+			CvInvoke.CvtColor(image, image2, ColorConversion.Bgra2Gray);
 			var structuringElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(6, 20), new Point(1, 1));
 			CvInvoke.Erode(image2, image2, structuringElement, new Point(0, 2), 1, BorderType.Reflect101, default(MCvScalar));
 			CvInvoke.Threshold(image2, image2, 100.0, 255.0, (ThresholdType)9);
@@ -3890,7 +3875,7 @@ namespace TrOCR
 		{
 			using (var vectorOfVectorOfPoint = new VectorOfVectorOfPoint())
 			{
-				CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple, default(Point));
+				CvInvoke.FindContours(src, vectorOfVectorOfPoint, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
 				var size = vectorOfVectorOfPoint.Size;
 				var array = new Rectangle[size];
 				for (var i = 0; i < size; i++)
@@ -4288,7 +4273,7 @@ namespace TrOCR
 						text3 = "kor";
 					}
 				}
-                var html = CommonHelper.PostData("https://fanyi.baidu.com/basetrans",
+                var html = CommonHelper.PostStrData("https://fanyi.baidu.com/basetrans",
                     string.Concat("query=", HttpUtility.UrlEncode(Text.Trim()).Replace("+", "%20"), "&from=", text2,
                         "&to=", text3));
 				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(html))["trans"].ToString());
@@ -4490,7 +4475,7 @@ namespace TrOCR
 							break;
 						}
 						Thread.Sleep(120);
-						text = CommonHelper.PostData("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"], post_str);
+						text = CommonHelper.PostStrData("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"], post_str);
 					}
 					if (!text.Contains("image recognize error"))
 					{
@@ -4696,7 +4681,7 @@ namespace TrOCR
 					}
 				}
 				var postData = string.Concat("client=gtx&sl=", text3, "&tl=", text4, "&dt=t&q=", HttpUtility.UrlEncode(text).Replace("+", "%20"));
-				var jArray = (JArray)JsonConvert.DeserializeObject(CommonHelper.PostData("https://translate.google.cn/translate_a/single", postData));
+				var jArray = (JArray)JsonConvert.DeserializeObject(CommonHelper.PostStrData("https://translate.google.cn/translate_a/single", postData));
 				var count = ((JArray)jArray[0]).Count;
 				for (var i = 0; i < count; i++)
 				{
@@ -4837,31 +4822,31 @@ namespace TrOCR
 			dataObject.SetData(DataFormats.Text, data);
 			Clipboard.SetDataObject(dataObject);
 		}
-
-		public static string Encript(string functionName, object[] pams)
-		{
-			var code = File.ReadAllText("sign.js");
-            ScriptControlClass scriptControlClass = new ScriptControlClass();
-			((IScriptControl)scriptControlClass).Language = "javascript";
-			((IScriptControl)scriptControlClass).AddCode(code);
-			return ((IScriptControl)scriptControlClass).Run(functionName, ref pams).ToString();
-		}
-
-		private object ExecuteScript(string sExpression, string sCode)
-		{
-			ScriptControl scriptControl = new ScriptControlClass();
-			scriptControl.UseSafeSubset = true;
-			scriptControl.Language = "JScript";
-			scriptControl.AddCode(sCode);
-			try
-			{
-				return scriptControl.Eval(sExpression);
-			}
-			catch (Exception)
-			{
-			}
-			return null;
-		}
+//
+//		public static string Encript(string functionName, object[] pams)
+//		{
+//			var code = File.ReadAllText("sign.js");
+//            ScriptControlClass scriptControlClass = new ScriptControlClass();
+//			((IScriptControl)scriptControlClass).Language = "javascript";
+//			((IScriptControl)scriptControlClass).AddCode(code);
+//			return ((IScriptControl)scriptControlClass).Run(functionName, ref pams).ToString();
+//		}
+//
+//		private object ExecuteScript(string sExpression, string sCode)
+//		{
+//			ScriptControl scriptControl = new ScriptControlClass();
+//			scriptControl.UseSafeSubset = true;
+//			scriptControl.Language = "JScript";
+//			scriptControl.AddCode(sCode);
+//			try
+//			{
+//				return scriptControl.Eval(sExpression);
+//			}
+//			catch (Exception)
+//			{
+//			}
+//			return null;
+//		}
 
 		private void OCR_Mathfuntion_Click(object sender, EventArgs e)
 		{
