@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Permissions;
 
-[assembly: AssemblyVersion("5.0.0.0")]
+[assembly: AssemblyVersion("5.0.1.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: ComVisible(false)]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2019")]
@@ -16,7 +16,7 @@ using System.Security.Permissions;
 [assembly: AssemblyTitle("天若OCR文字识别V5.0.0")]
 [assembly: AssemblyDescription("Rochy_HE & 天若幽心")]
 [assembly: CompilationRelaxations(8)]
-[assembly: AssemblyFileVersion("5.0.0.0")]
+[assembly: AssemblyFileVersion("5.0.1.0")]
 [assembly: AssemblyTrademark("")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]

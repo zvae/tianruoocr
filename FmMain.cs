@@ -25,6 +25,7 @@ using TrOCR.Helper;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
+using Timer = System.Windows.Forms.Timer;
 
 namespace TrOCR
 {
@@ -168,9 +169,9 @@ namespace TrOCR
                     thread = new Thread(ShowLoading);
                     thread.Start();
                     ts = new TimeSpan(DateTime.Now.Ticks);
-                    var messageload = new Messageload();
-                    messageload.ShowDialog();
-                    if (messageload.DialogResult == DialogResult.OK)
+                    var messageLoad = new Messageload();
+                    messageLoad.ShowDialog();
+                    if (messageLoad.DialogResult == DialogResult.OK)
                     {
                         esc_thread = new Thread(Main_OCR_Thread);
                         esc_thread.Start();
@@ -184,7 +185,7 @@ namespace TrOCR
             }
             if (m.Msg == 786 && m.WParam.ToInt32() == 511)
             {
-                base.MinimumSize = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
+                MinimumSize = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
                 transtalate_fla = "关闭";
                 RichBoxBody.Dock = DockStyle.Fill;
                 RichBoxBody_T.Visible = false;
@@ -260,7 +261,7 @@ namespace TrOCR
                 }
                 if (m.Msg == 786 && m.WParam.ToInt32() == 206)
                 {
-                    if (!fmNote.Visible || base.Focused)
+                    if (!fmNote.Visible || Focused)
                     {
                         fmNote.Show();
                         fmNote.WindowState = FormWindowState.Normal;
@@ -366,99 +367,7 @@ namespace TrOCR
 			RichBoxBody.Focus();
 			RichBoxBody.richTextBox1.Paste();
 		}
-
-		public void Split_Click(object sender, EventArgs e)
-		{
-			RichBoxBody.Text = split_txt;
-		}
-
-		public static byte[] copybyte(byte[] a, byte[] b)
-		{
-			var array = new byte[a.Length + b.Length];
-			a.CopyTo(array, 0);
-			b.CopyTo(array, a.Length);
-			return array;
-		}
-
-		public void OCR_sougou()
-		{
-			try
-			{
-				split_txt = "";
-				var image = image_screen;
-				var i = image.Width;
-				var j = image.Height;
-				if (i < 300)
-				{
-					while (i < 300)
-					{
-						j *= 2;
-						i *= 2;
-					}
-				}
-				if (j < 120)
-				{
-					while (j < 120)
-					{
-						j *= 2;
-						i *= 2;
-					}
-				}
-				var bitmap = new Bitmap(i, j);
-				var graphics = Graphics.FromImage(bitmap);
-				graphics.DrawImage(image, 0, 0, i, j);
-				graphics.Save();
-				graphics.Dispose();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(OCR_sougou_SogouOCR(bitmap)))["result"].ToString());
-				bitmap.Dispose();
-				checked_txt(jarray, 2, "content");
-			}
-			catch
-			{
-				if (esc != "退出")
-				{
-					RichBoxBody.Text = "***该区域未发现文本***";
-				}
-				else
-				{
-					RichBoxBody.Text = "***该区域未发现文本***";
-					esc = "";
-				}
-			}
-		}
-
-		public byte[] ImageTobyte(Image imgPhoto)
-		{
-			var memoryStream = new MemoryStream();
-			imgPhoto.Save(memoryStream, ImageFormat.Jpeg);
-			var array = new byte[memoryStream.Length];
-			memoryStream.Position = 0L;
-			memoryStream.Read(array, 0, array.Length);
-			memoryStream.Close();
-			return array;
-		}
-
-		private Bitmap GetPlus(Bitmap bm, double times)
-		{
-			var width = (int)(bm.Width / times);
-			var height = (int)(bm.Height / times);
-			var bitmap = new Bitmap(width, height);
-			if (times >= 1.0 && times <= 1.1)
-			{
-				bitmap = bm;
-			}
-			else
-			{
-				var graphics = Graphics.FromImage(bitmap);
-				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				graphics.SmoothingMode = SmoothingMode.HighQuality;
-				graphics.CompositingQuality = CompositingQuality.HighQuality;
-				graphics.DrawImage(bm, new Rectangle(0, 0, width, height), new Rectangle(0, 0, bm.Width, bm.Height), GraphicsUnit.Pixel);
-				graphics.Dispose();
-			}
-			return bitmap;
-		}
-
+        
 		public void OCR_Tencent()
 		{
 			try
@@ -1000,7 +909,7 @@ namespace TrOCR
 
 		public void Trans_close_Click(object sender, EventArgs e)
 		{
-			base.MinimumSize = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
+			MinimumSize = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
 			transtalate_fla = "关闭";
 			RichBoxBody.Dock = DockStyle.Fill;
 			RichBoxBody_T.Visible = false;
@@ -1077,8 +986,7 @@ namespace TrOCR
 		public static string Del_Space(string text)
 		{
 			text = Regex.Replace(text, "([\\p{P}]+)", "**&&**$1**&&**");
-			char[] trimChars = null;
-			text = text.TrimEnd(trimChars).Replace(" **&&**", "").Replace("**&&** ", "").Replace("**&&**", "");
+			text = text.TrimEnd(null).Replace(" **&&**", "").Replace("**&&** ", "").Replace("**&&**", "");
 			return text;
 		}
 
@@ -1563,8 +1471,8 @@ namespace TrOCR
                     UseSquareMagnifier = false,
                     MagnifierPixelCount = 15,
                     MagnifierPixelSize = 10
-                }, out var mode_flag, out var point, out var buildRects);
-                if (mode_flag == "高级截图")
+                }, out var modeFlag, out var point, out var buildRects);
+                if (modeFlag == "高级截图")
                 {
                     var mode = RegionCaptureMode.Annotation;
                     var options = new RegionCaptureOptions();
@@ -1575,27 +1483,28 @@ namespace TrOCR
                         regionCaptureForm.ShowDialog();
                         image_screen = null;
                         image_screen = regionCaptureForm.GetResultImage();
-                        mode_flag = regionCaptureForm.Mode_flag;
+                        modeFlag = regionCaptureForm.Mode_flag;
                     }
                 }
                 HelpWin32.RegisterHotKey(Handle, 222, HelpWin32.KeyModifiers.None, Keys.Escape);
-                if (mode_flag == "贴图")
+                switch (modeFlag)
                 {
-                    var locationPoint = new Point(point.X, point.Y);
-                    new FmScreenPaste(image_screen, locationPoint).Show();
-                    if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                    case "贴图":
                     {
-                        var value = IniHelper.GetValue("快捷键", "翻译文本");
-                        var text = "None";
-                        var text2 = "F9";
-                        SetHotkey(text, text2, value, 205);
+                        var locationPoint = new Point(point.X, point.Y);
+                        new FmScreenPaste(image_screen, locationPoint).Show();
+                        if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                        {
+                            var value = IniHelper.GetValue("快捷键", "翻译文本");
+                            var text = "None";
+                            var text2 = "F9";
+                            SetHotkey(text, text2, value, 205);
+                        }
+                        HelpWin32.UnregisterHotKey(Handle, 222);
+                        StaticValue.IsCapture = false;
+                        break;
                     }
-                    HelpWin32.UnregisterHotKey(Handle, 222);
-                    StaticValue.IsCapture = false;
-                }
-                else if (mode_flag == "区域多选")
-                {
-                    if (image_screen == null)
+                    case "区域多选" when image_screen == null:
                     {
                         if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
                         {
@@ -1606,162 +1515,168 @@ namespace TrOCR
                         }
                         HelpWin32.UnregisterHotKey(Handle, 222);
                         StaticValue.IsCapture = false;
+                        break;
                     }
-                    else
-                    {
+                    case "区域多选":
                         minico.Visible = true;
                         thread = new Thread(ShowLoading);
                         thread.Start();
                         ts = new TimeSpan(DateTime.Now.Ticks);
                         getSubPics_ocr(image_screen, buildRects);
-                    }
-                }
-                else if (mode_flag == "取色")
-                {
-                    if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                        break;
+                    case "取色":
                     {
-                        var value3 = IniHelper.GetValue("快捷键", "翻译文本");
-                        var text5 = "None";
-                        var text6 = "F9";
-                        SetHotkey(text5, text6, value3, 205);
-                    }
-                    HelpWin32.UnregisterHotKey(Handle, 222);
-                    StaticValue.IsCapture = false;
-                    CommonHelper.ShowHelpMsg("已复制颜色");
-                }
-                else if (image_screen == null)
-                {
-                    if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-                    {
-                        var value4 = IniHelper.GetValue("快捷键", "翻译文本");
-                        var text7 = "None";
-                        var text8 = "F9";
-                        SetHotkey(text7, text8, value4, 205);
-                    }
-                    HelpWin32.UnregisterHotKey(Handle, 222);
-                    StaticValue.IsCapture = false;
-                }
-                else
-                {
-                    if (mode_flag == "百度")
-                    {
-                        baidu_flags = "百度";
-                    }
-                    if (mode_flag == "拆分")
-                    {
-                        set_merge = false;
-                        set_split = true;
-                    }
-                    if (mode_flag == "合并")
-                    {
-                        set_merge = true;
-                        set_split = false;
-                    }
-                    if (mode_flag == "截图")
-                    {
-                        Clipboard.SetImage(image_screen);
                         if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
                         {
-                            var value5 = IniHelper.GetValue("快捷键", "翻译文本");
-                            var text9 = "None";
-                            var text10 = "F9";
-                            SetHotkey(text9, text10, value5, 205);
+                            var value3 = IniHelper.GetValue("快捷键", "翻译文本");
+                            var text5 = "None";
+                            var text6 = "F9";
+                            SetHotkey(text5, text6, value3, 205);
                         }
                         HelpWin32.UnregisterHotKey(Handle, 222);
                         StaticValue.IsCapture = false;
-                        if (IniHelper.GetValue("截图音效", "粘贴板") == "True")
-                        {
-                            PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
-                        }
-                        CommonHelper.ShowHelpMsg("已复制截图");
+                        CommonHelper.ShowHelpMsg("已复制颜色");
+                        break;
                     }
-                    else if (mode_flag == "自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
+                    default:
                     {
-                        var filename = IniHelper.GetValue("配置", "截图位置") + "\\" + ReFileName(IniHelper.GetValue("配置", "截图位置"), "图片.Png");
-                        image_screen.Save(filename, ImageFormat.Png);
-                        StaticValue.IsCapture = false;
-                        if (IniHelper.GetValue("截图音效", "自动保存") == "True")
+                        if (image_screen == null)
                         {
-                            PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
-                        }
-                        CommonHelper.ShowHelpMsg("已保存图片");
-                    }
-                    else if (mode_flag == "多区域自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
-                    {
-                        getSubPics(image_screen, buildRects);
-                        StaticValue.IsCapture = false;
-                        if (IniHelper.GetValue("截图音效", "自动保存") == "True")
-                        {
-                            PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
-                        }
-                        CommonHelper.ShowHelpMsg("已保存图片");
-                    }
-                    else if (mode_flag == "保存")
-                    {
-                        var saveFileDialog = new SaveFileDialog();
-                        saveFileDialog.Filter = "png图片(*.png)|*.png|jpg图片(*.jpg)|*.jpg|bmp图片(*.bmp)|*.bmp";
-                        saveFileDialog.AddExtension = false;
-                        saveFileDialog.FileName = string.Concat("tianruo_", DateTime.Now.Year.ToString(), "-", DateTime.Now.Month.ToString(), "-", DateTime.Now.Day.ToString(), "-", DateTime.Now.Ticks.ToString());
-                        saveFileDialog.Title = "保存图片";
-                        saveFileDialog.FilterIndex = 1;
-                        saveFileDialog.RestoreDirectory = true;
-                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            var extension = Path.GetExtension(saveFileDialog.FileName);
-                            if (extension.Equals(".jpg"))
+                            if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
                             {
-                                image_screen.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
+                                var value4 = IniHelper.GetValue("快捷键", "翻译文本");
+                                var text7 = "None";
+                                var text8 = "F9";
+                                SetHotkey(text7, text8, value4, 205);
                             }
-                            if (extension.Equals(".png"))
-                            {
-                                image_screen.Save(saveFileDialog.FileName, ImageFormat.Png);
-                            }
-                            if (extension.Equals(".bmp"))
-                            {
-                                image_screen.Save(saveFileDialog.FileName, ImageFormat.Bmp);
-                            }
-                        }
-                        if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
-                        {
-                            var value6 = IniHelper.GetValue("快捷键", "翻译文本");
-                            var text11 = "None";
-                            var text12 = "F9";
-                            SetHotkey(text11, text12, value6, 205);
-                        }
-                        HelpWin32.UnregisterHotKey(Handle, 222);
-                        StaticValue.IsCapture = false;
-                    }
-                    else if (image_screen != null)
-                    {
-                        if (IniHelper.GetValue("工具栏", "分栏") == "True")
-                        {
-                            minico.Visible = true;
-                            thread = new Thread(ShowLoading);
-                            thread.Start();
-                            ts = new TimeSpan(DateTime.Now.Ticks);
-                            var image = image_screen;
-                            var graphics = Graphics.FromImage(new Bitmap(image.Width, image.Height));
-                            graphics.DrawImage(image, 0, 0, image.Width, image.Height);
-                            graphics.Save();
-                            graphics.Dispose();
-                            ((Bitmap)FindBundingBox_fences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
-                            image.Dispose();
-                            image_screen.Dispose();
+                            HelpWin32.UnregisterHotKey(Handle, 222);
+                            StaticValue.IsCapture = false;
                         }
                         else
                         {
-                            minico.Visible = true;
-                            thread = new Thread(ShowLoading);
-                            thread.Start();
-                            ts = new TimeSpan(DateTime.Now.Ticks);
-                            var messageload = new Messageload();
-                            messageload.ShowDialog();
-                            if (messageload.DialogResult == DialogResult.OK)
+                            if (modeFlag == "百度")
                             {
-                                esc_thread = new Thread(Main_OCR_Thread);
-                                esc_thread.Start();
+                                baidu_flags = "百度";
+                            }
+                            if (modeFlag == "拆分")
+                            {
+                                set_merge = false;
+                                set_split = true;
+                            }
+                            if (modeFlag == "合并")
+                            {
+                                set_merge = true;
+                                set_split = false;
+                            }
+                            if (modeFlag == "截图")
+                            {
+                                Clipboard.SetImage(image_screen);
+                                if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                                {
+                                    var value5 = IniHelper.GetValue("快捷键", "翻译文本");
+                                    var text9 = "None";
+                                    var text10 = "F9";
+                                    SetHotkey(text9, text10, value5, 205);
+                                }
+                                HelpWin32.UnregisterHotKey(Handle, 222);
+                                StaticValue.IsCapture = false;
+                                if (IniHelper.GetValue("截图音效", "粘贴板") == "True")
+                                {
+                                    PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
+                                }
+                                CommonHelper.ShowHelpMsg("已复制截图");
+                            }
+                            else if (modeFlag == "自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
+                            {
+                                var filename = IniHelper.GetValue("配置", "截图位置") + "\\" + ReFileName(IniHelper.GetValue("配置", "截图位置"), "图片.Png");
+                                image_screen.Save(filename, ImageFormat.Png);
+                                StaticValue.IsCapture = false;
+                                if (IniHelper.GetValue("截图音效", "自动保存") == "True")
+                                {
+                                    PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
+                                }
+                                CommonHelper.ShowHelpMsg("已保存图片");
+                            }
+                            else if (modeFlag == "多区域自动保存" && IniHelper.GetValue("配置", "自动保存") == "True")
+                            {
+                                getSubPics(image_screen, buildRects);
+                                StaticValue.IsCapture = false;
+                                if (IniHelper.GetValue("截图音效", "自动保存") == "True")
+                                {
+                                    PlaySong(IniHelper.GetValue("截图音效", "音效路径"));
+                                }
+                                CommonHelper.ShowHelpMsg("已保存图片");
+                            }
+                            else if (modeFlag == "保存")
+                            {
+                                var saveFileDialog = new SaveFileDialog();
+                                saveFileDialog.Filter = "png图片(*.png)|*.png|jpg图片(*.jpg)|*.jpg|bmp图片(*.bmp)|*.bmp";
+                                saveFileDialog.AddExtension = false;
+                                saveFileDialog.FileName = string.Concat("tianruo_", DateTime.Now.Year.ToString(), "-", DateTime.Now.Month.ToString(), "-", DateTime.Now.Day.ToString(), "-", DateTime.Now.Ticks.ToString());
+                                saveFileDialog.Title = "保存图片";
+                                saveFileDialog.FilterIndex = 1;
+                                saveFileDialog.RestoreDirectory = true;
+                                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                                {
+                                    var extension = Path.GetExtension(saveFileDialog.FileName);
+                                    if (extension.Equals(".jpg"))
+                                    {
+                                        image_screen.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
+                                    }
+                                    if (extension.Equals(".png"))
+                                    {
+                                        image_screen.Save(saveFileDialog.FileName, ImageFormat.Png);
+                                    }
+                                    if (extension.Equals(".bmp"))
+                                    {
+                                        image_screen.Save(saveFileDialog.FileName, ImageFormat.Bmp);
+                                    }
+                                }
+                                if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
+                                {
+                                    var value6 = IniHelper.GetValue("快捷键", "翻译文本");
+                                    var text11 = "None";
+                                    var text12 = "F9";
+                                    SetHotkey(text11, text12, value6, 205);
+                                }
+                                HelpWin32.UnregisterHotKey(Handle, 222);
+                                StaticValue.IsCapture = false;
+                            }
+                            else if (image_screen != null)
+                            {
+                                if (IniHelper.GetValue("工具栏", "分栏") == "True")
+                                {
+                                    minico.Visible = true;
+                                    thread = new Thread(ShowLoading);
+                                    thread.Start();
+                                    ts = new TimeSpan(DateTime.Now.Ticks);
+                                    var image = image_screen;
+                                    var graphics = Graphics.FromImage(new Bitmap(image.Width, image.Height));
+                                    graphics.DrawImage(image, 0, 0, image.Width, image.Height);
+                                    graphics.Save();
+                                    graphics.Dispose();
+                                    ((Bitmap)FindBundingBox_fences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
+                                    image.Dispose();
+                                    image_screen.Dispose();
+                                }
+                                else
+                                {
+                                    minico.Visible = true;
+                                    thread = new Thread(ShowLoading);
+                                    thread.Start();
+                                    ts = new TimeSpan(DateTime.Now.Ticks);
+                                    var messageload = new Messageload();
+                                    messageload.ShowDialog();
+                                    if (messageload.DialogResult == DialogResult.OK)
+                                    {
+                                        esc_thread = new Thread(Main_OCR_Thread);
+                                        esc_thread.Start();
+                                    }
+                                }
                             }
                         }
+
+                        break;
                     }
                 }
             }
@@ -2986,13 +2901,13 @@ namespace TrOCR
 			File.Delete(path);
 		}
 
-		public void OCR_baidu_image(Image imagearr, string str_image)
+		public void OCR_baidu_image(Image imageArr, string strImage)
 		{
 			try
 			{
 				var str = "CHN_ENG";
 				var memoryStream = new MemoryStream();
-				imagearr.Save(memoryStream, ImageFormat.Jpeg);
+				imageArr.Save(memoryStream, ImageFormat.Jpeg);
 				var array = new byte[memoryStream.Length];
 				memoryStream.Position = 0L;
 				memoryStream.Read(array, 0, (int)memoryStream.Length);
@@ -3030,7 +2945,7 @@ namespace TrOCR
 				{
 					str2 += array2[j];
 				}
-				str_image = (str_image + text + "\r\n").Replace("\r\n\r\n", "");
+				strImage = (strImage + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
 			catch
@@ -4960,7 +4875,7 @@ namespace TrOCR
 
 		public TimeSpan ts;
 
-		public System.Windows.Forms.Timer esc_timer;
+		public Timer esc_timer;
 
 		public Thread esc_thread;
 
@@ -5521,8 +5436,7 @@ namespace TrOCR
 							if (length == 0 || !char.IsWhiteSpace(_currLine[length - 1]))
 							{
 								_currLine.Append(' ');
-								return;
-							}
+                            }
 						}
 						else
 						{
