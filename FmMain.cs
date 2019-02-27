@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
@@ -26,6 +25,7 @@ using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
 using Timer = System.Windows.Forms.Timer;
+// ReSharper disable StringLiteralTypo
 
 namespace TrOCR
 {
@@ -161,7 +161,7 @@ namespace TrOCR
                     graphics.Save();
                     graphics.Dispose();
                     image_ori = image2;
-                    ((Bitmap)FindBundingBox_fences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
+                    ((Bitmap)FindBoundingBoxFences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
                 }
                 else
                 {
@@ -240,7 +240,7 @@ namespace TrOCR
                     }
                     FormBorderStyle = FormBorderStyle.Sizable;
                     Visible = true;
-                    base.Show();
+                    Show();
                     WindowState = FormWindowState.Normal;
                     if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
                     {
@@ -279,7 +279,7 @@ namespace TrOCR
                     if (!Visible)
                     {
                         TopMost = true;
-                        base.Show();
+                        Show();
                         WindowState = FormWindowState.Normal;
                         Visible = true;
                         Thread.Sleep(100);
@@ -894,7 +894,7 @@ namespace TrOCR
 				}
 				if (IniHelper.GetValue("配置", "翻译接口") == "百度")
 				{
-					googleTranslate_txt = Translate_baidu(typeset_txt);
+					googleTranslate_txt = TranslateBaidu(typeset_txt);
 				}
 				if (IniHelper.GetValue("配置", "翻译接口") == "腾讯")
 				{
@@ -903,7 +903,7 @@ namespace TrOCR
 			}
 			PictureBox1.Visible = false;
 			PictureBox1.SendToBack();
-			Invoke(new translate(translate_child));
+			Invoke(new Translate(translate_child));
 			pinyin_flag = false;
 		}
 
@@ -1007,17 +1007,18 @@ namespace TrOCR
             {
                 var text = htmltxt.Replace("***", "");
                 var lang = CommonHelper.LangDetect(text);
-                var url= "https://fanyi.baidu.com/gettts?lan=" + lang + "&text=" + HttpUtility.UrlEncode(text) +
-                                   "&vol=9&per=0&spd=6&pit=4&source=web&ctp=1";
+//                var url = "https://fanyi.baidu.com/gettts?lan=" + lang + "&text=" + HttpUtility.UrlEncode(text) +
+//                                   "&vol=9&per=0&spd=6&pit=4&source=web&ctp=1";
+                var url = TranslateHelper.BdTts(text, lang, 5);
                 ttsData = new WebClient().DownloadData(url);
                 if (speak_copyb == "朗读" || voice_count == 0)
                 {
-                    Invoke(new translate(Speak_child));
+                    Invoke(new Translate(Speak_child));
                     speak_copyb = "";
                 }
                 else
                 {
-                    Invoke(new translate(TTS_child));
+                    Invoke(new Translate(TTS_child));
                 }
                 voice_count++;
             }
@@ -1655,7 +1656,7 @@ namespace TrOCR
                                     graphics.DrawImage(image, 0, 0, image.Width, image.Height);
                                     graphics.Save();
                                     graphics.Dispose();
-                                    ((Bitmap)FindBundingBox_fences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
+                                    ((Bitmap)FindBoundingBoxFences((Bitmap)image)).Save("Data\\分栏预览图.jpg");
                                     image.Dispose();
                                     image_screen.Dispose();
                                 }
@@ -1693,56 +1694,56 @@ namespace TrOCR
 				typeset_txt = ScanQRCode();
 				RichBoxBody.Text = typeset_txt;
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_last));
+				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
 			}
 			if (interface_flag == "搜狗")
 			{
 				SougouOCR();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_last));
+				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
 			}
 			if (interface_flag == "腾讯")
 			{
 				OCR_Tencent();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_last));
+				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
 			}
 			if (interface_flag == "有道")
 			{
 				OCR_youdao();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_last));
+				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
 			}
 			if (interface_flag == "公式")
 			{
 				OCR_Math();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_last));
+				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
 			}
 			if (interface_flag == "百度表格")
 			{
 				BdTableOCR();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_table));
+				Invoke(new OcrThread(Main_OCR_Thread_table));
 				return;
 			}
 			if (interface_flag == "阿里表格")
 			{
 				OCR_ali_table();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_table));
+				Invoke(new OcrThread(Main_OCR_Thread_table));
 				return;
 			}
 			if (interface_flag == "日语" || interface_flag == "中英" || interface_flag == "韩语")
 			{
 				OCR_baidu();
 				fmloading.FmlClose = "窗体已关闭";
-				Invoke(new ocr_thread(Main_OCR_Thread_last));
+				Invoke(new OcrThread(Main_OCR_Thread_last));
 			}
 			if (interface_flag == "从左向右" || interface_flag == "从右向左")
 			{
@@ -1841,7 +1842,7 @@ namespace TrOCR
 				Size = new Size((int)font_base.Width * 23, (int)font_base.Height * 24);
 				Visible = false;
 				WindowState = FormWindowState.Minimized;
-				base.Show();
+                Show();
 				Process.Start("https://www.baidu.com/s?wd=" + RichBoxBody.Text);
 				baidu_flags = "";
 				if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
@@ -1872,7 +1873,7 @@ namespace TrOCR
 			}
 			FormBorderStyle = FormBorderStyle.Sizable;
 			Visible = true;
-			base.Show();
+            Show();
 			WindowState = FormWindowState.Normal;
 			Size = new Size(form_width, form_height);
 			HelpWin32.SetForegroundWindow(Handle);
@@ -1882,10 +1883,11 @@ namespace TrOCR
 				try
 				{
 					auto_fla = "";
-					Invoke(new translate(TransClick));
+					Invoke(new Translate(TransClick));
 				}
 				catch
 				{
+                    //
 				}
 			}
 			if (bool.Parse(IniHelper.GetValue("工具栏", "检查")))
@@ -1896,6 +1898,7 @@ namespace TrOCR
 				}
 				catch
 				{
+                    //
 				}
 			}
 			if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
@@ -2156,7 +2159,8 @@ namespace TrOCR
 			{
 				split_txt = "";
 				Image image = ZoomImage((Bitmap)image_screen, 120, 120);
-                var value = OcrHelper.SgOcr(image);
+                //var value = OcrHelper.SgOcr(image);
+                var value = OcrHelper.SgBasicOpenOcr(image);
 				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString());
 				if (IniHelper.GetValue("工具栏", "分段") == "True")
 				{
@@ -2653,12 +2657,12 @@ namespace TrOCR
 			return BoundingBox(image4, draw);
 		}
 
-		public void Captureimage(int width, Image g_image, string saveFilePath, Rectangle rect)
+		public void Captureimage(int width, Image gImage, string saveFilePath, Rectangle rect)
 		{
-			var bitmap = new Bitmap(width + 70, g_image.Size.Height);
+			var bitmap = new Bitmap(width + 70, gImage.Size.Height);
 			var graphics = Graphics.FromImage(bitmap);
 			graphics.FillRectangle(Brushes.White, 0, 0, bitmap.Size.Width, bitmap.Size.Height);
-			graphics.DrawImage(g_image, 30, 0, rect, GraphicsUnit.Pixel);
+			graphics.DrawImage(gImage, 30, 0, rect, GraphicsUnit.Pixel);
 			var bitmap2 = Image.FromHbitmap(bitmap.GetHbitmap());
 			bitmap2.Save(saveFilePath, ImageFormat.Jpeg);
 			image_screen = bitmap2;
@@ -2715,7 +2719,7 @@ namespace TrOCR
 				for (var i = 0; i < image_num[0]; i++)
 				{
 					Stream stream = File.Open("Data\\image_temp\\" + i + ".jpg", FileMode.Open);
-					OCR_baidu_use_A(Image.FromStream(stream));
+					OcrBdUseA(Image.FromStream(stream));
 					stream.Close();
 				}
 				((ManualResetEvent)objEvent).Set();
@@ -2733,7 +2737,7 @@ namespace TrOCR
 				for (var i = image_num[0]; i < image_num[1]; i++)
 				{
 					Stream stream = File.Open("Data\\image_temp\\" + i + ".jpg", FileMode.Open);
-					OCR_baidu_use_B(Image.FromStream(stream));
+					OcrBdUseB(Image.FromStream(stream));
 					stream.Close();
 				}
 				((ManualResetEvent)objEvent).Set();
@@ -2752,11 +2756,11 @@ namespace TrOCR
 			array[1] = new ManualResetEvent(false);
 			ThreadPool.QueueUserWorkItem(baidu_image_b, array[1]);
 			array[2] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(baidu_image_c, array[2]);
+			ThreadPool.QueueUserWorkItem(BdImageC, array[2]);
 			array[3] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(baidu_image_d, array[3]);
+			ThreadPool.QueueUserWorkItem(BdImageD, array[3]);
 			array[4] = new ManualResetEvent(false);
-			ThreadPool.QueueUserWorkItem(baidu_image_e, array[4]);
+			ThreadPool.QueueUserWorkItem(BdImageE, array[4]);
 			WaitHandle[] waitHandles = array;
 			WaitHandle.WaitAll(waitHandles);
 			shupai_Right_txt = string.Concat(OCR_baidu_a, OCR_baidu_b, OCR_baidu_c, OCR_baidu_d, OCR_baidu_e).Replace("\r\n\r\n", "");
@@ -2775,7 +2779,7 @@ namespace TrOCR
 				shupai_Left_txt = str;
 			}
 			fmloading.FmlClose = "窗体已关闭";
-			Invoke(new ocr_thread(Main_OCR_Thread_last));
+			Invoke(new OcrThread(Main_OCR_Thread_last));
 			try
 			{
 				DeleteFile("Data\\image_temp");
@@ -2787,109 +2791,65 @@ namespace TrOCR
 			image_ori.Dispose();
 		}
 
-		public void OCR_baidu_use_B(Image imagearr)
+		public void OcrBdUseB(Image image)
 		{
 			try
 			{
 				var str = "CHN_ENG";
-				var memoryStream = new MemoryStream();
-				imagearr.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var array = OcrHelper.ImgToBytes(image);
+				var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+                var url = "http://ai.baidu.com/aidemo";
+                var referer = "http://ai.baidu.com/tech/ocr/general";
+                var value = CommonHelper.PostStrData(url, data, "", referer);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var array2 = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-				}
-				var str2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					str2 += array2[j];
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					array2[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
 				OCR_baidu_b = (OCR_baidu_b + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
-			catch
+			catch(Exception)
 			{
+                //
 			}
 		}
 
-		public void OCR_baidu_use_A(Image imagearr)
+		public void OcrBdUseA(Image image)
 		{
 			try
 			{
 				var str = "CHN_ENG";
-				var memoryStream = new MemoryStream();
-				imagearr.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
+                var array = OcrHelper.ImgToBytes(image);
+                var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+				var bytes = Encoding.UTF8.GetBytes(data);
 				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
 				httpWebRequest.CookieContainer = new CookieContainer();
 				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var url = "http://ai.baidu.com/aidemo";
+                var referer = "http://ai.baidu.com/tech/ocr/general";
+				var value = CommonHelper.PostStrData(url, data, "", referer);
+                var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var array2 = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-				}
-				var str2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					str2 += array2[j];
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					array2[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
 				OCR_baidu_a = (OCR_baidu_a + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
-			catch
-			{
-			}
-		}
+            catch (Exception)
+            {
+                //
+            }
+        }
 
 		public void DeleteFile(string path)
 		{
@@ -2901,222 +2861,125 @@ namespace TrOCR
 			File.Delete(path);
 		}
 
-		public void OCR_baidu_image(Image imageArr, string strImage)
+		public void OCR_baidu_image(Image image, string strImage)
 		{
 			try
 			{
 				var str = "CHN_ENG";
-				var memoryStream = new MemoryStream();
-				imageArr.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var array = OcrHelper.ImgToBytes(image);
+                var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+				var url = "http://ai.baidu.com/aidemo";
+				var referer = "http://ai.baidu.com/tech/ocr/general";
+				var value = CommonHelper.PostStrData(url, data, "", referer);
+                var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var array2 = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					array2[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
-				var str2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					str2 += array2[j];
-				}
-				strImage = (strImage + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
-			catch
-			{
-			}
-		}
+            catch (Exception)
+            {
+                //
+            }
+        }
 
-		public void OCR_baidu_use_E(Image imagearr)
+		public void OcrBdUseE(Image image)
 		{
 			try
 			{
 				var str = "CHN_ENG";
-				var memoryStream = new MemoryStream();
-				imagearr.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var array = OcrHelper.ImgToBytes(image);
+                var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+				var url = "http://ai.baidu.com/aidemo";
+				var referer = "http://ai.baidu.com/tech/ocr/general";
+				var value = CommonHelper.PostStrData(url, data, "", referer);
+                var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var array2 = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-				}
-				var str2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					str2 += array2[j];
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					array2[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
 				OCR_baidu_e = (OCR_baidu_e + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
 			catch
 			{
+                //
 			}
 		}
 
-		public void OCR_baidu_use_D(Image imagearr)
+		public void OcrBdUseD(Image image)
 		{
 			try
 			{
-				var str = "CHN_ENG";
-				var memoryStream = new MemoryStream();
-				imagearr.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var str = "CHN_ENG";
+                var array = OcrHelper.ImgToBytes(image);
+                var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+				var url = "http://ai.baidu.com/aidemo";
+                var referer = "http://ai.baidu.com/tech/ocr/general";
+				var value = CommonHelper.PostStrData(url, data, "", referer);
+                var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var array2 = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-				}
-				var str2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					str2 += array2[j];
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					array2[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
 				OCR_baidu_d = (OCR_baidu_d + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
 			catch
 			{
+                //
 			}
 		}
 
-		public void OCR_baidu_use_C(Image imagearr)
+		public void OcrBdUseC(Image image)
 		{
 			try
 			{
 				var str = "CHN_ENG";
-				var memoryStream = new MemoryStream();
-				imagearr.Save(memoryStream, ImageFormat.Jpeg);
-				var array = new byte[memoryStream.Length];
-				memoryStream.Position = 0L;
-				memoryStream.Read(array, 0, (int)memoryStream.Length);
-				memoryStream.Close();
-				var s = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
-				var bytes = Encoding.UTF8.GetBytes(s);
-				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/tech/ocr/general");
-				httpWebRequest.CookieContainer = new CookieContainer();
-				httpWebRequest.GetResponse().Close();
-				var httpWebRequest2 = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
-				httpWebRequest2.Method = "POST";
-				httpWebRequest2.Referer = "http://ai.baidu.com/tech/ocr/general";
-				httpWebRequest2.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest2.Timeout = 8000;
-				httpWebRequest2.ReadWriteTimeout = 5000;
-				httpWebRequest2.Headers.Add("Cookie:" + CookieCollectionToStrCookie(((HttpWebResponse)httpWebRequest.GetResponse()).Cookies));
-				using (var requestStream = httpWebRequest2.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest2.GetResponse()).GetResponseStream();
-				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
-				responseStream.Close();
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
+                var array = OcrHelper.ImgToBytes(image);
+                var data = "type=general_location&image=data" + HttpUtility.UrlEncode(":image/jpeg;base64," + Convert.ToBase64String(array)) + "&language_type=" + str;
+				var url = "http://ai.baidu.com/aidemo";
+				var referer = "http://ai.baidu.com/tech/ocr/general";
+				var value = CommonHelper.PostStrData(url, data, "", referer);
+                var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["data"]["words_result"].ToString());
 				var text = "";
-				var array2 = new string[jarray.Count];
-				for (var i = 0; i < jarray.Count; i++)
+				var array2 = new string[jArray.Count];
+				for (var i = 0; i < jArray.Count; i++)
 				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-					array2[jarray.Count - 1 - i] = jobject["words"].ToString().Replace("\r", "").Replace("\n", "");
-				}
-				var str2 = "";
-				for (var j = 0; j < array2.Length; j++)
-				{
-					str2 += array2[j];
+					var jObject = JObject.Parse(jArray[i].ToString());
+					text += jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
+					array2[jArray.Count - 1 - i] = jObject["words"].ToString().Replace("\r", "").Replace("\n", "");
 				}
 				OCR_baidu_c = (OCR_baidu_c + text + "\r\n").Replace("\r\n\r\n", "");
 				Thread.Sleep(10);
 			}
 			catch
 			{
+                //
 			}
 		}
 
-		public void baidu_image_c(object objEvent)
+		public void BdImageC(object objEvent)
 		{
 			try
 			{
 				for (var i = image_num[1]; i < image_num[2]; i++)
 				{
 					Stream stream = File.Open("Data\\image_temp\\" + i + ".jpg", FileMode.Open);
-					OCR_baidu_use_C(Image.FromStream(stream));
+					OcrBdUseC(Image.FromStream(stream));
 					stream.Close();
 				}
 				((ManualResetEvent)objEvent).Set();
@@ -3127,14 +2990,14 @@ namespace TrOCR
 			}
 		}
 
-		public void baidu_image_d(object objEvent)
+		public void BdImageD(object objEvent)
 		{
 			try
 			{
 				for (var i = image_num[2]; i < image_num[3]; i++)
 				{
 					Stream stream = File.Open("Data\\image_temp\\" + i + ".jpg", FileMode.Open);
-					OCR_baidu_use_D(Image.FromStream(stream));
+					OcrBdUseD(Image.FromStream(stream));
 					stream.Close();
 				}
 				((ManualResetEvent)objEvent).Set();
@@ -3145,14 +3008,14 @@ namespace TrOCR
 			}
 		}
 
-		public void baidu_image_e(object objEvent)
+		public void BdImageE(object objEvent)
 		{
 			try
 			{
 				for (var i = image_num[3]; i < image_num[4]; i++)
 				{
 					Stream stream = File.Open("Data\\image_temp\\" + i + ".jpg", FileMode.Open);
-					OCR_baidu_use_E(Image.FromStream(stream));
+					OcrBdUseE(Image.FromStream(stream));
 					stream.Close();
 				}
 				((ManualResetEvent)objEvent).Set();
@@ -3256,7 +3119,7 @@ namespace TrOCR
 			}
 		}
 
-		public void exit_thread()
+        private void exit_thread()
 		{
 			try
 			{
@@ -3267,10 +3130,11 @@ namespace TrOCR
 			}
 			catch
 			{
+                //
 			}
 			FormBorderStyle = FormBorderStyle.Sizable;
 			Visible = true;
-			base.Show();
+            Show();
 			WindowState = FormWindowState.Normal;
 			if (IniHelper.GetValue("快捷键", "翻译文本") != "请按下快捷键")
 			{
@@ -3282,95 +3146,12 @@ namespace TrOCR
 			HelpWin32.UnregisterHotKey(Handle, 222);
 		}
 
-		private Image<Gray, byte> randon(Image<Gray, byte> imageInput)
-		{
-			var width = imageInput.Width;
-			var height = imageInput.Height;
-			var num = 0;
-			var array = new int[height];
-			var result = imageInput;
-			for (var i = -20; i < 20; i++)
-			{
-				var image = imageInput.Rotate(i, new Gray(1.0));
-				for (var j = 0; j < height; j++)
-				{
-					var num2 = 0;
-					for (var k = 0; k < width; k++)
-					{
-						num2 += image.Data[j, k, 0];
-					}
-					array[j] = num2;
-				}
-				var num3 = 0;
-				for (var l = 0; l < height - 1; l++)
-				{
-					num3 += Math.Abs(array[l] - array[l + 1]);
-				}
-				if (num3 > num)
-				{
-					result = image;
-					num = num3;
-				}
-			}
-			return result;
-		}
-
-		public void SetGlobalProxy()
-		{
-			WebRequest.DefaultWebProxy = null;
-		}
-
-		private void tray_null_Proxy_Click(object sender, EventArgs e)
-		{
-			null_Proxy.Text = "不使用代理√";
-			customize_Proxy.Text = "自定义代理";
-			system_Proxy.Text = "系统代理";
-			Proxy_flag = "关闭";
-			WebRequest.DefaultWebProxy = null;
-		}
-
-		private void tray_system_Proxy_Click(object sender, EventArgs e)
-		{
-			null_Proxy.Text = "不使用代理";
-			customize_Proxy.Text = "自定义代理";
-			system_Proxy.Text = "系统代理√";
-			Proxy_flag = "系统";
-			WebRequest.DefaultWebProxy = WebRequest.GetSystemWebProxy();
-		}
-
 		public void change_pinyin_Click(object sender, EventArgs e)
 		{
 			pinyin_flag = true;
 			TransClick();
 		}
-
-		public string Post_Html_pinyin(string url, string post_str)
-		{
-			var bytes = Encoding.UTF8.GetBytes(post_str);
-			var result = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-			httpWebRequest.Method = "POST";
-			httpWebRequest.Timeout = 6000;
-			httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-			try
-			{
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var streamReader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-				result = streamReader.ReadToEnd();
-				responseStream.Close();
-				streamReader.Close();
-				httpWebRequest.Abort();
-			}
-			catch
-			{
-			}
-			return result;
-		}
-
+        
 		private Bitmap ZoomImage(Bitmap bitmap1, int destHeight, int destWidth)
 		{
 			var num = (double)bitmap1.Width;
@@ -3415,7 +3196,7 @@ namespace TrOCR
 					}
 					if (IniHelper.GetValue("配置", "翻译接口") == "百度")
 					{
-						data = Translate_baidu(trans_hotkey);
+						data = TranslateBaidu(trans_hotkey);
 					}
 					if (IniHelper.GetValue("配置", "翻译接口") == "腾讯")
 					{
@@ -3439,7 +3220,7 @@ namespace TrOCR
 			FormBorderStyle = FormBorderStyle.Sizable;
 			Visible = true;
 			HelpWin32.SetForegroundWindow(StaticValue.mainHandle);
-			base.Show();
+            Show();
 			WindowState = FormWindowState.Normal;
 			if (IniHelper.GetValue("工具栏", "顶置") == "True")
 			{
@@ -3448,35 +3229,14 @@ namespace TrOCR
 			}
 			TopMost = false;
 		}
-
-		public Rectangle[] GetRects(Bitmap pic)
+        
+		public Bitmap GetRect(Image pic, Rectangle rect)
 		{
-			var list = new List<Rectangle>();
-			var colors = getColors(pic);
-			for (var i = 0; i < pic.Height; i++)
-			{
-				for (var j = 0; j < pic.Width; j++)
-				{
-					if (Exist(colors, i, j))
-					{
-						var rect = GetRect(colors, i, j);
-						if (rect.Width > 10 && rect.Height > 10)
-						{
-							list.Add(rect);
-						}
-					}
-				}
-			}
-			return list.ToArray();
-		}
-
-		public Bitmap GetRect(Image pic, Rectangle Rect)
-		{
-			var destRect = new Rectangle(0, 0, Rect.Width, Rect.Height);
+			var destRect = new Rectangle(0, 0, rect.Width, rect.Height);
 			var bitmap = new Bitmap(destRect.Width, destRect.Height);
 			var graphics = Graphics.FromImage(bitmap);
 			graphics.Clear(Color.FromArgb(0, 0, 0, 0));
-			graphics.DrawImage(pic, destRect, Rect, GraphicsUnit.Pixel);
+			graphics.DrawImage(pic, destRect, rect, GraphicsUnit.Pixel);
 			graphics.Dispose();
 			return bitmap;
 		}
@@ -3492,56 +3252,21 @@ namespace TrOCR
 			}
 			return array;
 		}
-
-		public bool[][] getColors(Bitmap pic)
+        
+		public bool Exist(bool[][] colors, int x, int y)
 		{
-			var array = new bool[pic.Height][];
-			for (var i = 0; i < pic.Height; i++)
-			{
-				array[i] = new bool[pic.Width];
-				for (var j = 0; j < pic.Width; j++)
-				{
-					var pixel = pic.GetPixel(j, i);
-					var num = 0;
-					if (pixel.R < 4)
-					{
-						num++;
-					}
-					if (pixel.G < 4)
-					{
-						num++;
-					}
-					if (pixel.B < 4)
-					{
-						num++;
-					}
-					if (pixel.A < 3 || (num >= 2 && pixel.A < 30))
-					{
-						array[i][j] = false;
-					}
-					else
-					{
-						array[i][j] = true;
-					}
-				}
-			}
-			return array;
+			return x >= 0 && y >= 0 && x < colors.Length && y < colors[0].Length && colors[x][y];
 		}
 
-		public bool Exist(bool[][] Colors, int x, int y)
+		public bool R_Exist(bool[][] colors, Rectangle rect)
 		{
-			return x >= 0 && y >= 0 && x < Colors.Length && y < Colors[0].Length && Colors[x][y];
-		}
-
-		public bool R_Exist(bool[][] Colors, Rectangle Rect)
-		{
-			if (Rect.Right >= Colors[0].Length || Rect.Left < 0)
+			if (rect.Right >= colors[0].Length || rect.Left < 0)
 			{
 				return false;
 			}
-			for (var i = 0; i < Rect.Height; i++)
+			for (var i = 0; i < rect.Height; i++)
 			{
-				if (Exist(Colors, Rect.Top + i, Rect.Right + 1))
+				if (Exist(colors, rect.Top + i, rect.Right + 1))
 				{
 					return true;
 				}
@@ -3549,15 +3274,15 @@ namespace TrOCR
 			return false;
 		}
 
-		public bool D_Exist(bool[][] Colors, Rectangle Rect)
+		public bool D_Exist(bool[][] colors, Rectangle rect)
 		{
-			if (Rect.Bottom >= Colors.Length || Rect.Top < 0)
+			if (rect.Bottom >= colors.Length || rect.Top < 0)
 			{
 				return false;
 			}
-			for (var i = 0; i < Rect.Width; i++)
+			for (var i = 0; i < rect.Width; i++)
 			{
-				if (Exist(Colors, Rect.Bottom + 1, Rect.Left + i))
+				if (Exist(colors, rect.Bottom + 1, rect.Left + i))
 				{
 					return true;
 				}
@@ -3565,15 +3290,15 @@ namespace TrOCR
 			return false;
 		}
 
-		public bool L_Exist(bool[][] Colors, Rectangle Rect)
+		public bool L_Exist(bool[][] colors, Rectangle rect)
 		{
-			if (Rect.Right >= Colors[0].Length || Rect.Left < 0)
+			if (rect.Right >= colors[0].Length || rect.Left < 0)
 			{
 				return false;
 			}
-			for (var i = 0; i < Rect.Height; i++)
+			for (var i = 0; i < rect.Height; i++)
 			{
-				if (Exist(Colors, Rect.Top + i, Rect.Left - 1))
+				if (Exist(colors, rect.Top + i, rect.Left - 1))
 				{
 					return true;
 				}
@@ -3581,91 +3306,20 @@ namespace TrOCR
 			return false;
 		}
 
-		public bool U_Exist(bool[][] Colors, Rectangle Rect)
+		public bool U_Exist(bool[][] colors, Rectangle rect)
 		{
-			if (Rect.Bottom >= Colors.Length || Rect.Top < 0)
+			if (rect.Bottom >= colors.Length || rect.Top < 0)
 			{
 				return false;
 			}
-			for (var i = 0; i < Rect.Width; i++)
+			for (var i = 0; i < rect.Width; i++)
 			{
-				if (Exist(Colors, Rect.Top - 1, Rect.Left + i))
+				if (Exist(colors, rect.Top - 1, rect.Left + i))
 				{
 					return true;
 				}
 			}
 			return false;
-		}
-
-		public Rectangle GetRect(bool[][] Colors, int x, int y)
-		{
-			var rectangle = new Rectangle(new Point(y, x), new Size(1, 1));
-			bool flag;
-			int num;
-			do
-			{
-				flag = false;
-				while (R_Exist(Colors, rectangle))
-				{
-					num = rectangle.Width;
-					rectangle.Width = num + 1;
-					flag = true;
-				}
-				while (D_Exist(Colors, rectangle))
-				{
-					num = rectangle.Height;
-					rectangle.Height = num + 1;
-					flag = true;
-				}
-				while (L_Exist(Colors, rectangle))
-				{
-					num = rectangle.Width;
-					rectangle.Width = num + 1;
-					num = rectangle.X;
-					rectangle.X = num - 1;
-					flag = true;
-				}
-				while (U_Exist(Colors, rectangle))
-				{
-					num = rectangle.Height;
-					rectangle.Height = num + 1;
-					num = rectangle.Y;
-					rectangle.Y = num - 1;
-					flag = true;
-				}
-			}
-			while (flag);
-			clearRect(Colors, rectangle);
-			num = rectangle.Width;
-			rectangle.Width = num + 1;
-			num = rectangle.Height;
-			rectangle.Height = num + 1;
-			return rectangle;
-		}
-
-		public void clearRect(bool[][] Colors, Rectangle Rect)
-		{
-			for (var i = Rect.Top; i <= Rect.Bottom; i++)
-			{
-				for (var j = Rect.Left; j <= Rect.Right; j++)
-				{
-					Colors[i][j] = false;
-				}
-			}
-		}
-
-		public static string ReFileNamekey(string strFilePath)
-		{
-			var startIndex = strFilePath.LastIndexOf('.');
-			var format = strFilePath.Insert(startIndex, "_{0}");
-			var num = 1;
-			var text = string.Format(format, num);
-			while (File.Exists(text))
-			{
-				text = string.Format(format, num);
-				num++;
-			}
-			return text;
 		}
 
 		private Bitmap[] getSubPics_ocr(Image buildPic, Rectangle[] buildRects)
@@ -3726,7 +3380,7 @@ namespace TrOCR
 			typeset_txt = text.Replace("\r\n\r\n", "\r\n");
 			split_txt = text2.Replace("\r\n\r\n", "\r\n");
 			fmloading.FmlClose = "窗体已关闭";
-			Invoke(new ocr_thread(Main_OCR_Thread_last));
+			Invoke(new OcrThread(Main_OCR_Thread_last));
 			return array;
 		}
 
@@ -3764,7 +3418,7 @@ namespace TrOCR
 			return result;
 		}
 
-		public Image FindBundingBox_fences(Bitmap bitmap)
+		public Image FindBoundingBoxFences(Bitmap bitmap)
 		{
 			var image = new Image<Bgr, byte>(bitmap);
 			var image2 = new Image<Gray, byte>(image.Width, image.Height);
@@ -3804,146 +3458,25 @@ namespace TrOCR
 			}
 		}
 
-		public void checked_location_txt(JArray jarray, int lastlength, string words)
-		{
-			var num = 0;
-			for (var i = 0; i < jarray.Count; i++)
-			{
-				var length = JObject.Parse(jarray[i].ToString())[words].ToString().Length;
-				if (length > num)
-				{
-					num = length;
-				}
-			}
-			var str = "";
-			var text = "";
-			for (var j = 0; j < jarray.Count - 1; j++)
-			{
-				var jobject = JObject.Parse(jarray[j].ToString());
-				var array = jobject[words].ToString().ToCharArray();
-				var jobject2 = JObject.Parse(jarray[j + 1].ToString());
-				var array2 = jobject2[words].ToString().ToCharArray();
-				var length2 = jobject[words].ToString().Length;
-				var length3 = jobject2[words].ToString().Length;
-				if (Math.Abs(length2 - length3) <= 0)
-				{
-					if (split_paragraph(array[array.Length - lastlength].ToString()) && contain_en(array2[0].ToString()))
-					{
-						text = text + jobject[words].ToString().Trim() + "\r\n";
-					}
-					else if (split_paragraph(array[array.Length - lastlength].ToString()) && IsNum(array2[0].ToString()))
-					{
-						text = text + jobject[words].ToString().Trim() + "\r\n";
-					}
-					else if (split_paragraph(array[array.Length - lastlength].ToString()) && Is_punctuation(array2[0].ToString()))
-					{
-						text = text + jobject[words].ToString().Trim() + "\r\n";
-					}
-					else
-					{
-						text += jobject[words].ToString().Trim();
-					}
-				}
-				else if (split_paragraph(array[array.Length - lastlength].ToString()) && Math.Abs(length2 - length3) <= 1)
-				{
-					if (split_paragraph(array[array.Length - lastlength].ToString()) && contain_en(array2[0].ToString()))
-					{
-						text = text + jobject[words].ToString().Trim() + "\r\n";
-					}
-					else if (split_paragraph(array[array.Length - lastlength].ToString()) && IsNum(array2[0].ToString()))
-					{
-						text = text + jobject[words].ToString().Trim() + "\r\n";
-					}
-					else if (split_paragraph(array[array.Length - lastlength].ToString()) && Is_punctuation(array2[0].ToString()))
-					{
-						text = text + jobject[words].ToString().Trim() + "\r\n";
-					}
-					else
-					{
-						text += jobject[words].ToString().Trim();
-					}
-				}
-				else if (contain_ch(array[array.Length - lastlength].ToString()) && length2 <= num / 2)
-				{
-					text = text + jobject[words].ToString().Trim() + "\r\n";
-				}
-				else if (contain_ch(array[array.Length - lastlength].ToString()) && IsNum(array2[0].ToString()) && length3 - length2 < 4 && array2[1].ToString() == ".")
-				{
-					text = text + jobject[words].ToString().Trim() + "\r\n";
-				}
-				else if (contain_ch(array[array.Length - lastlength].ToString()) && contain_ch(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (contain_en(array[array.Length - lastlength].ToString()) && contain_en(array2[0].ToString()))
-				{
-					text = text + jobject[words].ToString().Trim() + " ";
-				}
-				else if (contain_ch(array[array.Length - lastlength].ToString()) && contain_en(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (contain_en(array[array.Length - lastlength].ToString()) && contain_ch(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (contain_ch(array[array.Length - lastlength].ToString()) && Is_punctuation(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (Is_punctuation(array[array.Length - lastlength].ToString()) && contain_ch(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (Is_punctuation(array[array.Length - lastlength].ToString()) && contain_en(array2[0].ToString()))
-				{
-					text = text + jobject[words].ToString().Trim() + " ";
-				}
-				else if (contain_ch(array[array.Length - lastlength].ToString()) && IsNum(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (IsNum(array[array.Length - lastlength].ToString()) && contain_ch(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else if (IsNum(array[array.Length - lastlength].ToString()) && IsNum(array2[0].ToString()))
-				{
-					text += jobject[words].ToString().Trim();
-				}
-				else
-				{
-					text = text + jobject[words].ToString().Trim() + "\r\n";
-				}
-				if (has_punctuation(jobject[words].ToString()))
-				{
-					text += "\r\n";
-				}
-				str = str + jobject[words].ToString().Trim() + "\r\n";
-			}
-			split_txt = str + JObject.Parse(jarray[jarray.Count - 1].ToString())[words];
-			typeset_txt = text.Replace("\r\n\r\n", "\r\n") + JObject.Parse(jarray[jarray.Count - 1].ToString())[words];
-		}
-
 		public void checked_location_sougou(JArray jarray, int lastlength, string words, string location)
 		{
 			paragraph = false;
 			var num = 20000;
 			var num2 = 0;
-			for (var i = 0; i < jarray.Count; i++)
-			{
-				var jobject = JObject.Parse(jarray[i].ToString());
-				var num3 = split_char_x(jobject[location][1].ToString()) - split_char_x(jobject[location][0].ToString());
-				if (num3 > num2)
-				{
-					num2 = num3;
-				}
-				var num4 = split_char_x(jobject[location][0].ToString());
-				if (num4 < num)
-				{
-					num = num4;
-				}
-			}
+			foreach (var t in jarray)
+            {
+                var jObject = JObject.Parse(t.ToString());
+                var num3 = split_char_x(jObject[location][1].ToString()) - split_char_x(jObject[location][0].ToString());
+                if (num3 > num2)
+                {
+                    num2 = num3;
+                }
+                var num4 = split_char_x(jObject[location][0].ToString());
+                if (num4 < num)
+                {
+                    num = num4;
+                }
+            }
 			var jobject2 = JObject.Parse(jarray[0].ToString());
 			if (Math.Abs(split_char_x(jobject2[location][0].ToString()) - num) > 10)
 			{
@@ -3980,9 +3513,9 @@ namespace TrOCR
 			typeset_txt = text;
 		}
 
-		public int split_char_x(string split_char)
+		public int split_char_x(string splitChar)
 		{
-			return Convert.ToInt32(split_char.Split(',')[0]);
+			return Convert.ToInt32(splitChar.Split(',')[0]);
 		}
 
 		private void tray_double_Click(object sender, EventArgs e)
@@ -4011,66 +3544,6 @@ namespace TrOCR
 				}
 			}
 			return num;
-		}
-
-		public void checked_location_youdao(JArray jarray, int lastlength, string words, string location)
-		{
-			paragraph = false;
-			var num = 20000;
-			var num2 = 0;
-			for (var i = 0; i < jarray.Count; i++)
-			{
-				var jobject = JObject.Parse(jarray[i].ToString());
-				var num3 = split_char_youdao(jobject[location].ToString(), 3) - split_char_youdao(jobject[location].ToString(), 1);
-				if (num3 > num2)
-				{
-					num2 = num3;
-				}
-				var num4 = split_char_youdao(jobject[location].ToString(), 1);
-				if (num4 < num)
-				{
-					num = num4;
-				}
-			}
-			var jobject2 = JObject.Parse(jarray[0].ToString());
-			if (Math.Abs(split_char_youdao(jobject2[location].ToString(), 1) - num) > 10)
-			{
-				paragraph = true;
-			}
-			var text = "";
-			var text2 = "";
-			for (var j = 0; j < jarray.Count; j++)
-			{
-				var jobject3 = JObject.Parse(jarray[j].ToString());
-				var array = jobject3[words].ToString().ToCharArray();
-				var jobject4 = JObject.Parse(jarray[j].ToString());
-				var flag = Math.Abs(split_char_youdao(jobject4[location].ToString(), 3) - split_char_youdao(jobject4[location].ToString(), 1) - num2) > 20;
-				var flag2 = Math.Abs(split_char_youdao(jobject4[location].ToString(), 1) - num) > 10;
-				if (flag && flag2)
-				{
-					text = text.Trim() + "\r\n" + jobject4[words].ToString().Trim();
-				}
-				else if (IsNum(array[0].ToString()) && !contain_ch(array[1].ToString()) && flag)
-				{
-					text = text.Trim() + "\r\n" + jobject4[words].ToString().Trim() + "\r\n";
-				}
-				else
-				{
-					text += jobject4[words].ToString().Trim();
-				}
-				if (contain_en(array[array.Length - lastlength].ToString()))
-				{
-					text = text + jobject3[words].ToString().Trim() + " ";
-				}
-				text2 = text2 + jobject4[words].ToString().Trim() + "\r\n";
-			}
-			split_txt = text2.Replace("\r\n\r\n", "\r\n");
-			typeset_txt = text;
-		}
-
-		public int split_char_youdao(string split_char, int i)
-		{
-			return Convert.ToInt32(split_char.Split(',')[i - 1]);
 		}
 
 		public void Trans_google_Click(object sender, EventArgs e)
@@ -4108,40 +3581,7 @@ namespace TrOCR
 			}
 		}
 
-		public string GetBaiduHtml(string url, CookieContainer cookie, string refer, string content_length)
-		{
-			string result;
-			try
-			{
-				var text = "";
-				var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-				httpWebRequest.Method = "POST";
-				httpWebRequest.Referer = refer;
-				httpWebRequest.Timeout = 1500;
-				httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				var bytes = Encoding.UTF8.GetBytes(content_length);
-				var requestStream = httpWebRequest.GetRequestStream();
-				requestStream.Write(bytes, 0, bytes.Length);
-				requestStream.Close();
-				using (var httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
-				{
-					using (var streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8))
-					{
-						text = streamReader.ReadToEnd();
-						streamReader.Close();
-						httpWebResponse.Close();
-					}
-				}
-				result = text;
-			}
-			catch
-			{
-				result = GetBaiduHtml(url, cookie, refer, content_length);
-			}
-			return result;
-		}
-
-		private string Translate_baidu(string Text)
+		private string TranslateBaidu(string content)
 		{
 			var text = "";
 			try
@@ -4151,7 +3591,7 @@ namespace TrOCR
 				var text3 = "en";
 				if (StaticValue.ZH2EN)
 				{
-					if (ch_count(Text.Trim()) > en_count(Text.Trim()) || (en_count(text.Trim()) == 1 && ch_count(text.Trim()) == 1))
+					if (ch_count(content.Trim()) > en_count(content.Trim()) || (en_count(content.Trim()) == 1 && ch_count(content.Trim()) == 1))
 					{
 						text2 = "zh";
 						text3 = "en";
@@ -4164,7 +3604,7 @@ namespace TrOCR
 				}
 				if (StaticValue.ZH2JP)
 				{
-					if (contain_jap(replaceStr(Del_ch(Text.Trim()))))
+					if (contain_jap(replaceStr(Del_ch(content.Trim()))))
 					{
 						text2 = "jp";
 						text3 = "zh";
@@ -4177,7 +3617,7 @@ namespace TrOCR
 				}
 				if (StaticValue.ZH2KO)
 				{
-					if (contain_kor(Text.Trim()))
+					if (contain_kor(content.Trim()))
 					{
 						text2 = "kor";
 						text3 = "zh";
@@ -4188,15 +3628,15 @@ namespace TrOCR
 						text3 = "kor";
 					}
 				}
-                var html = CommonHelper.PostStrData("https://fanyi.baidu.com/basetrans",
-                    string.Concat("query=", HttpUtility.UrlEncode(Text.Trim()).Replace("+", "%20"), "&from=", text2,
-                        "&to=", text3));
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(html))["trans"].ToString());
-				for (var i = 0; i < jarray.Count; i++)
-				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text = text + jobject["dst"] + "\r\n";
-				}
+//                var html = CommonHelper.PostStrData("https://fanyi.baidu.com/basetrans",
+//                    string.Concat("query=", HttpUtility.UrlEncode(Text.Trim()).Replace("+", "%20"), "&from=", text2,
+//                        "&to=", text3));
+                var html = TranslateHelper.BdTrans(content.Trim(), text2, text3);
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(html))["fanyi_list"].ToString());
+				foreach (var arr in jArray)
+                {
+                    text = text + arr + "\r\n";
+                }
 			}
 			catch (Exception)
 			{
@@ -4210,9 +3650,9 @@ namespace TrOCR
 			Trans_foreach("腾讯");
 		}
 
-		public string Content_Length(string text, string fromlang, string tolang)
+		public string Content_Length(string text, string from, string to)
 		{
-			return string.Concat("&source=", fromlang, "&target=", tolang, "&sourceText=", HttpUtility.UrlEncode(text).Replace("+", "%20"));
+			return string.Concat("&source=", from, "&target=", to, "&sourceText=", HttpUtility.UrlEncode(text)?.Replace("+", "%20"));
 		}
 
 		public string TencentPOST(string url, string content)
@@ -4220,36 +3660,8 @@ namespace TrOCR
 			string result;
 			try
 			{
-				var text = "";
-				var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-				httpWebRequest.Method = "POST";
-				httpWebRequest.Referer = "https://fanyi.qq.com/";
-				httpWebRequest.Timeout = 5000;
-				httpWebRequest.Accept = "application/json, text/javascript, */*; q=0.01";
-				httpWebRequest.Headers.Add("X-Requested-With: XMLHttpRequest");
-				httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				httpWebRequest.Headers.Add("Accept-Language: zh-CN,zh;q=0.9");
-				httpWebRequest.Headers.Add("cookie:" + GetCookies("http://fanyi.qq.com"));
-				var bytes = Encoding.UTF8.GetBytes(content);
-				httpWebRequest.ContentLength = bytes.Length;
-				var requestStream = httpWebRequest.GetRequestStream();
-				requestStream.Write(bytes, 0, bytes.Length);
-				requestStream.Close();
-				using (var httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
-				{
-					using (var streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8))
-					{
-						text = streamReader.ReadToEnd();
-						streamReader.Close();
-						httpWebResponse.Close();
-					}
-				}
-				result = text;
-				if (text.Contains("\"records\":[]"))
-				{
-					Thread.Sleep(8);
-					return TencentPOST(url, content);
-				}
+				var referer = "https://fanyi.qq.com/";
+				result = CommonHelper.PostStrData(url, content, "", referer);
 			}
 			catch
 			{
@@ -4258,58 +3670,58 @@ namespace TrOCR
 			return result;
 		}
 
-		private string Translate_Tencent(string strtrans)
+		private string Translate_Tencent(string strTrans)
 		{
 			var text = "";
 			try
 			{
-				var fromlang = "zh";
-				var tolang = "en";
+				var from = "zh";
+				var to = "en";
 				if (StaticValue.ZH2EN)
 				{
-					if (ch_count(strtrans.Trim()) > en_count(strtrans.Trim()) || (en_count(text.Trim()) == 1 && ch_count(text.Trim()) == 1))
+					if (ch_count(strTrans.Trim()) > en_count(strTrans.Trim()) || (en_count(text.Trim()) == 1 && ch_count(text.Trim()) == 1))
 					{
-						fromlang = "zh";
-						tolang = "en";
+						from = "zh";
+						to = "en";
 					}
 					else
 					{
-						fromlang = "en";
-						tolang = "zh";
+						from = "en";
+						to = "zh";
 					}
 				}
 				if (StaticValue.ZH2JP)
 				{
-					if (contain_jap(replaceStr(Del_ch(strtrans.Trim()))))
+					if (contain_jap(replaceStr(Del_ch(strTrans.Trim()))))
 					{
-						fromlang = "jp";
-						tolang = "zh";
+						from = "jp";
+						to = "zh";
 					}
 					else
 					{
-						fromlang = "zh";
-						tolang = "jp";
+						from = "zh";
+						to = "jp";
 					}
 				}
 				if (StaticValue.ZH2KO)
 				{
-					if (contain_kor(strtrans.Trim()))
+					if (contain_kor(strTrans.Trim()))
 					{
-						fromlang = "kr";
-						tolang = "zh";
+						from = "kr";
+						to = "zh";
 					}
 					else
 					{
-						fromlang = "zh";
-						tolang = "kr";
+						from = "zh";
+						to = "kr";
 					}
 				}
-				var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(TencentPOST("https://fanyi.qq.com/api/translate", Content_Length(strtrans, fromlang, tolang))))["translate"]["records"].ToString());
-				for (var i = 0; i < jarray.Count; i++)
-				{
-					var jobject = JObject.Parse(jarray[i].ToString());
-					text += jobject["targetText"].ToString();
-				}
+				var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(TencentPOST("https://fanyi.qq.com/api/translate", Content_Length(strTrans, from, to))))["translate"]["records"].ToString());
+				foreach (var t in jArray)
+                {
+                    var jObject = JObject.Parse(t.ToString());
+                    text += jObject["targetText"].ToString();
+                }
 			}
 			catch (Exception)
 			{
@@ -4317,32 +3729,6 @@ namespace TrOCR
 			}
 			return text;
 		}
-
-		public void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-		{
-		}
-
-		private static string GetCookies(string url)
-		{
-			var num = 1024u;
-			var stringBuilder = new StringBuilder((int)num);
-			if (!InternetGetCookieEx(url, null, stringBuilder, ref num, 8192, IntPtr.Zero))
-			{
-				if (num < 0u)
-				{
-					return null;
-				}
-				stringBuilder = new StringBuilder((int)num);
-				if (!InternetGetCookieEx(url, null, stringBuilder, ref num, 8192, IntPtr.Zero))
-				{
-					return null;
-				}
-			}
-			return stringBuilder.ToString();
-		}
-
-		[DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		private static extern bool InternetGetCookieEx(string pchURL, string pchCookieName, StringBuilder pchCookieData, ref uint pcchCookieData, int dwFlags, IntPtr lpReserved);
 
 		public void BdTableOCR()
 		{
@@ -4359,12 +3745,7 @@ namespace TrOCR
 				{
 					split_txt = "";
 					var image = image_screen;
-					var memoryStream = new MemoryStream();
-					image.Save(memoryStream, ImageFormat.Jpeg);
-					var array = new byte[memoryStream.Length];
-					memoryStream.Position = 0L;
-					memoryStream.Read(array, 0, (int)memoryStream.Length);
-					memoryStream.Close();
+                    var array = OcrHelper.ImgToBytes(image);
 					var s = "image=" + HttpUtility.UrlEncode(Convert.ToBase64String(array));
 					var bytes = Encoding.UTF8.GetBytes(s);
 					var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/request?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"]);
@@ -4380,7 +3761,7 @@ namespace TrOCR
 					var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
 					var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
 					responseStream.Close();
-					var post_str = "request_id=" + JObject.Parse(JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString())[0].ToString())["request_id"].ToString().Trim() + "&result_type=json";
+					var postStr = "request_id=" + JObject.Parse(JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["result"].ToString())[0].ToString())["request_id"].ToString().Trim() + "&result_type=json";
 					var text = "";
 					while (!text.Contains("已完成"))
 					{
@@ -4390,7 +3771,7 @@ namespace TrOCR
 							break;
 						}
 						Thread.Sleep(120);
-						text = CommonHelper.PostStrData("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"], post_str);
+						text = CommonHelper.PostStrData("https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result?access_token=" + ((JObject)JsonConvert.DeserializeObject(baidu_vip))["access_token"], postStr);
 					}
 					if (!text.Contains("image recognize error"))
 					{
@@ -4411,41 +3792,41 @@ namespace TrOCR
 
 		private void get_table(string str)
 		{
-			var jarray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(((JObject)JsonConvert.DeserializeObject(str))["result"]["result_data"].ToString().Replace("\\", "")))["forms"][0]["body"].ToString());
-			var array = new int[jarray.Count];
-			var array2 = new int[jarray.Count];
-			for (var i = 0; i < jarray.Count; i++)
+			var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(((JObject)JsonConvert.DeserializeObject(str))["result"]["result_data"].ToString().Replace("\\", "")))["forms"][0]["body"].ToString());
+			var array = new int[jArray.Count];
+			var array2 = new int[jArray.Count];
+			for (var i = 0; i < jArray.Count; i++)
 			{
-				var jobject = JObject.Parse(jarray[i].ToString());
-				var value = jobject["column"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
-				var value2 = jobject["row"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
+				var jObject = JObject.Parse(jArray[i].ToString());
+				var value = jObject["column"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
+				var value2 = jObject["row"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
 				array[i] = Convert.ToInt32(value);
 				array2[i] = Convert.ToInt32(value2);
 			}
 			var array3 = new string[array2.Max() + 1, array.Max() + 1];
-			for (var j = 0; j < jarray.Count; j++)
+			for (var j = 0; j < jArray.Count; j++)
 			{
-				var jobject2 = JObject.Parse(jarray[j].ToString());
-				var value3 = jobject2["column"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
-				var value4 = jobject2["row"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
+				var jObject = JObject.Parse(jArray[j].ToString());
+				var value3 = jObject["column"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
+				var value4 = jObject["row"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
 				array[j] = Convert.ToInt32(value3);
 				array2[j] = Convert.ToInt32(value4);
-				var text = jobject2["word"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
+				var text = jObject["word"].ToString().Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Trim();
 				array3[Convert.ToInt32(value4), Convert.ToInt32(value3)] = text;
 			}
 			var graphics = CreateGraphics();
 			var array4 = new int[array.Max() + 1];
 			var num = 0;
-			var sizeF = new SizeF(10f, 10f);
+			var size = new SizeF(10f, 10f);
 			var num2 = Screen.PrimaryScreen.Bounds.Width / 4;
 			for (var k = 0; k < array3.GetLength(1); k++)
 			{
 				for (var l = 0; l < array3.GetLength(0); l++)
 				{
-					sizeF = graphics.MeasureString(array3[l, k], new Font("宋体", 12f));
-					if (num < (int)sizeF.Width)
+					size = graphics.MeasureString(array3[l, k], new Font("宋体", 12f));
+					if (num < (int)size.Width)
 					{
-						num = (int)sizeF.Width;
+						num = (int)size.Width;
 					}
 					if (num > num2)
 					{
@@ -4493,7 +3874,7 @@ namespace TrOCR
 			StaticValue.IsCapture = false;
 			FormBorderStyle = FormBorderStyle.Sizable;
 			Visible = true;
-			base.Show();
+            Show();
 			WindowState = FormWindowState.Normal;
 			Size = new Size(form_width, form_height);
 			HelpWin32.SetForegroundWindow(Handle);
@@ -4605,7 +3986,7 @@ namespace TrOCR
 			}
 			catch (Exception)
 			{
-				text2 = "[谷歌接口报错]：\r\n出现这个提示文字，表示您当前的网络不适合使用谷歌接口，使用方法开启设置中的系统代理，看是否可行，仍不可行的话，请自行挂VPN，多的不再说，这个问题不要再和我反馈了，个人能力有限解决不了。\r\n请放弃使用谷歌接口，腾讯，百度接口都可以正常使用。";
+				text2 = "[谷歌接口报错]：\r\n出现这个提示文字，表示您当前的网络不适合使用谷歌接口。\r\n请放弃使用谷歌接口，腾讯，百度接口都可以正常使用。";
 			}
 			return text2;
 		}
@@ -4658,10 +4039,10 @@ namespace TrOCR
 				var stream = BytesToStream(ImageToByteArray(BWPic((Bitmap)image_screen)));
 				var str = Convert.ToBase64String(new BinaryReader(stream).ReadBytes(Convert.ToInt32(stream.Length)));
 				stream.Close();
-				var post_str = "{\n\t\"image\": \"" + str + "\",\n\t\"configure\": \"{\\\"format\\\":\\\"html\\\", \\\"finance\\\":false}\"\n}";
+				var postStr = "{\n\t\"image\": \"" + str + "\",\n\t\"configure\": \"{\\\"format\\\":\\\"html\\\", \\\"finance\\\":false}\"\n}";
 				var url = "https://predict-pai.data.aliyun.com/dp_experience_mall/ocr/ocr_table_parse";
-				text = Post_Html_final(url, post_str, value);
-				typeset_txt = ((JObject)JsonConvert.DeserializeObject(Post_Html_final(url, post_str, value)))["tables"].ToString().Replace("table tr td { border: 1px solid blue }", "table tr td {border: 0.5px black solid }").Replace("table { border: 1px solid blue }", "table { border: 0.5px black solid; border-collapse : collapse}\r\n");
+				text = CommonHelper.PostStrData(url, postStr, value);
+				typeset_txt = ((JObject)JsonConvert.DeserializeObject(CommonHelper.PostStrData(url, postStr, value)))["tables"].ToString().Replace("table tr td { border: 1px solid blue }", "table tr td {border: 0.5px black solid }").Replace("table { border: 1px solid blue }", "table { border: 0.5px black solid; border-collapse : collapse}\r\n");
 				RichBoxBody.Text = "[消息]：表格已复制到粘贴板！";
 			}
 			catch
@@ -4687,36 +4068,6 @@ namespace TrOCR
 				}
 			}
 			return bitmap;
-		}
-
-		public string Post_Html_final(string url, string post_str, string CookieContainer)
-		{
-			var bytes = Encoding.UTF8.GetBytes(post_str);
-			var result = "";
-			var httpWebRequest = WebRequest.Create(url) as HttpWebRequest;
-			httpWebRequest.Method = "POST";
-			httpWebRequest.Accept = "*/*";
-			httpWebRequest.Timeout = 5000;
-			httpWebRequest.Headers.Add("Accept-Language:zh-CN,zh;q=0.9");
-			httpWebRequest.ContentType = "text/plain";
-			httpWebRequest.Headers.Add("Cookie:" + CookieContainer);
-			try
-			{
-				using (var requestStream = httpWebRequest.GetRequestStream())
-				{
-					requestStream.Write(bytes, 0, bytes.Length);
-				}
-				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-				var streamReader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-				result = streamReader.ReadToEnd();
-				responseStream.Close();
-				streamReader.Close();
-				httpWebRequest.Abort();
-			}
-			catch
-			{
-			}
-			return result;
 		}
 
 		public void CopyHtmlToClipBoard(string html)
@@ -4953,9 +4304,9 @@ namespace TrOCR
 
 		private AliTable ailibaba;
 
-		public delegate void translate();
+		public delegate void Translate();
 
-		public delegate void ocr_thread();
+		public delegate void OcrThread();
 
 		public delegate int Dllinput(string command);
 
@@ -5064,39 +4415,21 @@ namespace TrOCR
 
 			public string From
 			{
-				get
-				{
-					return from;
-				}
-				set
-				{
-					from = value;
-				}
-			}
+				get => from;
+                set => from = value;
+            }
 
 			public string To
 			{
-				get
-				{
-					return to;
-				}
-				set
-				{
-					to = value;
-				}
-			}
+				get => to;
+                set => to = value;
+            }
 
 			public List<TransResult> Data
 			{
-				get
-				{
-					return data;
-				}
-				set
-				{
-					data = value;
-				}
-			}
+				get => data;
+                set => data = value;
+            }
 
 			public List<TransResult> data;
 
@@ -5111,27 +4444,15 @@ namespace TrOCR
 
 			public string Src
 			{
-				get
-				{
-					return src;
-				}
-				set
-				{
-					src = value;
-				}
-			}
+				get => src;
+                set => src = value;
+            }
 
 			public string Dst
 			{
-				get
-				{
-					return dst;
-				}
-				set
-				{
-					dst = value;
-				}
-			}
+				get => dst;
+                set => dst = value;
+            }
 
 			public string dst;
 
@@ -5143,42 +4464,42 @@ namespace TrOCR
 
 			static HtmlToText()
 			{
-				_tags.Add("address", "\n");
-				_tags.Add("blockquote", "\n");
-				_tags.Add("div", "\n");
-				_tags.Add("dl", "\n");
-				_tags.Add("fieldset", "\n");
-				_tags.Add("form", "\n");
-				_tags.Add("h1", "\n");
-				_tags.Add("/h1", "\n");
-				_tags.Add("h2", "\n");
-				_tags.Add("/h2", "\n");
-				_tags.Add("h3", "\n");
-				_tags.Add("/h3", "\n");
-				_tags.Add("h4", "\n");
-				_tags.Add("/h4", "\n");
-				_tags.Add("h5", "\n");
-				_tags.Add("/h5", "\n");
-				_tags.Add("h6", "\n");
-				_tags.Add("/h6", "\n");
-				_tags.Add("p", "\n");
-				_tags.Add("/p", "\n");
-				_tags.Add("table", "\n");
-				_tags.Add("/table", "\n");
-				_tags.Add("ul", "\n");
-				_tags.Add("/ul", "\n");
-				_tags.Add("ol", "\n");
-				_tags.Add("/ol", "\n");
-				_tags.Add("/li", "\n");
-				_tags.Add("br", "\n");
-				_tags.Add("/td", "\t");
-				_tags.Add("/tr", "\n");
-				_tags.Add("/pre", "\n");
-				_ignoreTags = new HashSet<string>();
-				_ignoreTags.Add("script");
-				_ignoreTags.Add("noscript");
-				_ignoreTags.Add("style");
-				_ignoreTags.Add("object");
+				Tags.Add("address", "\n");
+				Tags.Add("blockquote", "\n");
+				Tags.Add("div", "\n");
+				Tags.Add("dl", "\n");
+				Tags.Add("fieldset", "\n");
+				Tags.Add("form", "\n");
+				Tags.Add("h1", "\n");
+				Tags.Add("/h1", "\n");
+				Tags.Add("h2", "\n");
+				Tags.Add("/h2", "\n");
+				Tags.Add("h3", "\n");
+				Tags.Add("/h3", "\n");
+				Tags.Add("h4", "\n");
+				Tags.Add("/h4", "\n");
+				Tags.Add("h5", "\n");
+				Tags.Add("/h5", "\n");
+				Tags.Add("h6", "\n");
+				Tags.Add("/h6", "\n");
+				Tags.Add("p", "\n");
+				Tags.Add("/p", "\n");
+				Tags.Add("table", "\n");
+				Tags.Add("/table", "\n");
+				Tags.Add("ul", "\n");
+				Tags.Add("/ul", "\n");
+				Tags.Add("ol", "\n");
+				Tags.Add("/ol", "\n");
+				Tags.Add("/li", "\n");
+				Tags.Add("br", "\n");
+				Tags.Add("/td", "\t");
+				Tags.Add("/tr", "\n");
+				Tags.Add("/pre", "\n");
+				IgnoreTags = new HashSet<string>();
+				IgnoreTags.Add("script");
+				IgnoreTags.Add("noscript");
+				IgnoreTags.Add("style");
+				IgnoreTags.Add("object");
 			}
 
 			public string Convert(string html)
@@ -5210,11 +4531,11 @@ namespace TrOCR
 							_text.Preformatted = false;
 						}
 						string s;
-						if (_tags.TryGetValue(text, out s))
+						if (Tags.TryGetValue(text, out s))
 						{
 							_text.Write(s);
 						}
-						if (_ignoreTags.Contains(text))
+						if (IgnoreTags.Contains(text))
 						{
 							EatInnerContent(text);
 						}
@@ -5295,15 +4616,9 @@ namespace TrOCR
 				}
 			}
             
-			protected bool EndOfText
-			{
-				get
-				{
-					return _pos >= _html.Length;
-				}
-			}
+			protected bool EndOfText => _pos >= _html.Length;
 
-			protected char Peek()
+            protected char Peek()
 			{
 				if (_pos >= _html.Length)
 				{
@@ -5317,7 +4632,7 @@ namespace TrOCR
 				_pos = Math.Min(_pos + 1, _html.Length);
 			}
 
-			protected void EatWhitespace()
+            private void EatWhitespace()
 			{
 				while (char.IsWhiteSpace(Peek()))
 				{
@@ -5325,7 +4640,7 @@ namespace TrOCR
 				}
 			}
 
-			protected void EatWhitespaceToNextLine()
+            private void EatWhitespaceToNextLine()
 			{
 				while (char.IsWhiteSpace(Peek()))
 				{
@@ -5338,13 +4653,12 @@ namespace TrOCR
 				}
 			}
 
-			protected void EatQuotedValue()
+            private void EatQuotedValue()
 			{
 				var c = Peek();
 				if (c == '"' || c == '\'')
 				{
 					MoveAhead();
-					var pos = _pos;
 					_pos = _html.IndexOfAny(new[]
 					{
 						c,
@@ -5360,15 +4674,15 @@ namespace TrOCR
 				}
 			}
 
-			protected static Dictionary<string, string> _tags = new Dictionary<string, string>();
+            private static readonly Dictionary<string, string> Tags = new Dictionary<string, string>();
 
-			protected static HashSet<string> _ignoreTags;
+            private static readonly HashSet<string> IgnoreTags;
 
 			protected TextBuilder _text;
 
-			protected string _html;
+            private string _html;
 
-			protected int _pos;
+            private int _pos;
 
 			protected class TextBuilder
 			{
@@ -5376,24 +4690,21 @@ namespace TrOCR
 				public TextBuilder()
 				{
 					_text = new StringBuilder();
-					_currLine = new StringBuilder();
+					_curLine = new StringBuilder();
 					_emptyLines = 0;
 					_preformatted = false;
 				}
                 
 				public bool Preformatted
 				{
-					get
-					{
-						return _preformatted;
-					}
-					set
+					get => _preformatted;
+                    set
 					{
 						if (value)
 						{
-							if (_currLine.Length > 0)
+							if (_curLine.Length > 0)
 							{
-								FlushCurrLine();
+								FlushCurLine();
 							}
 							_emptyLines = 0;
 						}
@@ -5404,7 +4715,7 @@ namespace TrOCR
 				public void Clear()
 				{
 					_text.Length = 0;
-					_currLine.Length = 0;
+					_curLine.Length = 0;
 					_emptyLines = 0;
 				}
 
@@ -5427,27 +4738,27 @@ namespace TrOCR
 					{
 						if (c == '\n')
 						{
-							FlushCurrLine();
+							FlushCurLine();
 							return;
 						}
 						if (char.IsWhiteSpace(c))
 						{
-							var length = _currLine.Length;
-							if (length == 0 || !char.IsWhiteSpace(_currLine[length - 1]))
+							var length = _curLine.Length;
+							if (length == 0 || !char.IsWhiteSpace(_curLine[length - 1]))
 							{
-								_currLine.Append(' ');
+								_curLine.Append(' ');
                             }
 						}
 						else
 						{
-							_currLine.Append(c);
+							_curLine.Append(c);
 						}
 					}
 				}
 
-				protected void FlushCurrLine()
+                private void FlushCurLine()
 				{
-					var text = _currLine.ToString().Trim();
+					var text = _curLine.ToString().Trim();
 					if (text.Replace("\u00a0", string.Empty).Length == 0)
 					{
 						_emptyLines++;
@@ -5461,21 +4772,21 @@ namespace TrOCR
 						_emptyLines = 0;
 						_text.AppendLine(text);
 					}
-					_currLine.Length = 0;
+					_curLine.Length = 0;
 				}
 
 				public override string ToString()
 				{
-					if (_currLine.Length > 0)
+					if (_curLine.Length > 0)
 					{
-						FlushCurrLine();
+						FlushCurLine();
 					}
 					return _text.ToString();
 				}
 
-				private StringBuilder _text;
+				private readonly StringBuilder _text;
 
-				private StringBuilder _currLine;
+				private readonly StringBuilder _curLine;
 
 				private int _emptyLines;
 

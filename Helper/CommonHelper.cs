@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 
@@ -243,6 +242,15 @@ namespace TrOCR.Helper
             {
                 var str = Encoding.UTF8.GetBytes(input);
                 var output = md5.ComputeHash(str);
+                return BitConverter.ToString(output).Replace("-", "").ToLower();
+            }
+        }
+
+        public static string Md5(byte[] input)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var output = md5.ComputeHash(input);
                 return BitConverter.ToString(output).Replace("-", "").ToLower();
             }
         }
