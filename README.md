@@ -1,4 +1,6 @@
 ## 天若 OCR 文字识别开源版
+> 该项目已停止维护，欢迎使用新版跨平台 OCR 工具，[树洞 OCR 文字识别](https://github.com/AnyListen/tools-ocr)：https://github.com/AnyListen/tools-ocr
+
 天若 OCR 文字识别开源版是基于 @天若幽心  [开源的代码](https://github.com/tianruoyouxin/tianruoocr_last) 进行完善制作而成。
 
 ![天若 OCR 文字识别开源版](http://img.luooqi.com/FqgLxwq7qu7_OLBr5HYO_bi7Rpbw)
