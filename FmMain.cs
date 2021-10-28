@@ -413,11 +413,11 @@ namespace TrOCR
 			{
 				if (esc != "退出")
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-腾讯***";
 				}
 				else
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-腾讯***";
 					esc = "";
 				}
 			}
@@ -488,11 +488,11 @@ namespace TrOCR
 			{
 				if (esc != "退出")
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-百度***";
 				}
 				else
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-百度***";
 					esc = "";
 				}
 			}
@@ -585,11 +585,11 @@ namespace TrOCR
 			{
 				if (esc != "退出")
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-有道***";
 				}
 				else
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-有道***";
 					esc = "";
 				}
 			}
@@ -1115,7 +1115,7 @@ namespace TrOCR
                 var html = CommonHelper.PostStrData("https://translate.google.cn/translate_a/single", data);
 
 				var jArray = (JArray)JsonConvert.DeserializeObject(html);
-				var count = ((JArray)jArray[0]).Count;
+			    var count = ((JArray)jArray[0]).Count;
 				for (var i = 0; i < count; i++)
 				{
 					text2 += jArray[0][i][0].ToString();
@@ -1739,7 +1739,7 @@ namespace TrOCR
 				Invoke(new OcrThread(Main_OCR_Thread_table));
 				return;
 			}
-			if (interface_flag == "日语" || interface_flag == "中英" || interface_flag == "韩语")
+			if (interface_flag == "百度" || interface_flag == "日语" || interface_flag == "中英" || interface_flag == "韩语")
 			{
 				OCR_baidu();
 				fmloading.FmlClose = "窗体已关闭";
@@ -1963,6 +1963,12 @@ namespace TrOCR
 
 		public void OCR_baidu()
 		{
+			if (true)
+            {
+				OCR_baidu1();
+				return;
+
+            }
 			split_txt = "";
 			try
 			{
@@ -2005,7 +2011,56 @@ namespace TrOCR
 				}
 				else
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-百度***";
+					esc = "";
+				}
+			}
+		}
+
+		public void OCR_baidu1()
+		{
+			split_txt = "";
+			try
+			{
+				var image = image_screen;
+				var array = OcrHelper.ImgToBytes(image);
+				var s = "type=https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic&detect_direction=false&image_url=&image=" + HttpUtility.UrlEncode("data:image/jpg;base64," + Convert.ToBase64String(array));
+				Console.WriteLine(s);
+				var bytes = Encoding.UTF8.GetBytes(s);
+				var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ai.baidu.com/aidemo");
+				httpWebRequest.Proxy = null;
+				httpWebRequest.Method = "POST";
+				httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+				httpWebRequest.Timeout = 8000;
+				httpWebRequest.ReadWriteTimeout = 5000;
+				using (var requestStream = httpWebRequest.GetRequestStream())
+				{
+					requestStream.Write(bytes, 0, bytes.Length);
+				}
+				var responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
+				var value = new StreamReader(responseStream, Encoding.GetEncoding("utf-8")).ReadToEnd();
+				//Console.WriteLine(value);
+				JObject obj = ((JObject)JsonConvert.DeserializeObject(value));
+				var jArray = JArray.Parse(obj["data"]["words_result"].ToString());
+				checked_txt(jArray, 1, "words");
+				responseStream.Close();
+
+
+
+				
+					//var jArray = JArray.Parse(((JObject)JsonConvert.DeserializeObject(value))["words_result"].ToString());
+					//checked_txt(jArray, 1, "words");
+				
+			}
+			catch
+			{
+				if (esc != "退出")
+				{
+					RichBoxBody.Text = "***该区域未发现文本或者密钥次数用尽***";
+				}
+				else
+				{
+					RichBoxBody.Text = "***该区域未发现文本-百度***";
 					esc = "";
 				}
 			}
@@ -2176,11 +2231,11 @@ namespace TrOCR
 			{
 				if (esc != "退出")
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-搜狗***";
 				}
 				else
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-搜狗***";
 					esc = "";
 				}
 			}
@@ -2534,11 +2589,11 @@ namespace TrOCR
 			{
 				if (esc != "退出")
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-腾讯***";
 				}
 				else
 				{
-					RichBoxBody.Text = "***该区域未发现文本***";
+					RichBoxBody.Text = "***该区域未发现文本-腾讯***";
 					esc = "";
 				}
 			}
