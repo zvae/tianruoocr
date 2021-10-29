@@ -1687,6 +1687,51 @@ namespace TrOCR
             }
         }
 
+		public void testNextOcr()
+		{
+			
+			if (split_txt != "")
+			{
+				return;
+			}
+			if (interface_flag != "搜狗")
+			{
+				Console.WriteLine("尝试使用搜狗OCR");
+				SougouOCR();
+				if (split_txt != "")
+				{
+					return;
+				}
+			}
+			// 腾讯目前无法使用
+			// if (interface_flag != "腾讯")
+			// {
+			// 	Console.WriteLine("尝试使用腾讯OCR");
+			// 	OCR_Tencent();
+			// 	if (split_txt != "")
+			// 	{
+			// 		return;
+			// 	}
+			// }
+			if (interface_flag != "有道")
+			{
+				Console.WriteLine("尝试使用有道OCR");
+				OCR_youdao();
+				if (split_txt != "")
+				{
+					return;
+				}
+			}
+			if (interface_flag != "百度" )
+			{
+				Console.WriteLine("尝试使用百度OCR");
+				OCR_baidu();
+				if (split_txt != "")
+				{
+					return;
+				}
+			}
+		}
 		public void Main_OCR_Thread()
 		{
 			if (ScanQRCode() != "")
@@ -1700,6 +1745,7 @@ namespace TrOCR
 			if (interface_flag == "搜狗")
 			{
 				SougouOCR();
+				testNextOcr();
 				fmloading.FmlClose = "窗体已关闭";
 				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
@@ -1707,6 +1753,7 @@ namespace TrOCR
 			if (interface_flag == "腾讯")
 			{
 				OCR_Tencent();
+				testNextOcr();
 				fmloading.FmlClose = "窗体已关闭";
 				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
@@ -1714,6 +1761,7 @@ namespace TrOCR
 			if (interface_flag == "有道")
 			{
 				OCR_youdao();
+				testNextOcr();
 				fmloading.FmlClose = "窗体已关闭";
 				Invoke(new OcrThread(Main_OCR_Thread_last));
 				return;
@@ -1742,6 +1790,7 @@ namespace TrOCR
 			if (interface_flag == "百度" || interface_flag == "日语" || interface_flag == "中英" || interface_flag == "韩语")
 			{
 				OCR_baidu();
+				testNextOcr();
 				fmloading.FmlClose = "窗体已关闭";
 				Invoke(new OcrThread(Main_OCR_Thread_last));
 			}
@@ -1963,12 +2012,6 @@ namespace TrOCR
 
 		public void OCR_baidu()
 		{
-			if (true)
-            {
-				OCR_baidu1();
-				return;
-
-            }
 			split_txt = "";
 			try
 			{
@@ -2013,10 +2056,15 @@ namespace TrOCR
 				{
 					RichBoxBody.Text = "***该区域未发现文本-百度***";
 					esc = "";
+					// 付费的用不了，尝试使用免费的试一下
+					OCR_baidu1();
 				}
 			}
 		}
-
+		
+		/// <summary>
+		/// 免费的百度ocr测试接口
+		/// </summary>
 		public void OCR_baidu1()
 		{
 			split_txt = "";

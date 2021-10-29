@@ -22,3 +22,6 @@
 ## 下载地址
 - 百度网盘：https://pan.baidu.com/s/17T1MR6R7EQ4zvgeokTMFeA
 - Github：https://github.com/AnyListen/tianruoocr_last/releases
+
+
+此fork仓库进行了自用修改，只根据本身需要进行修改，未曾考虑过多内容，需要自取。
